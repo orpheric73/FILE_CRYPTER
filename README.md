@@ -73,3 +73,8 @@ Bash
 ```
 ## 📄 License
 This project is licensed under the ![License](https://img.shields.io/badge/License-MIT-green.svg). See [License](LICENSE) for details.
+---
+
+## 🌍 Language
+
+[![Français](https://img.shields.io/badge/Langue-Français-blue.svg)](README.fr.md)
