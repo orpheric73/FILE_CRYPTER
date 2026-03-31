@@ -1,5 +1,6 @@
 # CIPHER FLOW SYSTEM
 ## 📝 Description
+![Social Preview](assets/social-preview.png)
 CIPHER FLOW SYSTEM is a secure file management software that allows encrypting and decrypting text, PDF, and RTF files.  
 The program offers the following features:
 - Encrypt File
@@ -58,14 +59,17 @@ This project allows understanding and applying:
 ## ⚠️ Limitations
 - Works only on Windows.
 - Does not support paths containing spaces (use _ instead).
-## Technologies 
+## ⚙️ Technologies 
 - **Language:** C
 - **Compiler:** GCC or any standard C compiler.
-# Compilation and execution 
-To execute the program, you need to compile the following files:
-- main.c
-- FUNCTION.c
-- FUNCTION.h
-# License
-This project is licensed under the **MIT License**. See [License](LICENSE) for details.
-
+## 🛠️ Build & Compilation
+```
+gcc main.c function.c -o FILE_CRYPTER.exe -lwinmm
+```
+## ▶️ Execution
+```
+Bash
+./FILE_CRYPTER.exe
+```
+## 📄 License
+This project is licensed under the ![License](https://img.shields.io/badge/License-MIT-green.svg). See [License](LICENSE) for details.
