@@ -48,9 +48,6 @@ Choose a menu option:
 ```
 Follow the instructions to input file name, extensions, password, and version.  
 Encrypted files are created with the suffix (ENCRYPTED) or -crypt depending on the selected mode.
-## ⚙️ Dependencies
-- Windows system
-- C compiler compatible with C99 or higher.
 ## 🧠 Educational Goals
 This project allows understanding and applying:
 - File management in C (fopen, fclose, getc, fprintf).
@@ -61,3 +58,14 @@ This project allows understanding and applying:
 ## ⚠️ Limitations
 - Works only on Windows.
 - Does not support paths containing spaces (use _ instead).
+## Technologies 
+- **Language:** C
+- **Compiler:** GCC or any standard C compiler.
+# Compilation and execution 
+To execute the program, you need to compile the following files:
+- main.c
+- FUNCTION.c
+- FUNCTION.h
+# License
+This project is licensed under the **MIT License**. See [License](LICENSE) for details.
+
