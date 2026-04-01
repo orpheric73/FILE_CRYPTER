@@ -1,6 +1,6 @@
 # 🔐 CIPHER FLOW SYSTEM
 ## 📝 Description
-![Preview](assets/social-preview.jpg)
+![Preview](../social-preview.jpg)
 CIPHER FLOW SYSTEM est un logiciel de gestion sécurisée de fichiers permettant de chiffrer et déchiffrer des fichiers texte, PDF et RTF.
 Le programme offre les fonctionnalités suivantes :
 - Chiffrement de fichier
