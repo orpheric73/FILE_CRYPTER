@@ -71,6 +71,11 @@ gcc main.c function.c -o FILE_CRYPTER.exe -lwinmm
 Bash
 ./FILE_CRYPTER.exe
 ```
+## ## 📚 Documentation
+
+For a detailed explanation on how to use:
+
+- 👉 [View Full User Guide](assets/docs/USER_GUIDE.md)
 ## 📄 License
 This project is licensed under the ![License](https://img.shields.io/badge/License-MIT-green.svg). See [License](LICENSE) for details.
 ---
