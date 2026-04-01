@@ -98,9 +98,6 @@ Certains formats comme .docx (structure ZIP/XML) peuvent ne pas être exploitabl
 - Protection de fichiers sensibles
 - Automatisation du chiffrement
 - Sécurisation de données avant stockage ou partage
-## 🏷️ Informations du projet
-- **Nom** : CypherFlow System
-- **Nom du dépôt** : File Crypter
 ## 🔥 Améliorations possibles (future work)
 - Support complet de tous les formats de fichiers
 - Interface graphique
