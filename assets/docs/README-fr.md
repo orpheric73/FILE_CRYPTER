@@ -84,4 +84,4 @@ Pour une explication détaillée de l’utilisation:
 
 👉 [Voir le guide complet](GUIDE_UTILISATION.md)
 ## 📄 Licence
-Ce projet est sous [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE).
+Ce projet est sous [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE).
