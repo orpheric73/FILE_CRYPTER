@@ -77,9 +77,7 @@ For a detailed explanation on how to use:
 
 - 👉 [View Full User Guide](assets/docs/USER_GUIDE.md)
 ## 📄 License
-This project is licensed under the ![License](https://img.shields.io/badge/License-MIT-green.svg). See [License](LICENSE) for details.
----
-
+This project is licensed under the [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ## 🌍 FRENCH VERSION
 
 [![Français](https://img.shields.io/badge/Langue-Français-blue.svg)](assets/docs/README-fr.md)
