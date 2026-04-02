@@ -62,7 +62,7 @@ This project allows understanding and applying:
 ## ⚙️ Technologies 
 - **Language:** C
 - **Compiler:** GCC or any standard C compiler.
-## Use Cases and Application 
+## ⭐ Use Cases and Application 
 **1️⃣ Personal Data Protection**
 ```
 - Securing sensitive files such as passwords, private documents, and confidential information.
