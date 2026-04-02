@@ -94,10 +94,6 @@ Certains formats comme .docx (structure ZIP/XML) peuvent ne pas être exploitabl
 - Une erreur n’endommage pas les données chiffrées
 - Le chiffrement planifié fonctionne même pour des fichiers futurs
 - Le fichier original est supprimé uniquement après chiffrement réussi
-## 💡 Cas d’utilisation
-- Protection de fichiers sensibles
-- Automatisation du chiffrement
-- Sécurisation de données avant stockage ou partage
 ## 🔥 Améliorations possibles (future work)
 - Support complet de tous les formats de fichiers
 - Interface graphique
