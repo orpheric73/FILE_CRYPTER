@@ -90,7 +90,3 @@ All file types readable via file handling
 - Wrong inputs do NOT destroy encrypted data
 - Scheduled encryption can target files not yet created
 - Original file is deleted only after successful encryption
-## 💡 Example Use Case
-- Secure sensitive files with password + version
-- Automate encryption at a specific time
-- Protect files before sharing or storage
