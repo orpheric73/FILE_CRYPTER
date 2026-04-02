@@ -68,6 +68,22 @@ Ce projet permet de comprendre et pratiquer :
 ## ⚙️ Technologies
 - **Langage** : C
 - **Compilateur** : GCC ou tout compilateur C standard
+## ⭐ Cas d’usage et Applications
+**1️⃣ Protection des données personnelles**
+```
+- Sécurisation des fichiers sensibles tels que mots de passe, documents privés et informations confidentielles.  
+- Chiffrement des données avant stockage ou partage afin de garantir la confidentialité.
+```
+**2️⃣ Automatisation des tâches de sécurité**
+```
+- Planification du chiffrement et déchiffrement automatique des fichiers.  
+- Réduction de l’intervention manuelle et amélioration de l’efficacité opérationnelle.
+```
+**3️⃣ Prévention des pertes et fuites de données**
+```
+- Protection des données contre les accès non autorisés.  
+- Sécurisation des fichiers avant transfert ou partage.
+```
 ## 🛠️ Build & Compilation
 ```
 Bash
