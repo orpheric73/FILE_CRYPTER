@@ -62,6 +62,22 @@ This project allows understanding and applying:
 ## ⚙️ Technologies 
 - **Language:** C
 - **Compiler:** GCC or any standard C compiler.
+## Use Cases and Application 
+**1️⃣ Personal Data Protection**
+```
+- Securing sensitive files such as passwords, private documents, and confidential information.
+- Encrypting data before storage or sharing to ensure confidentiality.
+```
+**2️⃣ Security Task Automation**
+```
+- Scheduling automatic encryption and decryption of files.
+- Reducing manual intervention and improving operational efficiency.
+```
+**3️⃣  Data Loss and Leak Prevention**
+```
+- Protecting data against unauthorized access.
+- Securing files before transfer or sharing.
+```
 ## 🛠️ Build & Compilation
 ```
 gcc main.c function.c -o FILE_CRYPTER.exe -lwinmm
