@@ -84,7 +84,6 @@ CypherFlow uses a custom algorithm based on three main principles:
 - Output becomes unreadable (encrypted data)
 ## 📁 Supported Files
 All file types readable via file handling
-- Exception: Some formats like .docx (ZIP/XML structure) may not open correctly after encryption
 ## ⚠️ Important Notes
 - Correct password + version are required for decryption
 - Wrong inputs do NOT destroy encrypted data

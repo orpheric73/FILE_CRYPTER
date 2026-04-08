@@ -87,8 +87,6 @@ Le système repose sur un algorithme personnalisé composé de plusieurs étapes
 - Le contenu devient illisible (chiffré)
 ## 📁 Types de fichiers supportés
 Tous les fichiers lisibles via les fonctions de lecture de fichiers
-- Limitation actuelle :
-Certains formats comme .docx (structure ZIP/XML) peuvent ne pas être exploitables après chiffrement
 ## ⚠️ Remarques importantes
 - Le mot de passe et la version doivent être exacts pour le déchiffrement
 - Une erreur n’endommage pas les données chiffrées
