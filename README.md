@@ -58,7 +58,6 @@ This project allows understanding and applying:
 - Console / Windows interactions to create a simple yet effective user interface.
 ## ⚠️ Limitations
 - Works only on Windows.
-- Does not support paths containing spaces (use _ instead).
 ## ⚙️ Technologies 
 - **Language:** C
 - **Compiler:** GCC or any standard C compiler.

@@ -64,7 +64,6 @@ Ce projet permet de comprendre et pratiquer :
 - Les interactions console / Windows pour créer une interface simple mais efficace
 ## ⚠️ Limitations
 - Fonctionne uniquement sous Windows
-- Ne supporte pas les chemins contenant des espaces (utiliser _ à la place)
 ## ⚙️ Technologies
 - **Langage** : C
 - **Compilateur** : GCC ou tout compilateur C standard

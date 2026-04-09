@@ -10,24 +10,24 @@ void type_effect(char *text){
 
 void color_change1(){
     system("color 09");
-    Sleep(300);
+    Sleep(200);
     system("color 0C");
-    Sleep(300);
+    Sleep(200);
     system("color 0A");
-    Sleep(300);
+    Sleep(200);
 }
 
 void loading(){
     int j;
     for(j=0;j<3;j++){
-        Sleep(500);
+        Sleep(200);
         printf(".");
-        Sleep(500);
+        Sleep(200);
         printf(".");
-        Sleep(500);
+        Sleep(200);
         printf(".");
-        Sleep(500);
-        Beep(1000, 300);
+        Sleep(200);
+        Beep(500, 150);
         printf("\b \b\b \b\b \b");
     }
 }
@@ -52,8 +52,8 @@ int GetDaysInMonth(int MON, int YEA){
     }
 }
 
-void home(int param){
-    if(param==0){
+void home(int set){
+    if(set==0){
         printf("\n");
         UINT originalCP = GetConsoleOutputCP();
         SetConsoleOutputCP(CP_UTF8);
@@ -77,7 +77,7 @@ void home(int param){
         type_effect("SECURE - DYNAMIC - SCHEDULED");
         printf("     ======================================\n");
     }
-    if(param==1){
+    if(set==1){
         printf("========================================================================================================================\n===============================================     ");
         type_effect("[1] ENCRYPT FILE");
         printf("             =======================================\n===============================================     ");
@@ -149,14 +149,14 @@ char* DayOfWeek(int day, int la){
 }
 
 int NumbOfFile(){
-    int fcon, nbr;
+    int fcon, nbr, clb;
      do{
         fcon=1;
         printf("\nENTER THE NUMBER OF FILES");
         printf("\n> ");
         if(scanf("%d",&nbr)!=1){
             printf("\nINVALID INPUT,TRY AGAIN.");
-            while(getchar() != '\n');
+            while((clb=getchar()) != '\n' && clb != EOF);
             fcon=0;
         }
         if(fcon!=0){
@@ -164,7 +164,7 @@ int NumbOfFile(){
             printf("\n> ");
             if(scanf("%d",&fcon)!=1){
                 printf("\nINVALID INPUT,TRY AGAIN.");
-                while(getchar() != '\n');
+                while((clb=getchar()) != '\n' && clb != EOF);
                 fcon=0;
             }
         }
@@ -234,14 +234,14 @@ void SecureLevel(char *pasw){
     return;
 }
 void PasswdInp(char *pass){
-    int fcon, siz;
+    int fcon, siz, clb;
     do{
         fcon=1;
-        printf("\nENTER THE PASSWORD(10 CHARACTERS EVEN IF THIS IS MORE THAN 10 ONLY THE FIRST 10 WILL BE USED)(NO SPACE)");
+        printf("\nENTER THE PASSWORD(10 CHARACTERS EVEN IF THIS IS MORE THAN 10 ONLY THE FIRST 10 WILL BE USED)");
         printf("\n> ");
         Sleep(500);
-        scanf("%10s",pass);
-        while(getchar() != '\n');
+        scanf(" %10[^\n]",pass);
+        while((clb=getchar()) != '\n' && clb != EOF);
         siz=strlen(pass);
         if(siz!=10){
             fcon=0;
@@ -254,7 +254,7 @@ void PasswdInp(char *pass){
             printf("\n> ");
             if(scanf("%d",&fcon)!=1){
                 printf("\nINVALID INPUT,TRY AGAIN.");
-                while(getchar() != '\n');
+                while((clb=getchar()) != '\n' && clb != EOF);
                 fcon=0;
             }
         }
@@ -262,7 +262,7 @@ void PasswdInp(char *pass){
 }
 
 int VerInp(){
-    int fcon, fv;
+    int fcon, fv, clb;
      do{
         fcon=1;
         printf("\nENTER THE COMPLEXITY VERSION(0-5)");
@@ -270,7 +270,7 @@ int VerInp(){
         system("color 00");
         if(scanf("%d",&fv)!=1){
             printf("\nINVALID INPUT,TRY AGAIN.");
-            while(getchar() != '\n');
+            while((clb=getchar()) != '\n' && clb != EOF);
             fcon=0;
         }
         system("color 0A");
@@ -279,7 +279,7 @@ int VerInp(){
             printf("\n> ");
             if(scanf("%d",&fcon)!=1){
                 printf("\nINVALID INPUT,TRY AGAIN.");
-                while(getchar() != '\n');
+                while((clb=getchar()) != '\n' && clb != EOF);
                 fcon=0;
             }
         }

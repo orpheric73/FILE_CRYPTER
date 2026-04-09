@@ -1,6 +1,6 @@
-# 🔐 CypherFlow System (File Crypter)
+# 🔐 CipherFlow System (File Crypter)
 ## 📖 Overview
-CypherFlow System is a console-based file encryption and decryption application written in C.
+CipherFlow System is a console-based file encryption and decryption application written in C.
 It allows users to securely encrypt and decrypt files using a password-based transformation algorithm, enhanced by a dynamic versioning system and scheduled execution.
 ## ⚙️ Features
 - 🔒 File Encryption
@@ -30,8 +30,6 @@ Schedule decryption safely without deleting the encrypted file.
 - **Application Type**: Console (CLI)
 - **Language**: C
 ## 🚀 How to Use
-### ▶️ Launch the Program
-Run the executable file. A console interface with ASCII art CypherFlow System will appear.
 ### 📌 Main Menu Options
 **1. Encrypt File(s)**
 ```
@@ -48,7 +46,7 @@ File is encrypted
 ```
 - Same process as encryption
 - Requires correct password and version
-- If incorrect → output remains encrypted (safe retry possible)
+- If incorrect → output remains encrypted (safe retry possible with original crypted file)
 ```
 **3. Scheduled Encryption**
 ```
@@ -59,18 +57,20 @@ File is encrypted
 - 💡 Special Feature:
 - File does NOT need to exist yet
 - At scheduled time:
-  - If file exists → encrypt + delete original
+  - If file exists → encrypt
   - If not → “File not found”
 ```
 **4. Scheduled Decryption**
 ```
 - Same process as scheduled encryption
-- Encrypted file is NOT deleted after decryption
+- At scheduled time:
+  - If file exists → decrypt
+  - If not → “File not found”
 ```
 ## 💡 Security Advantage:
 If password/version is wrong → encrypted file remains encrypted(but not intact)
 ## 🔐 Encryption Mechanism
-CypherFlow uses a custom algorithm based on three main principles:
+CipherFlow uses a custom algorithm based on three main principles:
 ### 1️⃣ Password Transformation
 - Input password is transformed using diffusion
 - Each character influences others
@@ -88,4 +88,3 @@ All file types readable via file handling
 - Correct password + version are required for decryption
 - Wrong inputs do NOT destroy encrypted data
 - Scheduled encryption can target files not yet created
-- Original file is deleted only after successful encryption

@@ -1,6 +1,6 @@
 #include"FUNCTION.h"
 int main(){
-    int MODE, con;
+    int MODE, con, clb;
     system("color 0A && title FILE_CRYPTER");
     home(0);
     do{
@@ -8,7 +8,7 @@ int main(){
         home(1);
         if(scanf("%d",&MODE) != 1){
             type_effect("\nINVALID INPUT,TRY AGAIN.");
-            while(getchar() != '\n');
+            while((clb=getchar()) != '\n' && clb != EOF);
             con=0;
         }
         printf("\n");
@@ -23,7 +23,7 @@ int main(){
             printf("\n");
         }
         color_change1();
-        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, i, lan=0;
+        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, result, remo, Hf, i, lan=0;
         char *dwn, *ehou;
         char rmdec;
         if(MODE==3){
@@ -33,19 +33,19 @@ int main(){
                 printf("\n> H: ");
                 if(scanf("%d",&H)!=1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 printf("\n> M: ");
                 if(scanf("%d",&M)!=1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 printf("\n> S: ");
                 if(scanf("%d",&S)!=1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 if(con!=0){
@@ -61,7 +61,7 @@ int main(){
                     printf("\n> ");
                     if(scanf("%d",&con)!=1){
                         printf("\nINVALID INPUT,TRY AGAIN.");
-                        while(getchar() != '\n');
+                        while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
                     }
                 }
@@ -144,13 +144,13 @@ int main(){
             do{
                 con=1;
                 crt[K].ney=calloc(45,sizeof(char));
-                crt[K].ney[0]='\0';
                 if(crt[K].ney==NULL){
                     printf("OPENING ERROR\n");
                     free(crt);
                     MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     return 1;
                 }
+                crt[K].ney[0]='\0';
                 crt[K].ney1=calloc(35,sizeof(char));
                 if(crt[K].ney1==NULL){
                     printf("OPENING ERROR\n");
@@ -159,14 +159,14 @@ int main(){
                     MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     return 1;
                 }
-                printf("\nENTER THE FILE NAME(NO SPACE USE\"_\"TO SEPARATE IF FILE IS IN FOLDER USE(FOLDER NAME%cFILE NAME))",SEP);
+                printf("\nENTER THE FILE NAME(IF FILE IS IN FOLDER USE(FOLDER NAME%cFILE NAME))",SEP);
                 printf("\n> ");
-                if(scanf("%34s",crt[K].ney1) != 1){
+                if(scanf(" %34[^\n]",crt[K].ney1) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
-                while(getchar() != '\n');
+                while((clb=getchar()) != '\n' && clb != EOF);
                 crt[K].ney2=calloc(10,sizeof(char));
                 if(crt[K].ney2==NULL){
                     printf("OPENING ERROR\n");
@@ -178,12 +178,12 @@ int main(){
                 }
                 printf("ADD EXTENSION (.rtf for RTF FILE, .txt for TEXT FILE, .pdf for PDF FILE)");
                 printf("\n> ");
-                if(scanf("%9s",crt[K].ney2) != 1){
+                if(scanf(" %9[^\n]",crt[K].ney2) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
-                while(getchar() != '\n');
+                while((clb=getchar()) != '\n' && clb != EOF);
                 strcat(crt[K].ney,crt[K].ney1);
                 strcat(crt[K].ney,crt[K].ney2);
                 if(con!=0){
@@ -196,6 +196,19 @@ int main(){
                             con=0;
                         }
                     }
+                }
+            }while(con!=1);
+            do{
+                con=1;
+                result = MessageBox(NULL, "DO YOU WANT TO REMOVE THE FILE AFTER ENCRYPTION ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
+                if(result==IDYES){
+                    remo=1;
+                }
+                else if(result==IDNO){
+                    remo=0;
+                }
+                else{
+                    con=0;
                 }
             }while(con!=1);
             if(mdec==1){
@@ -334,7 +347,6 @@ int main(){
                         ct=0;
                     }
                     if(yn>y){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -359,7 +371,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon>mo){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -384,7 +395,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn>d){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -409,7 +419,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn>H){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -434,7 +443,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn>M){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -459,7 +467,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn==M && Sn>S){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -570,22 +577,25 @@ int main(){
                     crt[K].paswdi[9]=crt[K].paswdi[9]+(crt[K].v-3);
                 }
             }
-            if(MODE==1){
-                printf("\n");
-                type_effect("NOW ENCRYPTING");
-                loading();
-                printf("\n%s",crt[K].ney);
-                type_effect("ENCRYPTED SUCCESSFULLY");
-                printf("\nCHECK IF %s IS ABLE TO BE DECRYPT BEFORE %s REMOVING",crt[K].neyp,crt[K].ney);
-            }
-
             free(crt[K].ney1);
             free(crt[K].ney2);
             free(crt[K].neyp);
             fclose(crt[K].fl);
             fclose(crt[K].flo);
+            if(MODE==1){
+                printf("\n");
+                type_effect("NOW ENCRYPTING");
+                loading();
+                printf("\n%s",crt[K].ney);
+                if(remo==1){
+                    remove(crt[K].ney);
+                }
+                type_effect(" ENCRYPTED SUCCESSFULLY");
+            }
             if(MODE==3){
-                remove(crt[K].ney);
+                if(remo==1){
+                    remove(crt[K].ney);
+                }
                 MessageBox(NULL, "ENCRYPTION MADE SUCCESSFULLY\n\t\t\t\t\t\t\tSUCCESS", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
             }
             free(crt[K].ney);
@@ -602,7 +612,7 @@ int main(){
             printf("\n");
         }
         color_change1();
-        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, i, lan=0;
+        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, i, result, lan=0;
         char *dwn, *ehou;
         char rmdec;
         if(MODE==4){
@@ -612,19 +622,19 @@ int main(){
                 printf("\n> H: ");
                 if(scanf("%d",&H)!=1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 printf("\n> M: ");
                 if(scanf("%d",&M)!=1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 printf("\n> S: ");
                 if(scanf("%d",&S)!=1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 if(con!=0){
@@ -640,7 +650,7 @@ int main(){
                     printf("\n> ");
                     if(scanf("%d",&con)!=1){
                         printf("\nINVALID INPUT,TRY AGAIN.");
-                        while(getchar() != '\n');
+                        while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
                     }
                 }
@@ -723,13 +733,13 @@ int main(){
             do{
                 con=1;
                 crt[K].ney=calloc(45,sizeof(char));
-                crt[K].ney[0]='\0';
                 if(crt[K].ney==NULL){
                     printf("OPENING ERROR\n");
                     free(crt);
                     MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     return 1;
                 }
+                crt[K].ney[0]='\0';
                 crt[K].ney1=calloc(35,sizeof(char));
                 if(crt[K].ney1==NULL){
                     printf("OPENING ERROR\n");
@@ -740,12 +750,12 @@ int main(){
                 }
                 printf("\nENTER THE CRYPTED FILE NAME(IF FILE IS IN FOLDER USE(FOLDER NAME%cFILE NAME))",SEP);
                 printf("\n> ");
-                if(scanf("%34s",crt[K].ney1) != 1){
+                if(scanf(" %34[^\n]",crt[K].ney1) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
-                while(getchar() != '\n');
+                while((clb=getchar()) != '\n' && clb != EOF);
                 crt[K].ney2=calloc(10,sizeof(char));
                 if(crt[K].ney2==NULL){
                     printf("OPENING ERROR\n");
@@ -757,12 +767,12 @@ int main(){
                 }
                 printf("ADD EXTENSION (.rtf for RTF FILE, .txt for TEXT FILE, .pdf for PDF FILE)");
                 printf("\n> ");
-                if(scanf("%9s",crt[K].ney2) != 1){
+                if(scanf(" %9[^\n]",crt[K].ney2) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
-                    while(getchar() != '\n');
+                    while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
-                while(getchar() != '\n');
+                while((clb=getchar()) != '\n' && clb != EOF);
                 strcat(crt[K].ney,crt[K].ney1);
                 strcat(crt[K].ney,crt[K].ney2);
                 if(con!=0){
@@ -913,7 +923,6 @@ int main(){
                         ct=0;
                     }
                     if(yn>y){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -938,7 +947,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon>mo){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -963,7 +971,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn>d){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -988,7 +995,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn>H){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -1013,7 +1019,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn>M){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
@@ -1038,7 +1043,6 @@ int main(){
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn==M && Sn>S){
-                        int result;
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
