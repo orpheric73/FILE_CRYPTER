@@ -143,7 +143,7 @@ int main(){
         for(K=0;K<nb;K++){
             do{
                 con=1;
-                crt[K].ney=calloc(45,sizeof(char));
+                crt[K].ney=calloc(200,sizeof(char));
                 if(crt[K].ney==NULL){
                     printf("OPENING ERROR\n");
                     free(crt);
@@ -151,7 +151,7 @@ int main(){
                     return 1;
                 }
                 crt[K].ney[0]='\0';
-                crt[K].ney1=calloc(35,sizeof(char));
+                crt[K].ney1=calloc(175,sizeof(char));
                 if(crt[K].ney1==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
@@ -161,13 +161,13 @@ int main(){
                 }
                 printf("\nENTER THE FILE NAME(IF FILE IS IN FOLDER USE(FOLDER NAME%cFILE NAME))",SEP);
                 printf("\n> ");
-                if(scanf(" %34[^\n]",crt[K].ney1) != 1){
+                if(scanf(" %174[^\n]",crt[K].ney1) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
                     while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 while((clb=getchar()) != '\n' && clb != EOF);
-                crt[K].ney2=calloc(10,sizeof(char));
+                crt[K].ney2=calloc(25,sizeof(char));
                 if(crt[K].ney2==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
@@ -178,7 +178,7 @@ int main(){
                 }
                 printf("ADD EXTENSION (.rtf for RTF FILE, .txt for TEXT FILE, .pdf for PDF FILE)");
                 printf("\n> ");
-                if(scanf(" %9[^\n]",crt[K].ney2) != 1){
+                if(scanf(" %24[^\n]",crt[K].ney2) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
                     while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
@@ -271,7 +271,7 @@ int main(){
                 rmdec='N';
                 mdec=2;
             }
-            crt[K].neyp=calloc(60,sizeof(char));
+            crt[K].neyp=calloc(215,sizeof(char));
             if(crt[K].neyp==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
@@ -732,7 +732,7 @@ int main(){
         for(K=0;K<nb;K++){
             do{
                 con=1;
-                crt[K].ney=calloc(45,sizeof(char));
+                crt[K].ney=calloc(200,sizeof(char));
                 if(crt[K].ney==NULL){
                     printf("OPENING ERROR\n");
                     free(crt);
@@ -740,7 +740,7 @@ int main(){
                     return 1;
                 }
                 crt[K].ney[0]='\0';
-                crt[K].ney1=calloc(35,sizeof(char));
+                crt[K].ney1=calloc(175,sizeof(char));
                 if(crt[K].ney1==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
@@ -750,13 +750,13 @@ int main(){
                 }
                 printf("\nENTER THE CRYPTED FILE NAME(IF FILE IS IN FOLDER USE(FOLDER NAME%cFILE NAME))",SEP);
                 printf("\n> ");
-                if(scanf(" %34[^\n]",crt[K].ney1) != 1){
+                if(scanf(" %174[^\n]",crt[K].ney1) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
                     while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 while((clb=getchar()) != '\n' && clb != EOF);
-                crt[K].ney2=calloc(10,sizeof(char));
+                crt[K].ney2=calloc(25,sizeof(char));
                 if(crt[K].ney2==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
@@ -767,7 +767,7 @@ int main(){
                 }
                 printf("ADD EXTENSION (.rtf for RTF FILE, .txt for TEXT FILE, .pdf for PDF FILE)");
                 printf("\n> ");
-                if(scanf(" %9[^\n]",crt[K].ney2) != 1){
+                if(scanf(" %24[^\n]",crt[K].ney2) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
                     while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
@@ -847,7 +847,7 @@ int main(){
                 rmdec='N';
                 mdec=2;
             }
-            crt[K].neyp=calloc(60,sizeof(char));
+            crt[K].neyp=calloc(215,sizeof(char));
             if(crt[K].neyp==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
