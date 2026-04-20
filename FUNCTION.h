@@ -12,7 +12,6 @@
     #define MKDIR(PATH) mkdir(PATH,0777)
     #define SEP '/'
 #endif
-//SI UN NE SOUVRE SAUTER(fol)
 typedef struct{
     FILE *fl;
     FILE *flo;
