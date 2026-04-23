@@ -1,28 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 #include<windows.h>
 #include<math.h>
-#ifdef _WIN32
-    #include<direct.h>
-    #define MKDIR(PATH) _mkdir(PATH)
-    #define SEP '\\'
-#else
-    #include<sys/stat.h>
-    #define MKDIR(PATH) mkdir(PATH,0777)
-    #define SEP '/'
-#endif
-typedef struct{
-    FILE *fl;
-    FILE *flo;
-    char *ney1;
-    char *ney2;
-    char *ney;
-    char *neyp;
-    char paswd[11];
-    int paswdi[10];
-    int v;
-}crypt;
+#include<io.h>
+extern int ani;
 void type_effect(char *);
 void color_change1();
 void loading();
@@ -35,3 +17,8 @@ char SamePasswd();
 void PasswdInp(char *);
 int VerInp();
 void SecureLevel(char *);
+void Animation();
+int PermuteDataInFile(FILE*, int, int);
+int Copy_File(FILE *, FILE *);
+int FileExistanceChecking(char *);
+void show_message_async(const char *, const char *);

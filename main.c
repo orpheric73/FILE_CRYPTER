@@ -1,7 +1,26 @@
 #include"FUNCTION.h"
+#ifdef _WIN32
+    #include<direct.h>
+    #define MKDIR(PATH) _mkdir(PATH)
+    #define SEP '\\'
+#else
+    #include<sys/stat.h>
+    #define MKDIR(PATH) mkdir(PATH,0777)
+    #define SEP '/'
+#endif
+typedef struct{
+    FILE *fl;
+    FILE *flo;
+    char *ney;
+    char *neyp;
+    char paswd[11];
+    int paswdi[10];
+    int v;
+}crypt;
 int main(){
     int MODE, con, clb;
     system("color 0A && title FILE_CRYPTER");
+    Animation();
     home(0);
     do{
         con=1;
@@ -23,7 +42,7 @@ int main(){
             printf("\n");
         }
         color_change1();
-        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, result, remo, Hf, i, lan=0;
+        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, result, remo, Hf, pv, i, prmr, lan=0;
         char *dwn, *ehou;
         char rmdec;
         if(MODE==3){
@@ -137,7 +156,8 @@ int main(){
         crt=(crypt *)calloc(nb,sizeof(crypt));
         if(crt==NULL){
             printf("OPENING ERROR\n");
-            MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+            MessageBeep(MB_ICONHAND);
+            MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
             return 1;
         }
         for(K=0;K<nb;K++){
@@ -145,54 +165,31 @@ int main(){
                 con=1;
                 crt[K].ney=calloc(200,sizeof(char));
                 if(crt[K].ney==NULL){
-                    printf("OPENING ERROR\n");
+                    printf("ERROR\n");
                     free(crt);
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    MessageBeep(MB_ICONHAND);
+                    MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     return 1;
                 }
-                crt[K].ney[0]='\0';
-                crt[K].ney1=calloc(175,sizeof(char));
-                if(crt[K].ney1==NULL){
-                    printf("OPENING ERROR\n");
-                    free(crt[K].ney);
-                    free(crt);
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                    return 1;
-                }
-                printf("\nENTER THE FILE NAME(IF FILE IS IN FOLDER USE(FOLDER NAME%cFILE NAME))",SEP);
+                printf("\nENTER THE FULL PATH OF THE FILE BY DRAGGING AND DROPPING THE FILE");
                 printf("\n> ");
-                if(scanf(" %174[^\n]",crt[K].ney1) != 1){
+                if(scanf(" %199[^\n]",crt[K].ney) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
                     while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 while((clb=getchar()) != '\n' && clb != EOF);
-                crt[K].ney2=calloc(25,sizeof(char));
-                if(crt[K].ney2==NULL){
-                    printf("OPENING ERROR\n");
-                    free(crt[K].ney);
-                    free(crt[K].ney1);
-                    free(crt);
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                    return 1;
+                if(crt[K].ney[0]== '\'' || crt[K].ney[0]== '\"' ){
+                    memmove(crt[K].ney, crt[K].ney + 1, strlen(crt[K].ney)+1);
                 }
-                printf("ADD EXTENSION (.rtf for RTF FILE, .txt for TEXT FILE, .pdf for PDF FILE)");
-                printf("\n> ");
-                if(scanf(" %24[^\n]",crt[K].ney2) != 1){
-                    printf("\nINVALID INPUT,TRY AGAIN.");
-                    while((clb=getchar()) != '\n' && clb != EOF);
-                    con=0;
+                if(crt[K].ney[strlen(crt[K].ney)-1]== '\'' || crt[K].ney[strlen(crt[K].ney)-1]== '\"' ){
+                    crt[K].ney[strlen(crt[K].ney)-1]='\0';
                 }
-                while((clb=getchar()) != '\n' && clb != EOF);
-                strcat(crt[K].ney,crt[K].ney1);
-                strcat(crt[K].ney,crt[K].ney2);
                 if(con!=0){
                     if(MODE==1){
                         if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
                             printf("\nOPENING ERROR\n");
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             con=0;
                         }
                     }
@@ -200,6 +197,7 @@ int main(){
             }while(con!=1);
             do{
                 con=1;
+                MessageBeep(MB_ICONQUESTION);
                 result = MessageBox(NULL, "DO YOU WANT TO REMOVE THE FILE AFTER ENCRYPTION ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
                 if(result==IDYES){
                     remo=1;
@@ -257,7 +255,6 @@ int main(){
                     }
                 }
             }
-
             if(rmdec=='Y'){
                 int rm, irm;
                 for(rm=0;rm<nb;rm++){
@@ -271,17 +268,16 @@ int main(){
                 rmdec='N';
                 mdec=2;
             }
-            crt[K].neyp=calloc(215,sizeof(char));
+            crt[K].neyp=calloc(300,sizeof(char));
             if(crt[K].neyp==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
-                    free(crt[K].ney1);
-                    free(crt[K].ney2);
-                    free(crt);
                     if(MODE==1){
                         fclose(crt[K].fl);
                     }
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    free(crt);
+                    MessageBeep(MB_ICONHAND);
+                    MessageBox(NULL, "ENCRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     return 1;
             }
             if(MODE==3){
@@ -294,6 +290,7 @@ int main(){
                 }
                 printf("\n%s %d/%d/%d",dwn,mo,d,y);
                 Sleep(2000);
+                MessageBeep(MB_ICONEXCLAMATION);
                 MessageBox(NULL, "DON'T TURN OFF THE DEVICE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
                 HWND hwnd = GetConsoleWindow();
                 ShowWindow(hwnd, SW_HIDE);
@@ -347,144 +344,150 @@ int main(){
                         ct=0;
                     }
                     if(yn>y){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon>mo){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn>d){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn>H){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn>M){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn==M && Sn>S){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTING WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
@@ -492,37 +495,51 @@ int main(){
                     }
                 }while(ct!=1);
                 if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
+                    MessageBeep(MB_ICONASTERISK);
+                    snprintf(crt[K].neyp, sizeof(crt[K].neyp), "%s NOT FOUND\nTHE PROCESS END WITHOUT FILE ENCRYPTING", crt[K].ney);
+                    show_message_async(crt[K].neyp, "FILE_CRYPTER");
                     free(crt[K].ney);
-                    free(crt[K].ney1);
-                    free(crt[K].ney2);
                     free(crt[K].neyp);
                     free(crt);
-                    MessageBox(NULL, "\tFILE NOT FOUND\nTHE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                    Sleep(2000);
                     return 1;
                 }
             }
-            if(MODE==1){
-                sprintf(crt[K].neyp,"%s(ENCRYPTED)%s",crt[K].ney1,crt[K].ney2);
+            sprintf(crt[K].neyp,"%sc",crt[K].ney);
+            if((prmr = FileExistanceChecking(crt[K].neyp)) == 0){
+                do{
+                    con=1;
+                    MessageBeep(MB_ICONHAND);
+                    result = MessageBox(NULL, "A FILE WITH SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                    if(result==IDYES){
+                        show_message_async("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                        Sleep(2000);
+                    }
+                    else if(result==IDNO){
+                        free(crt[K].ney);
+                        free(crt[K].neyp);
+                        fclose(crt[K].fl);
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "ENCRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        free(crt);
+                        return 1;
+                    }
+                    else{
+                        con=0;
+                    }
+                }while(con!=1);
             }
-            if(MODE==3){
-                sprintf(crt[K].neyp,"%s-crypt%s",crt[K].ney1,crt[K].ney2);
-            }
-            if((crt[K].flo=fopen(crt[K].neyp,"wb"))==NULL){
+            if((crt[K].flo=fopen(crt[K].neyp,"wb+"))==NULL){
                 printf("ERROR\n");
-                free(crt[K].ney1);
-                free(crt[K].ney2);
                 free(crt[K].ney);
                 free(crt[K].neyp);
-                free(crt);
                 fclose(crt[K].fl);
-                if(MODE==1){
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                }
-                if(MODE==3){
-                    MessageBox(NULL, "ENCRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                }
+                MessageBeep(MB_ICONHAND);
+                MessageBox(NULL, "ENCRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                free(crt);
                 return 1;
             }
+            pv=((crt[K].v+crt[K].paswdi[0]+crt[K].paswdi[1]+crt[K].paswdi[2]+crt[K].paswdi[3]+crt[K].paswdi[4]+crt[K].paswdi[5]+crt[K].paswdi[6]+crt[K].paswdi[7]+crt[K].paswdi[8]+crt[K].paswdi[9])/11);
             i=0;
             while((c=getc(crt[K].fl)) != EOF){
                 i+=1;
@@ -577,8 +594,23 @@ int main(){
                     crt[K].paswdi[9]=crt[K].paswdi[9]+(crt[K].v-3);
                 }
             }
-            free(crt[K].ney1);
-            free(crt[K].ney2);
+            if((prmr = PermuteDataInFile(crt[K].flo, pv, 1)) == 0){
+                free(crt[K].ney);
+                fclose(crt[K].fl);
+                fclose(crt[K].flo);
+                remove(crt[K].neyp);
+                free(crt[K].neyp);
+                if(MODE==1){
+                    MessageBeep(MB_ICONHAND);
+                    MessageBox(NULL, "ENCRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                }
+                if(MODE==3){
+                    MessageBeep(MB_ICONHAND);
+                    MessageBox(NULL, "ENCRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                }
+                free(crt);
+                return 1;
+            }
             free(crt[K].neyp);
             fclose(crt[K].fl);
             fclose(crt[K].flo);
@@ -586,17 +618,24 @@ int main(){
                 printf("\n");
                 type_effect("NOW ENCRYPTING");
                 loading();
-                printf("\n%s",crt[K].ney);
+                printf("\n%s ",crt[K].ney);
                 if(remo==1){
                     remove(crt[K].ney);
                 }
-                type_effect(" ENCRYPTED SUCCESSFULLY");
+                type_effect("ENCRYPTED SUCCESSFULLY");
+                printf("\n");
+                if(nb==K+1){
+                    MessageBeep(MB_ICONASTERISK);
+                    show_message_async("ALL DONE", "FILE_CRYPTER");
+                    Sleep(2000);
+                }
             }
             if(MODE==3){
                 if(remo==1){
                     remove(crt[K].ney);
                 }
-                MessageBox(NULL, "ENCRYPTION MADE SUCCESSFULLY\n\t\t\t\t\t\t\tSUCCESS", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                MessageBeep(MB_ICONASTERISK);
+                MessageBox(NULL,"ENCRYPTION MADE SUCCESSFULLY\n\t\t\t\t\t\t\tSUCCESS", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
             }
             free(crt[K].ney);
         }
@@ -612,9 +651,10 @@ int main(){
             printf("\n");
         }
         color_change1();
-        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, i, result, lan=0;
-        char *dwn, *ehou;
+        int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, pv, i, prmr, copr, result, lan=0;
+        char *dwn, *ehou, *neypp;
         char rmdec;
+        FILE* flp;
         if(MODE==4){
             do{
                 con=1;
@@ -725,8 +765,9 @@ int main(){
         crypt *crt;
         crt=(crypt *)calloc(nb,sizeof(crypt));
         if(crt==NULL){
-            printf("OPENING ERROR\n");
-            MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+            printf("ERROR\n");
+            MessageBeep(MB_ICONHAND);
+            MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
             return 1;
         }
         for(K=0;K<nb;K++){
@@ -734,54 +775,31 @@ int main(){
                 con=1;
                 crt[K].ney=calloc(200,sizeof(char));
                 if(crt[K].ney==NULL){
-                    printf("OPENING ERROR\n");
+                    printf("ERROR\n");
                     free(crt);
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    MessageBeep(MB_ICONHAND);
+                    MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     return 1;
                 }
-                crt[K].ney[0]='\0';
-                crt[K].ney1=calloc(175,sizeof(char));
-                if(crt[K].ney1==NULL){
-                    printf("OPENING ERROR\n");
-                    free(crt[K].ney);
-                    free(crt);
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                    return 1;
-                }
-                printf("\nENTER THE CRYPTED FILE NAME(IF FILE IS IN FOLDER USE(FOLDER NAME%cFILE NAME))",SEP);
+                printf("\nENTER THE FULL PATH OF THE CRYPTED FILE BY DRAGGING AND DROPPING THE FILE");
                 printf("\n> ");
-                if(scanf(" %174[^\n]",crt[K].ney1) != 1){
+                if(scanf(" %199[^\n]",crt[K].ney) != 1){
                     printf("\nINVALID INPUT,TRY AGAIN.");
                     while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
                 }
                 while((clb=getchar()) != '\n' && clb != EOF);
-                crt[K].ney2=calloc(25,sizeof(char));
-                if(crt[K].ney2==NULL){
-                    printf("OPENING ERROR\n");
-                    free(crt[K].ney);
-                    free(crt[K].ney1);
-                    free(crt);
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                    return 1;
+                if(crt[K].ney[0]== '\'' || crt[K].ney[0]== '\"' ){
+                    memmove(crt[K].ney, crt[K].ney + 1, strlen(crt[K].ney)+1);
                 }
-                printf("ADD EXTENSION (.rtf for RTF FILE, .txt for TEXT FILE, .pdf for PDF FILE)");
-                printf("\n> ");
-                if(scanf(" %24[^\n]",crt[K].ney2) != 1){
-                    printf("\nINVALID INPUT,TRY AGAIN.");
-                    while((clb=getchar()) != '\n' && clb != EOF);
-                    con=0;
+                if(crt[K].ney[strlen(crt[K].ney)-1]== '\'' || crt[K].ney[strlen(crt[K].ney)-1]== '\"' ){
+                    crt[K].ney[strlen(crt[K].ney)-1]='\0';
                 }
-                while((clb=getchar()) != '\n' && clb != EOF);
-                strcat(crt[K].ney,crt[K].ney1);
-                strcat(crt[K].ney,crt[K].ney2);
                 if(con!=0){
                     if(MODE==2){
                         if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
                             printf("\nOPENING ERROR\n");
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             con=0;
                         }
                     }
@@ -847,17 +865,14 @@ int main(){
                 rmdec='N';
                 mdec=2;
             }
-            crt[K].neyp=calloc(215,sizeof(char));
+            crt[K].neyp=calloc(300,sizeof(char));
             if(crt[K].neyp==NULL){
                     printf("OPENING ERROR\n");
                     free(crt[K].ney);
-                    free(crt[K].ney1);
-                    free(crt[K].ney2);
+                    fclose(crt[K].fl);
+                    MessageBeep(MB_ICONHAND);
+                    MessageBox(NULL, "DECRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     free(crt);
-                    if(MODE==2){
-                        fclose(crt[K].fl);
-                    }
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     return 1;
             }
             if(MODE==4){
@@ -870,6 +885,7 @@ int main(){
                 }
                 printf("\n%s %d/%d/%d",dwn,mo,d,y);
                 Sleep(2000);
+                MessageBeep(MB_ICONEXCLAMATION);
                 MessageBox(NULL, "DON'T TURN OFF THE DEVICE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
                 HWND hwnd = GetConsoleWindow();
                 ShowWindow(hwnd, SW_HIDE);
@@ -923,144 +939,150 @@ int main(){
                         ct=0;
                     }
                     if(yn>y){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon>mo){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn>d){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn>H){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn>M){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                     }
                     else if(yn==y && mon==mo && dn==d && Hn==H && Mn==M && Sn>S){
+                        MessageBeep(MB_ICONQUESTION);
                         result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTING WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                         if(result==IDYES){
                             ct=1;
                         }
                         else if(result==IDNO){
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
                         }
                         else{
-                            MessageBox(NULL, "\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                            MessageBeep(MB_ICONASTERISK);
+                            show_message_async("\tTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                            Sleep(2000);
                             free(crt[K].ney);
-                            free(crt[K].ney1);
-                            free(crt[K].ney2);
                             free(crt[K].neyp);
                             free(crt);
                             return 1;
@@ -1068,39 +1090,135 @@ int main(){
                     }
                 }while(ct!=1);
                 if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
+                    MessageBeep(MB_ICONASTERISK);
+                    snprintf(crt[K].neyp,sizeof(crt[K].neyp),"%s NOT FOUND\nTHE PROCESS END WITHOUT FILE DECRYPTING",crt[K].ney);
+                    show_message_async(crt[K].neyp, "FILE_CRYPTER");
                     free(crt[K].ney);
-                    free(crt[K].ney1);
-                    free(crt[K].ney2);
                     free(crt[K].neyp);
                     free(crt);
-                    MessageBox(NULL, "\tFILE NOT FOUND\nTHE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                    Sleep(2000);
                     return 1;
                 }
             }
-            if(MODE==2){
-                sprintf(crt[K].neyp,"%s(DECRYPTED)%s",crt[K].ney1,crt[K].ney2);
-            }
-            if(MODE==4){
-                sprintf(crt[K].neyp,"%s-decrypt%s",crt[K].ney1,crt[K].ney2);
+            strcpy(crt[K].neyp,crt[K].ney);
+            crt[K].neyp[strlen(crt[K].neyp)-1]='\0';
+            if((prmr = FileExistanceChecking(crt[K].neyp)) == 0){
+                do{
+                    con=1;
+                    MessageBeep(MB_ICONHAND);
+                    result = MessageBox(NULL, "A FILE WITH SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                    if(result==IDYES){
+                        show_message_async("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                        Sleep(2000);
+                    }
+                    else if(result==IDNO){
+                        free(crt[K].ney);
+                        free(crt[K].neyp);
+                        fclose(crt[K].fl);
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "DECRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        free(crt);
+                        return 1;
+                    }
+                    else{
+                        con=0;
+                    }
+                }while(con!=1);
             }
             if((crt[K].flo=fopen(crt[K].neyp,"wb"))==NULL){
                 printf("ERROR\n");
-                free(crt[K].ney1);
-                free(crt[K].ney2);
                 free(crt[K].ney);
                 free(crt[K].neyp);
-                free(crt);
                 fclose(crt[K].fl);
-                if(MODE==2){
-                    MessageBox(NULL, "OPENING ERROR", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                }
-                if(MODE==4){
-                    MessageBox(NULL, "DECRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
-                }
+                MessageBeep(MB_ICONHAND);
+                MessageBox(NULL, "DECRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                free(crt);
+                return 1;
+            }
+            neypp=calloc(200,sizeof(char));
+            if(neypp==NULL){
+                printf("OPENING ERROR\n");
+                free(crt[K].ney);
+                fclose(crt[K].fl);
+                fclose(crt[K].flo);
+                remove(crt[K].neyp);
+                free(crt[K].neyp);
+                MessageBeep(MB_ICONHAND);
+                MessageBox(NULL, "DECRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                free(crt);
+                return 1;
+            }
+            sprintf(neypp,"%ss",crt[K].ney);
+            if((prmr = FileExistanceChecking(neypp)) == 0){
+                do{
+                    con=1;
+                    MessageBeep(MB_ICONHAND);
+                    result = MessageBox(NULL, "A FILE WITH SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                    if(result==IDYES){
+                        show_message_async("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                        Sleep(2000);
+                    }
+                    else if(result==IDNO){
+                        free(crt[K].ney);
+                        free(neypp);
+                        fclose(crt[K].fl);
+                        fclose(crt[K].flo);
+                        remove(crt[K].neyp);
+                        free(crt[K].neyp);
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "DECRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        free(crt);
+                        return 1;
+                    }
+                    else{
+                        con=0;
+                    }
+                }while(con!=1);
+            }
+            if((flp=fopen(neypp,"wb+"))==NULL){
+                printf("OPENING ERROR\n");
+                free(crt[K].ney);
+                free(neypp);
+                fclose(crt[K].fl);
+                fclose(crt[K].flo);
+                remove(crt[K].neyp);
+                free(crt[K].neyp);
+                MessageBeep(MB_ICONHAND);
+                MessageBox(NULL, "DECRYPTION FAILED", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                free(crt);
+                return 1;
+            }
+            if((copr = Copy_File(crt[K].fl, flp)) == 0){
+                free(crt[K].ney);
+                fclose(crt[K].fl);
+                fclose(crt[K].flo);
+                fclose(flp);
+                remove(crt[K].neyp);
+                remove(neypp);
+                free(crt[K].neyp);
+                free(neypp);
+                MessageBeep(MB_ICONHAND);
+                MessageBox(NULL, "DECRYPTION FAILED(COPYING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                free(crt);
+                return 1;
+            }
+            pv=((crt[K].v+crt[K].paswdi[0]+crt[K].paswdi[1]+crt[K].paswdi[2]+crt[K].paswdi[3]+crt[K].paswdi[4]+crt[K].paswdi[5]+crt[K].paswdi[6]+crt[K].paswdi[7]+crt[K].paswdi[8]+crt[K].paswdi[9])/11);
+            if((prmr = PermuteDataInFile(flp, pv, 2)) == 0){
+                free(crt[K].ney);
+                fclose(crt[K].fl);
+                fclose(crt[K].flo);
+                fclose(flp);
+                remove(crt[K].neyp);
+                remove(neypp);
+                free(crt[K].neyp);
+                free(neypp);
+                MessageBeep(MB_ICONHAND);
+                MessageBox(NULL, "DECRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                free(crt);
                 return 1;
             }
             i=0;
-            while((c=getc(crt[K].fl)) != EOF){
+            while((c=getc(flp)) != EOF){
                 i+=1;
                 if(i%10==0){
                     c=c+crt[K].paswdi[0];
@@ -1157,19 +1275,26 @@ int main(){
                 printf("\n");
                 type_effect("NOW DECRYPTING");
                 loading();
-                printf("\n%s",crt[K].ney);
+                printf("\n%s ",crt[K].ney);
                 type_effect("DECRYPTED SUCCESSFULLY");
+                printf("\n");
+                if(nb==K+1){
+                    MessageBeep(MB_ICONASTERISK);
+                    show_message_async("ALL DONE", "FILE_CRYPTER");
+                    Sleep(2000);
+                }
             }
-
-            free(crt[K].ney1);
-            free(crt[K].ney2);
             free(crt[K].neyp);
             fclose(crt[K].fl);
             fclose(crt[K].flo);
             if(MODE==4){
-                MessageBox(NULL, "DECRYPTION MADE SUCCESSFULLY\n\t\t\t\t\t\t\tSUCCESS", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                MessageBeep(MB_ICONHAND);
+                MessageBox(NULL,"DECRYPTION MADE SUCCESSFULLY\n\t\t\t\t\t\t\tSUCCESS", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
             }
             free(crt[K].ney);
+            fclose(flp);
+            remove(neypp);
+            free(neypp);
         }
         free(crt);
     }

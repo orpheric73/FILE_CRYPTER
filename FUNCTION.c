@@ -1,33 +1,33 @@
 #include"FUNCTION.h"
+int ani=0;
 void type_effect(char *text){
     int i;
     for(i=0; text[i] != '\0'; i++){
         printf("%c",text[i]);
         fflush(stdout);
-        Sleep(10);
+        Sleep(10*ani);
     }
 }
 
 void color_change1(){
     system("color 09");
-    Sleep(200);
+    Sleep(200*ani);
     system("color 0C");
-    Sleep(200);
+    Sleep(200*ani);
     system("color 0A");
-    Sleep(200);
+    Sleep(200*ani);
 }
 
 void loading(){
     int j;
     for(j=0;j<3;j++){
-        Sleep(200);
+        Sleep(200*ani);
         printf(".");
-        Sleep(200);
+        Sleep(200*ani);
         printf(".");
-        Sleep(200);
+        Sleep(200*ani);
         printf(".");
-        Sleep(200);
-        Beep(500, 150);
+        Sleep(200*ani);
         printf("\b \b\b \b\b \b");
     }
 }
@@ -177,6 +177,7 @@ char SamePasswd (){
     int result, fcon;
     do{
         fcon=1;
+        MessageBeep(MB_ICONQUESTION);
         result = MessageBox(NULL, "DO YOU WANT TO USE THE SAME PASSWORD AND VERSION FOR ALL ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
         if(result==IDYES){
             frmdec='Y';
@@ -229,6 +230,7 @@ void SecureLevel(char *pasw){
     }
     else if(occ==45){
         printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c RISKY",176,176,176,176,176,176,176,176,176,176,176,176,176,176);
+        MessageBeep(MB_ICONEXCLAMATION);
         MessageBox(NULL,"THE PASSWORD ISN'T SECURED","FILE_CRYPTER",MB_OK | MB_ICONWARNING);
     }
     return;
@@ -285,4 +287,167 @@ int VerInp(){
         }
     }while(fcon!=1);
     return fv;
+}
+
+void Animation(){
+    int resul, fcona;
+    do{
+        fcona=1;
+        MessageBeep(MB_ICONQUESTION);
+        resul = MessageBox(NULL, "DISPLAYING WITH ANIMATION ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION);
+        if(resul==IDYES){
+            ani=1;
+        }
+        else if(resul==IDNO){
+            ani=0;
+        }
+        else{
+            fcona=0;
+        }
+    }while(fcona!=1);
+}
+
+int PermuteDataInFile(FILE* file, int prmcst, int act){
+    long file_len;
+    char *temp_string;
+    if(fseek(file, 0, SEEK_END) !=0){
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+        return 0;
+    }
+    file_len = ftell(file);
+    rewind(file);
+    if(file_len <= 0){
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+        return 0;
+    }
+    temp_string=malloc(file_len);
+    if(!temp_string){
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+        return 0;
+    }
+    size_t nl = fread(temp_string, 1, file_len, file);
+    rewind(file);
+    if(nl != (size_t)file_len){
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+        free(temp_string);
+        return 0;
+    }
+    if(act==1){
+        char tmp;
+        long jp=0, ip;
+        for(ip=0; ip<file_len;ip++){
+            jp=(ip+prmcst+jp) % file_len;
+            tmp=temp_string[ip];
+            temp_string[ip]=temp_string[jp];
+            temp_string[jp]=tmp;
+        }
+    }
+    else if(act==2){
+        char tmp;
+        long jp, ip, kp;
+        for(ip=file_len-1; ip>=0;ip--){
+            jp=0;
+            for(kp=0; kp<ip;kp++){
+                jp=(kp+prmcst+jp) % file_len;
+            }
+            jp=(ip+prmcst+jp) % file_len;
+            tmp=temp_string[ip];
+            temp_string[ip]=temp_string[jp];
+            temp_string[jp]=tmp;
+        }
+    }
+    else{
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+        free(temp_string);
+        return 0;
+    }
+    size_t nlw = fwrite(temp_string, 1, file_len, file);
+    rewind(file);
+    if(nlw != (size_t)file_len){
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+        free(temp_string);
+        return 0;
+    }
+    fflush(file);
+    free(temp_string);
+    return 1;
+}
+
+int Copy_File(FILE *src, FILE *dst){
+    if(!src){
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("COPYING GONE WRONG", "FILE_CRYPTER");
+        return 0;
+    }
+    char buf[4096];
+    size_t n;
+    rewind(src);
+    rewind(dst);
+    while((n = fread(buf, 1, sizeof(buf), src)) > 0){
+        if(fwrite(buf, 1, n, dst) != n){
+            MessageBeep(MB_ICONEXCLAMATION);
+            show_message_async("COPYING GONE WRONG", "FILE_CRYPTER");
+            return 0;
+        }
+    }
+    if(ferror(src)){
+        MessageBeep(MB_ICONEXCLAMATION);
+        show_message_async("COPYING GONE WRONG", "FILE_CRYPTER");
+        return 0;
+    }
+    rewind(src);
+    rewind(dst);
+    return 1;
+}
+
+int FileExistanceChecking(char *path){
+    FILE *f;
+    if((f=fopen(path,"rb"))==NULL){
+        return 1;
+    }
+    fclose(f);
+    return 0;
+}
+
+typedef struct {
+    char *msg;
+    char *title;
+} MsgData;
+
+DWORD WINAPI msg_thread(LPVOID param){
+    MsgData *data = (MsgData*)param;
+
+    MessageBoxA(NULL, data->msg, data->title, MB_OK | MB_ICONINFORMATION);
+
+    free(data->msg);
+    free(data->title);
+    free(data);
+
+    return 0;
+}
+
+void show_message_async(const char *msg, const char *title){
+    MsgData *data = malloc(sizeof(MsgData));
+    if (!data) return;
+
+    data->msg = _strdup(msg);
+    data->title = _strdup(title);
+
+    if (!data->msg || !data->title){
+        free(data->msg);
+        free(data->title);
+        free(data);
+        return;
+    }
+
+    HANDLE hThread = CreateThread(NULL, 0, msg_thread, data, 0, NULL);
+
+    if (hThread)
+        CloseHandle(hThread);
 }
