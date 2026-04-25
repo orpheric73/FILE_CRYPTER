@@ -1,96 +1,63 @@
-# 🔐 CipherFlow System (File Crypter)
-## 📖 Présentation
-CipherFlow System est une application console développée en langage C permettant le chiffrement et le déchiffrement de fichiers.
-Le système repose sur un algorithme personnalisé basé sur un mot de passe, combiné à un mécanisme de version dynamique et à une exécution planifiée.
-## ⚙️ Fonctionnalités
-- 🔒 Chiffrement de fichiers
+##🚀 1. Lancer le programme
+##🌐 2. Choix de l’affichage
+- Sélection de la langue du programme
+- Activation / désactivation des animations (ON/OFF)
+##🎛️ 3. Menu principal
+Choisissez une option :
 ```
-Chiffre un ou plusieurs fichiers à l’aide d’un mot de passe et d’une version.
+[1] Chiffrer un fichier  
+[2] Déchiffrer un fichier  
+[3] Planifier un chiffrement  
+[4] Planifier un déchiffrement  
+[5] Quitter
 ```
-- 🔓 Déchiffrement de fichiers
-```
-Déchiffre les fichiers précédemment chiffrés avec les bons paramètres.
-```
-- ⏳ Chiffrement planifié
-```
-Permet de programmer le chiffrement d’un fichier à une date future.
-```
-- ⏳ Déchiffrement planifié
-```
-Permet de programmer le déchiffrement d’un fichier à une date future.
-```
-- 🧠 Algorithme de chiffrement personnalisé
-```
-  - Transformation du mot de passe
-  - Diffusion des caractères
-  - Modification basée sur une version
-  - Transformation ASCII des données
-```
-## 🖥️ Type de système
-- **Type** : Application console (CLI)
-- **Langage** : C
-## 🚀 Utilisation
-### 📌 Menu principal
-**1. Chiffrer des fichiers (Encrypt File)**
-```
+🟢 **1. Chiffrer des fichiers**
 - Saisir le nombre de fichiers à chiffrer
+```
 Pour chaque fichier :
-- Entrer le nom et l’extension
+- Entrer le chemin complet du fichier (glisser-déposer possible)
 - Vérification de l’existence du fichier
-Si inexistant → nouvelle saisie demandée
+  → S’il n’existe pas : une nouvelle saisie est demandée
 - Entrer le mot de passe
-- Entrer la version
-Le fichier est ensuite chiffré
+- Entrer la version (possibilité d’utiliser le même mot de passe pour plusieurs fichiers)
+
+- Le fichier est chiffré si le processus se déroule correctement
+- En cas d’erreur :
+  → Affichage d’un message (MessageBox)
+  → Suppression des données sensibles
+  → Fermeture du programme
 ```
-**2. Déchiffrer des fichiers (Decrypt File)**
 ```
-- Même processus que le chiffrement
+📌 **Remarque :**
+- Les fichiers chiffrés sont créés avec un ajout de "s" à leur extension.
+- Cet ajout est automatiquement supprimé lors du déchiffrement.
+```
+🟢 **2. Déchiffrer des fichiers**
+```
+- Même processus que pour le chiffrement
 - Nécessite le bon mot de passe et la bonne version
-- 💡 Si les informations sont incorrectes :
-  - Le fichier n'est pas déchiffré
-  - L’utilisateur peut réessayer avec le fichier chiffré d'origine
+💡 En cas d’informations incorrectes :
+- Le fichier n’est pas déchiffré
+- L’utilisateur peut réessayer avec le fichier chiffré d’origine
 ```
-**3. Chiffrement planifié (Scheduled Encryption)**
+🟢 **3. Chiffrement planifié**
 ```
-- Définir la date et l'heure d'exécution
-- Confirmation de la planification 
-- Entrer le nom et l’extension du fichier
+- Définir la date et l’heure d’exécution
+- Confirmer la planification
+- Entrer le chemin complet du fichier
 - Entrer le mot de passe et la version
-- 💡 Particularité importante :
-  - Le fichier peut ne pas exister au moment de la programmation
-  - À l’heure prévue :
-Si le fichier existe → chiffrement
-Sinon → message “File not found”
+
+💡 Particularité importante :
+- Le fichier peut ne pas exister au moment de la planification
+
+À la date prévue :
+- Si le fichier existe → chiffrement
+- Sinon → message “File not found”
 ```
-**4. Déchiffrement planifié (Scheduled Decryption)**
+🟢 **4. Déchiffrement planifié**
 ```
 - Même fonctionnement que le chiffrement planifié
-- À l’heure prévue :
-  - Si le fichier existe → déchiffrement
-  - Sinon → message “File not found”
-
+À l’heure prévue :
+- Si le fichier existe → déchiffrement
+- Sinon → message “File not found”
 ```
-## 🔐 Mécanisme de chiffrement
-Le système repose sur un algorithme personnalisé composé de plusieurs étapes :
-### 1️⃣ Transformation du mot de passe
-- Le mot de passe utilisateur subit une diffusion
-- Chaque caractère influence les autres
-### 2️⃣ Version dynamique
-- Une version définie par l’utilisateur modifie le comportement de l’algorithme
-- Permet d’obtenir des résultats différents avec le même mot de passe
-### 3️⃣ Dérivation de clé
-- Le mot de passe transformé devient une clé numérique
-- Cette clé est utilisée pour le chiffrement
-### 4️⃣ Transformation ASCII
-- Les caractères du fichier sont modifiés via leur valeur ASCII
-- Le contenu devient illisible (chiffré)
-## 📁 Types de fichiers supportés
-Tous les fichiers lisibles via les fonctions de lecture de fichiers
-## ⚠️ Remarques importantes
-- Le mot de passe et la version doivent être exacts pour le déchiffrement
-- Une erreur n’endommage pas les données chiffrées
-- Le chiffrement planifié fonctionne même pour des fichiers futurs
-## 🔥 Améliorations possibles (future work)
-- Interface graphique
-- Amélioration de l’algorithme de chiffrement
-- Ajout de logs et monitoring

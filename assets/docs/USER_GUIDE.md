@@ -1,90 +1,63 @@
-# 🔐 CipherFlow System (File Crypter)
-## 📖 Overview
-CipherFlow System is a console-based file encryption and decryption application written in C.
-It allows users to securely encrypt and decrypt files using a password-based transformation algorithm, enhanced by a dynamic versioning system and scheduled execution.
-## ⚙️ Features
-- 🔒 File Encryption
+##🚀 1. Launch the Program
+##🌐 2. Display Settings
+- Select the program language
+- Enable / disable animations (ON/OFF)
+##🎛️ 3. Main Menu
+Choose an option:
 ```
-Encrypt one or multiple files using a password and version-based transformation.
+[1] Encrypt a file  
+[2] Decrypt a file  
+[3] Schedule encryption  
+[4] Schedule decryption  
+[5] Exit
 ```
-- 🔓 File Decryption
-```
-Decrypt previously encrypted files using the correct password and version.
-```
-- ⏳ Scheduled Encryption
-```
-Schedule encryption of a file at a future date, even if the file does not yet exist.
-```
-- ⏳ Scheduled Decryption
-```
-Schedule decryption safely without deleting the encrypted file.
-```
-- 🧠 Custom Encryption Algorithm
-```
-- Password transformation with diffusion
-- Version-based modifications
-- ASCII character transformation
-- Derived numeric encryption key
-```
-## 🖥️ System Type
-- **Application Type**: Console (CLI)
-- **Language**: C
-## 🚀 How to Use
-### 📌 Main Menu Options
-**1. Encrypt File(s)**
-```
+🟢 **1. Encrypt Files**
 - Enter the number of files to encrypt
-- For each file:
-- Enter file name and extension
-- Program checks if file exists
-- If not → prompts again
-- Enter password
-- Enter version
-File is encrypted
 ```
-**2. Decrypt File(s)**
+For each file:
+- Enter the full file path (drag and drop supported)
+- Check if the file exists
+  → If not found: you will be prompted to re-enter the path
+- Enter the password
+- Enter the version (you can reuse the same password for multiple files)
+
+- The file is encrypted if the process completes successfully
+- In case of an error:
+  → A message is displayed (MessageBox)
+  → Sensitive data is cleared
+  → The program is terminated
+```
+```
+📌 **Note:**
+- Encrypted files are created with an additional "s" added to their extension.  
+- This addition is automatically removed during decryption.
+```
+🟢 **2. Decrypt Files**
 ```
 - Same process as encryption
-- Requires correct password and version
-- If incorrect → output remains encrypted (safe retry possible with original crypted file)
+- Requires the correct password and version
+💡 If the provided information is incorrect:
+- The file will not be decrypted
+- The user can retry using the original encrypted file
 ```
-**3. Scheduled Encryption**
+🟢 **3. Scheduled Encryption**
 ```
-- Enter file name and extension
-- Enter password and version
-- Enter scheduled date/time
-- Program confirms scheduling
-- 💡 Special Feature:
-- File does NOT need to exist yet
-- At scheduled time:
-  - If file exists → encrypt
-  - If not → “File not found”
+- Set the execution date and time
+- Confirm the schedule
+- Enter the full file path
+- Enter the password and version
+
+💡 Important:
+- The file does not need to exist at the time of scheduling
+
+At the scheduled time:
+- If the file exists → encryption is performed
+- Otherwise → "File not found" message is displayed
 ```
-**4. Scheduled Decryption**
+🟢 **4. Scheduled Decryption**
 ```
-- Same process as scheduled encryption
-- At scheduled time:
-  - If file exists → decrypt
-  - If not → “File not found”
+- Same behavior as scheduled encryption
+At the scheduled time:
+- If the file exists → decryption is performed
+- Otherwise → "File not found" message is displayed
 ```
-## 💡 Security Advantage:
-If password/version is wrong → encrypted file remains encrypted(but not intact)
-## 🔐 Encryption Mechanism
-CipherFlow uses a custom algorithm based on three main principles:
-### 1️⃣ Password Transformation
-- Input password is transformed using diffusion
-- Each character influences others
-### 2️⃣ Dynamic Versioning
-- User-defined version modifies transformation behavior
-- Produces different encryption outputs for same password
-### 3️⃣ Key Derivation
-- Final key = numeric sequence derived from password + version
-### 4️⃣ ASCII Transformation
-- File characters are modified using the derived key
-- Output becomes unreadable (encrypted data)
-## 📁 Supported Files
-All file types readable via file handling
-## ⚠️ Important Notes
-- Correct password + version are required for decryption
-- Wrong inputs do NOT destroy encrypted data
-- Scheduled encryption can target files not yet created

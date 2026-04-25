@@ -1,91 +1,79 @@
 # CIPHER FLOW SYSTEM
 ## 📝 Description
 ![Social Preview](assets/social-preview.jpg)
-CIPHER FLOW SYSTEM is a secure file management software that allows encrypting and decrypting text, PDF, and RTF files.  
-The program offers the following features:
-- Encrypt File
- ```
-Encrypts one or multiple files using a unique password and a complexity version.
-```
-- Decrypt File
-```
-Decrypts files that were previously encrypted with the corresponding password.
-```
-- Encryption Planning
-```
-Schedules the encryption for a future time according to a given time.
-```
-- Decryption Planning
-```
-Schedules the decryption of encrypted files according to a given time.
-```
-- Security Level Visualization
-```
-Displays the strength of the chosen password, from “ULTRA-SECURE” to “RISKY”, using ASCII graphical output.
-```
+CipherFlow System is a console application written in C that allows file encryption, decryption, and task scheduling.
+The system is based on a custom algorithm using a password, combined with a dynamic versioning mechanism and a non-linear permutation process. 
+## 📦 Features
+- 🔒 File Encryption
+Encrypts one or multiple files using a password and a version, with internal data permutation.
+- 🔓 File Decryption
+Decrypts encrypted files using the correct password and version.
+- ⏳ Scheduled Encryption
+Allows scheduling file encryption at a specific date and time.
+- ⏳ Scheduled Decryption
+Allows scheduling file decryption at a specific date and time.
+- 🌐 Multilingual Support
+Dynamic language switching (French / English)
+- 🛡️ Safety Protection
+Prevents accidental file overwriting or deletion.
 ## 💻 Technical Features
-- Dynamic management of multiple files with safe memory allocation.
-- Verification and confirmation of user inputs for passwords, versions, and files.
-- Calculation of password security level based on character repetition and complexity.
-- Scheduling with full date and system time verification to automatically start encryption.
-- Security depends on the chosen password and version, not on official cryptographic standards.
-- Enhanced console interface:
-  - Visual effects with type_effect() to simulate progressive typing.
-  - Dynamic color changes for important steps (color_change()).
-  - Windows alerts via MessageBox().
-## 🔐 Usage Example
-Run the program from the console:
-```
-Bash
-FILE_CRYPTER.exe
-```
-Choose a menu option:
-```
-1 → Encrypt File
-2 → Decrypt File
-3 → Encryption Planning
-4 → Decryption Planning
-5 → Exit
-```
-Follow the instructions to input file name, extensions, password, and version.  
-Encrypted files are created with the suffix (ENCRYPTED) or -crypt depending on the selected mode.
-## 🧠 Educational Goals
-This project allows understanding and applying:
-- File management in C (fopen, fclose, getc, fprintf).
-- Dynamic memory manipulation (malloc, calloc, free).
-- Structures (struct) to organize information about files and passwords.
-- Basic encryption logic using a key based on a password and version.
-- Console / Windows interactions to create a simple yet effective user interface.
-## ⚠️ Limitations
-- Works only on Windows.
+- Dynamic handling of multiple files with secure memory allocation
+- Input validation (password, version, file paths)
+- Scheduling system based on system date and time
+- Password strength estimation based on character repetition
+- Dual-language display (EN / FR)
+## 🔐 Encryption Mechanism
+The system relies on a custom algorithm composed of several steps:
+- Key generation from password and version
+- Data transformation based on the generated key
+- Non-linear permutation using version-adjusted key values
+##🎨 Console Interface
+- Progressive text rendering
+- Color effects and “Matrix-style” animations
+- Windows alerts using MessageBox() 
+##🧠 Learning Objectives
+This project helps practice:
+- File handling in C (fopen, fclose, getc, fprintf)
+- Dynamic memory management (malloc, calloc, free)
+- Use of struct for data organization
+- Console UI + Windows popups integration
 ## ⚙️ Technologies 
 - **Language:** C
 - **Compiler:** GCC or any standard C compiler.
-## ⭐ Use Cases and Application 
-**1️⃣ Personal Data Protection**
-```
-- Securing sensitive files such as passwords, private documents, and confidential information.
-- Encrypting data before storage or sharing to ensure confidentiality.
-```
-**2️⃣ Security Task Automation**
-```
-- Scheduling automatic encryption and decryption of files.
-- Reducing manual intervention and improving operational efficiency.
-```
-**3️⃣  Data Loss and Leak Prevention**
-```
-- Protecting data against unauthorized access.
-- Securing files before transfer or sharing.
-```
 ## 🛠️ Build & Compilation
 ```
-gcc main.c function.c -o FILE_CRYPTER.exe -lwinmm
+gcc main.c function.c -o FILE_CRYPTER.exe -luser32 
 ```
 ## ▶️ Execution
 ```
 Bash
 ./FILE_CRYPTER.exe
 ```
+## ⭐ Use Cases
+**1️⃣ Personal Data Protection**
+```
+- Secure sensitive files (passwords, private documents, confidential data)
+- Encrypt data before storage or sharing
+```
+**2️⃣ Security Automation**
+```
+- Schedule encryption/decryption tasks
+- Reduce manual intervention
+```
+**3️⃣ Data Loss & Leak Prevention**
+```
+- Protect files from unauthorized access
+- Secure files before transfer
+```
+## 📁 Supported File Types
+All file types supported by file reading functions.
+## ⚠️ Important Notes
+- Works on Windows only
+- Correct password and version are required for decryption
+- Scheduled encryption works even if the file does not exist yet
+## 🔥 Future Improvements
+- Graphical User Interface (GUI)
+- Logging and monitoring system
 ## ## 📚 Documentation
 
 For a detailed explanation on how to use:
