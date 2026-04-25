@@ -809,7 +809,7 @@ int main(){
                             result = MessageBox(NULL, "A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         else if(lge==0){
-                            result = MessageBox(NULL, "DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ?DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ??", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                            result = MessageBox(NULL, "FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         if(result==IDYES){
                             if(lge==1){
@@ -1768,7 +1768,7 @@ int main(){
                             result = MessageBox(NULL, "A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         else if(lge==0){
-                            result = MessageBox(NULL, "DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ??", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                            result = MessageBox(NULL, "FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         if(result==IDYES){
                             if(lge==1){
@@ -1865,7 +1865,7 @@ int main(){
                             result = MessageBox(NULL, "A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         else if(lge==0){
-                            result = MessageBox(NULL, "DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ??", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                            result = MessageBox(NULL, "FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         if(result==IDYES){
                             if(lge==1){
