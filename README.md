@@ -27,11 +27,11 @@ The system relies on a custom algorithm composed of several steps:
 - Key generation from password and version
 - Data transformation based on the generated key
 - Non-linear permutation using version-adjusted key values
-##🎨 Console Interface
+## 🎨 Console Interface
 - Progressive text rendering
 - Color effects and “Matrix-style” animations
 - Windows alerts using MessageBox() 
-##🧠 Learning Objectives
+## 🧠 Learning Objectives
 This project helps practice:
 - File handling in C (fopen, fclose, getc, fprintf)
 - Dynamic memory management (malloc, calloc, free)
