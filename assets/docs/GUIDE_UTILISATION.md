@@ -1,8 +1,8 @@
-##🚀 1. Lancer le programme
-##🌐 2. Choix de l’affichage
+## 🚀 1. Lancer le programme
+## 🌐 2. Choix de l’affichage
 - Sélection de la langue du programme
 - Activation / désactivation des animations (ON/OFF)
-##🎛️ 3. Menu principal
+## 🎛️ 3. Menu principal
 Choisissez une option :
 ```
 [1] Chiffrer un fichier  
@@ -12,8 +12,8 @@ Choisissez une option :
 [5] Quitter
 ```
 🟢 **1. Chiffrer des fichiers**
-- Saisir le nombre de fichiers à chiffrer
 ```
+- Saisir le nombre de fichiers à chiffrer
 Pour chaque fichier :
 - Entrer le chemin complet du fichier (glisser-déposer possible)
 - Vérification de l’existence du fichier
@@ -27,8 +27,8 @@ Pour chaque fichier :
   → Suppression des données sensibles
   → Fermeture du programme
 ```
-```
 📌 **Remarque :**
+```
 - Les fichiers chiffrés sont créés avec un ajout de "s" à leur extension.
 - Cet ajout est automatiquement supprimé lors du déchiffrement.
 ```
