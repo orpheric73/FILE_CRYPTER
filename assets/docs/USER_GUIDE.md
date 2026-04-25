@@ -1,8 +1,8 @@
-##🚀 1. Launch the Program
-##🌐 2. Display Settings
+## 🚀 1. Launch the Program
+## 🌐 2. Display Settings
 - Select the program language
 - Enable / disable animations (ON/OFF)
-##🎛️ 3. Main Menu
+## 🎛️ 3. Main Menu
 Choose an option:
 ```
 [1] Encrypt a file  
