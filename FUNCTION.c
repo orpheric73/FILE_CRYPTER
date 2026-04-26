@@ -2,6 +2,11 @@
 #include <time.h>
 int ani=0;
 int lge=0;
+typedef struct {
+    char *msg;
+    char *title;
+} MsgData;
+
 void type_effect(char *text){
     int i;
     for(i=0; text[i] != '\0'; i++){
@@ -546,17 +551,68 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
     }
     if(act==1){
         char tmp;
-        long jp=0, ip;
+        long jp=0, ip, step;
+        if (file_len > 500000000){
+            if(lge==1){
+                show_message_async("WARNING : BIG FILE DETECTED\nTHE PROCESS WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+            }
+            else if(lge==0){
+                show_message_async("ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            }
+            step = 500000;
+        }
+        else if (file_len > 100000000){
+            if(lge==1){
+                show_message_async("LONG FILE DETECTED\nTHE PROCESS WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
+            }
+            else if(lge==0){
+                show_message_async("LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            }
+            step = 100000;
+        }
         for(ip=0; ip<file_len;ip++){
             jp=(ip+prmcst+jp) % file_len;
             tmp=temp_string[ip];
             temp_string[ip]=temp_string[jp];
             temp_string[jp]=tmp;
+            if(file_len>100000000){
+                if(ip%step == 0){
+                    printf("\rPROGRESSION: %ld / % ld", ip, file_len);
+                    fflush(stdout);
+                }
+            }
         }
     }
     else if(act==2){
         char tmp;
-        long jp, ip, kp;
+        long jp, ip, kp, step;
+        if (file_len > 500000){
+            if(lge==1){
+                show_message_async("WARNING : VERY BIG FILE DETECTED\nTHE PROCESS WILL BE VERY VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+            }
+            else if(lge==0){
+                show_message_async("ATTENTION : TRES GROS FICHIER DETECTE\nTRAITEMENT TRES TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            }
+            step = 50000;
+        }
+        else if (file_len > 50000){
+            if(lge==1){
+                show_message_async("WARNING : BIG FILE DETECTED\nTHE PROCESS WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+            }
+            else if(lge==0){
+                show_message_async("ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            }
+            step = 10000;
+        }
+        else if (file_len > 20000){
+            if(lge==1){
+                show_message_async("LONG FILE DETECTED\nTHE PROCESS WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
+            }
+            else if(lge==0){
+                show_message_async("LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            }
+            step = 1000;
+        }
         for(ip=file_len-1; ip>=0;ip--){
             jp=0;
             for(kp=0; kp<ip;kp++){
@@ -566,6 +622,12 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
             tmp=temp_string[ip];
             temp_string[ip]=temp_string[jp];
             temp_string[jp]=tmp;
+            if(file_len>20000){
+                if(ip%step == 0){
+                    printf("\rPROGRESSION: %ld / % ld", ip, file_len);
+                    fflush(stdout);
+                }
+            }
         }
     }
     else{
@@ -650,11 +712,6 @@ int FileExistanceChecking(char *path){
     fclose(f);
     return 0;
 }
-
-typedef struct {
-    char *msg;
-    char *title;
-} MsgData;
 
 DWORD WINAPI msg_thread(LPVOID param){
     MsgData *data = (MsgData*)param;

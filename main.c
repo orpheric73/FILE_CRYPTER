@@ -923,6 +923,7 @@ int main(){
                         crt[K].paswdi[9]=crt[K].paswdi[9]+(crt[K].v-3);
                     }
                 }
+                printf("\n");
                 if((prmr = PermuteDataInFile(crt[K].flo, pv, 1)) == 0){
                     free(crt[K].ney);
                     fclose(crt[K].fl);
@@ -1952,6 +1953,7 @@ int main(){
                     free(crt);
                     return 1;
                 }
+                printf("\n");
                 pv=((crt[K].v+crt[K].paswdi[0]+crt[K].paswdi[1]+crt[K].paswdi[2]+crt[K].paswdi[3]+crt[K].paswdi[4]+crt[K].paswdi[5]+crt[K].paswdi[6]+crt[K].paswdi[7]+crt[K].paswdi[8]+crt[K].paswdi[9])/11);
                 if((prmr = PermuteDataInFile(flp, pv, 2)) == 0){
                     free(crt[K].ney);
