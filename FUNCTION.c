@@ -576,8 +576,8 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
             temp_string[ip]=temp_string[jp];
             temp_string[jp]=tmp;
             if(file_len>100000000){
-                if(ip%step == 0){
-                    printf("\rPROGRESSION: %ld / % ld", ip, file_len);
+                if(ip%step == 0 || ip == file_len-1){
+                    printf("\rPROGRESSION: %ld / %ld", ip+1, file_len);
                     fflush(stdout);
                 }
             }
@@ -585,7 +585,7 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
     }
     else if(act==2){
         char tmp;
-        long jp, ip, kp, step;
+        long jp, ip, kp, step, cnt;
         if (file_len > 500000){
             if(lge==1){
                 show_message_async("WARNING : VERY BIG FILE DETECTED\nTHE PROCESS WILL BE VERY VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
@@ -623,8 +623,9 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
             temp_string[ip]=temp_string[jp];
             temp_string[jp]=tmp;
             if(file_len>20000){
-                if(ip%step == 0){
-                    printf("\rPROGRESSION: %ld / % ld", ip, file_len);
+                cnt = file_len-ip-1;
+                if(cnt%step == 0 || cnt == file_len-1){
+                    printf("\rPROGRESSION: %ld / %ld", cnt+1, file_len);
                     fflush(stdout);
                 }
             }
