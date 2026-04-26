@@ -74,7 +74,7 @@ All file types supported by file reading functions.
 ## 🔥 Future Improvements
 - Graphical User Interface (GUI)
 - Logging and monitoring system
-## ## 📚 Documentation
+## 📚 Documentation
 
 For a detailed explanation on how to use:
 
