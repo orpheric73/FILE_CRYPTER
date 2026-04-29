@@ -554,21 +554,21 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
         long jp=0, ip, step;
         if (file_len > 500000000){
             if(lge==1){
-                show_message_async("WARNING : BIG FILE DETECTED\nTHE PROCESS WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+                show_message_async("WARNING : BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
             }
             else if(lge==0){
                 show_message_async("ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
-            step = 500000;
+            step = 50000;
         }
         else if (file_len > 100000000){
             if(lge==1){
-                show_message_async("LONG FILE DETECTED\nTHE PROCESS WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
+                show_message_async("LONG FILE DETECTED\nTHE PROCESSING WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
             }
             else if(lge==0){
                 show_message_async("LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
-            step = 100000;
+            step = 10000;
         }
         for(ip=0; ip<file_len;ip++){
             jp=(ip+prmcst+jp) % file_len;
@@ -588,30 +588,39 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
         long jp, ip, kp, step, cnt;
         if (file_len > 500000){
             if(lge==1){
-                show_message_async("WARNING : VERY BIG FILE DETECTED\nTHE PROCESS WILL BE VERY VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+                show_message_async("WARNING : VERY BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
             }
             else if(lge==0){
                 show_message_async("ATTENTION : TRES GROS FICHIER DETECTE\nTRAITEMENT TRES TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
-            step = 50000;
+            step = 5000;
         }
         else if (file_len > 50000){
             if(lge==1){
-                show_message_async("WARNING : BIG FILE DETECTED\nTHE PROCESS WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+                show_message_async("WARNING : BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
             }
             else if(lge==0){
                 show_message_async("ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
-            step = 10000;
+            step = 2000;
         }
         else if (file_len > 20000){
             if(lge==1){
-                show_message_async("LONG FILE DETECTED\nTHE PROCESS WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
+                show_message_async("LONG FILE DETECTED\nTHE PROCESSING WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
             }
             else if(lge==0){
                 show_message_async("LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
-            step = 1000;
+            step = 1200;
+        }
+        else if (file_len > 5000){
+            if(lge==1){
+                show_message_async("FILE PROCESSING\nPLEASE WAIT", "FILE_CRYPTER");
+            }
+            else if(lge==0){
+                show_message_async("TRAITEMENT DU FICHIER\nVEUILLEZ PATIENTER", "FILE_CRYPTER");
+            }
+            step = 500;
         }
         for(ip=file_len-1; ip>=0;ip--){
             jp=0;
@@ -622,7 +631,7 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
             tmp=temp_string[ip];
             temp_string[ip]=temp_string[jp];
             temp_string[jp]=tmp;
-            if(file_len>20000){
+            if(file_len>5000){
                 cnt = file_len-ip-1;
                 if(cnt%step == 0 || cnt == file_len-1){
                     printf("\rPROGRESSION: %ld / %ld", cnt+1, file_len);
@@ -639,7 +648,7 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
         else if(lge==0){
             show_message_async("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
         }
-        memset(temp_string, 0, strlen(temp_string)+1);
+        memset(temp_string, 0, file_len);
         free(temp_string);
         return 0;
     }
@@ -653,12 +662,12 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
         else if(lge==0){
             show_message_async("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
         }
-        memset(temp_string, 0, strlen(temp_string)+1);
+        memset(temp_string, 0, file_len);
         free(temp_string);
         return 0;
     }
     fflush(file);
-    memset(temp_string, 0, strlen(temp_string)+1);
+    memset(temp_string, 0, file_len);
     free(temp_string);
     return 1;
 }

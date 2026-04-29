@@ -1929,6 +1929,7 @@ int main(){
                     free(crt);
                     return 1;
                 }
+                SetFileAttributes(neypp, FILE_ATTRIBUTE_HIDDEN);
                 if((copr = Copy_File(crt[K].fl, flp)) == 0){
                     free(crt[K].ney);
                     fclose(crt[K].fl);
