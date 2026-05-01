@@ -18,7 +18,7 @@ int VerInp();
 void SecureLevel(char *);
 void Animation();
 void Language(int);
-int PermuteDataInFile(FILE*, int, int);
+int PermuteDataInFile(FILE*, long, int);
 int Copy_File(FILE *, FILE *);
 int FileExistanceChecking(char *);
 void show_message_async(const char *, const char *);

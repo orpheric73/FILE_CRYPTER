@@ -499,9 +499,12 @@ void Language(int language){
     }
 }
 
-int PermuteDataInFile(FILE* file, int prmcst, int act){
+int PermuteDataInFile(FILE* file, long prmcst, int act){
     long file_len;
     char *temp_string;
+    if(prmcst < 0){
+        prmcst=labs(prmcst);
+    }
     if(fseek(file, 0, SEEK_END) !=0){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
@@ -545,7 +548,7 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
         else if(lge==0){
             show_message_async("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
         }
-        memset(temp_string, 0, strlen(temp_string)+1);
+        memset(temp_string, 0, file_len);
         free(temp_string);
         return 0;
     }
@@ -631,6 +634,7 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
             tmp=temp_string[ip];
             temp_string[ip]=temp_string[jp];
             temp_string[jp]=tmp;
+            fflush(stdout);
             if(file_len>5000){
                 cnt = file_len-ip-1;
                 if(cnt%step == 0 || cnt == file_len-1){
@@ -653,7 +657,6 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
         return 0;
     }
     size_t nlw = fwrite(temp_string, 1, file_len, file);
-    rewind(file);
     if(nlw != (size_t)file_len){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
@@ -667,6 +670,7 @@ int PermuteDataInFile(FILE* file, int prmcst, int act){
         return 0;
     }
     fflush(file);
+    rewind(file);
     memset(temp_string, 0, file_len);
     free(temp_string);
     return 1;

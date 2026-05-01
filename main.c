@@ -72,7 +72,8 @@ int main(){
             if(ani==1){
                 color_change1();
             }
-            int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, result, remo, Hf, pv, i, prmr, me;
+            int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, result, remo, Hf, i, prmr, me;
+            long pv;
             char dwn[11], ehou[3];
             char rmdec;
             if(MODE==3){
@@ -1052,7 +1053,8 @@ int main(){
             if(ani==1){
                 color_change1();
             }
-            int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, pv, i, prmr, copr, result, me;
+            int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, i, prmr, copr, result, me;
+            long pv;
             char dwn[11], ehou[3], *neypp;
             char rmdec;
             FILE* flp;
