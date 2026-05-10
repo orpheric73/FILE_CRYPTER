@@ -9,12 +9,12 @@
     #define SEP '/'
 #endif
 typedef struct{
-    FILE *fl;
-    FILE *flo;
-    char *ney;
-    char *neyp;
-    char paswd[11];
-    int paswdi[10];
+    FILE *InputFile;
+    FILE *OutputFile;
+    char *InputFileName;
+    char *OutputFileName;
+    char Password[11];
+    int Key[10];
     int v;
 }crypt;
 int main(){
@@ -28,49 +28,50 @@ int main(){
     else{
         lan=1;
     }
-    Language(lan);
-    Animation();
-    home(0);
+    LanguageChosing(lan);
+    AskForAnimation();
+    HomeOrMenu(0);
+    SetConsoleCtrlHandler(ConsoleHandler, TRUE);
     while (res==1){
         res=0;
         do{
             con=1;
-            home(1);
+            HomeOrMenu(1);
             if(scanf("%d",&MODE) != 1){
                 if(lge==1){
-                    type_effect("\nINVALID INPUT,TRY AGAIN.");
+                    TypingEffect("\nINVALID INPUT,TRY AGAIN.");
                 }
                 else if(lge==0){
-                    type_effect("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                    TypingEffect("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
                 }
                 while((clb=getchar()) != '\n' && clb != EOF);
                 con=0;
             }
             printf("\n");
-        }while(con!=1 || (MODE<1 || MODE>5));
+        }while(con!=1 || (MODE<1 || MODE>6));
         if(MODE==1 || MODE==3){
             if(MODE==1){
                 if(lge==1){
-                    type_effect("##############################################   1-> ENCRYPT FILE    ###################################################");
+                    TypingEffect("##############################################   1-> ENCRYPT FILE    ###################################################");
                     printf("\n");
                 }
                 else if(lge==0){
-                    type_effect("#########################################   1-> CRYPTER UN/DES FICHIER(S)    ###########################################");
+                    TypingEffect("#########################################   1-> CRYPTER UN/DES FICHIER(S)    ###########################################");
                     printf("\n");
                 }
             }
             else{
                 if(lge==1){
-                    type_effect("###########################################   3-> ENCRYPTION PLANNING    ###############################################");
+                    TypingEffect("###########################################   3-> ENCRYPTION PLANNING    ###############################################");
                     printf("\n");
                 }
                 else if(lge==0){
-                    type_effect("#########################################   3-> PLANIFIER UN CRYPTAGE    ###############################################");
+                    TypingEffect("#########################################   3-> PLANIFIER UN CRYPTAGE    ###############################################");
                     printf("\n");
                 }
             }
             if(ani==1){
-                color_change1();
+                DynamicColor();
             }
             int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, result, remo, Hf, i, prmr, me;
             long pv;
@@ -85,7 +86,7 @@ int main(){
                     else if(lge==0){
                         printf("\nDEFINIR LE DELAI AVANT LE CHIFFREMENT PROGRAMME(ETEINDRE L'APPAREIL SUPPRIMERA LE PROCESSUS)");
                     }
-                    printf("\n> H: ");
+                    printf("\ncipherflow> H: ");
                     if(scanf("%d",&H)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -96,7 +97,7 @@ int main(){
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
                     }
-                    printf("\n> M: ");
+                    printf("\ncipherflow> M: ");
                     if(scanf("%d",&M)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -107,7 +108,7 @@ int main(){
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
                     }
-                    printf("\n> S: ");
+                    printf("\ncipherflow> S: ");
                     if(scanf("%d",&S)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -121,27 +122,27 @@ int main(){
                     if(con!=0){
                         if(lge==1){
                             printf("\n");
-                            type_effect("ENCRYPTION SCHEDULED IN");
+                            TypingEffect("ENCRYPTION SCHEDULED IN");
                             printf(" %d ",H);
-                            type_effect("HOUR(S)");
+                            TypingEffect("HOUR(S)");
                             printf(" %d ",M);
-                            type_effect("MINUTE(S)");
+                            TypingEffect("MINUTE(S)");
                             printf(" %d ",S);
-                            type_effect("SECOND(S)");
+                            TypingEffect("SECOND(S)");
                             printf("\nENTER 1 TO CONFIRM");
                         }
                         else if(lge==0){
                             printf("\n");
-                            type_effect("CHIFFREMENT PREVU DANS");
+                            TypingEffect("CHIFFREMENT PREVU DANS");
                             printf(" %d ",H);
-                            type_effect("HEURE(S)");
+                            TypingEffect("HEURE(S)");
                             printf(" %d ",M);
-                            type_effect("MINUTE(S)");
+                            TypingEffect("MINUTE(S)");
                             printf(" %d ",S);
-                            type_effect("SECONDE(S)");
+                            TypingEffect("SECONDE(S)");
                             printf("\nENTRER 1 POUR CONFIRMER");
                         }
-                        printf("\n> ");
+                        printf("\ncipherflow> ");
                         if(scanf("%d",&con)!=1){
                             if(lge==1){
                                 printf("\nINVALID INPUT,TRY AGAIN.");
@@ -179,8 +180,8 @@ int main(){
                     d+=1;
                     dw+=1;
                 }
-                while(d>(Md=GetDaysInMonth(mo, y))){
-                    d-=(Md=GetDaysInMonth(mo, y));
+                while(d>(Md=NumberOfDaysInMonth(mo, y))){
+                    d-=(Md=NumberOfDaysInMonth(mo, y));
                     mo+=1;
                 }
                 while(mo>12){
@@ -204,13 +205,13 @@ int main(){
                 }
             }
             if(MODE==1){
-                nb=NumbOfFile();
+                nb=InputNumberOfFile();
             }
             else{
                 nb=1;
             }
             if(nb>1){
-                rmdec=SamePasswd();
+                rmdec=AskForSamePasswordUse();
             }
             else{
                 rmdec='N';
@@ -234,8 +235,8 @@ int main(){
             for(K=0;K<nb;K++){
                 do{
                     con=1;
-                    crt[K].ney=calloc(200,sizeof(char));
-                    if(crt[K].ney==NULL){
+                    crt[K].InputFileName=calloc(200,sizeof(char));
+                    if(crt[K].InputFileName==NULL){
                         if(lge==1){
                             printf("ALLOCATION ERROR\n");
                             free(crt);
@@ -256,8 +257,8 @@ int main(){
                     else if(lge==0){
                         printf("\nENTRER LE CHEMIN COMPLET DU FICHIER EN GLISSANT ET DEPOSANT LE FICHIER DANS LA CONSOLE");
                     }
-                    printf("\n> ");
-                    if(scanf(" %199[^\n]",crt[K].ney) != 1){
+                    printf("\ncipherflow> ");
+                    if(scanf(" %199[^\n]",crt[K].InputFileName) != 1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
                         }
@@ -268,28 +269,28 @@ int main(){
                         con=0;
                     }
                     while((clb=getchar()) != '\n' && clb != EOF);
-                    if(crt[K].ney[0]== '\'' || crt[K].ney[0]== '\"' ){
-                        memmove(crt[K].ney, crt[K].ney + 1, strlen(crt[K].ney)+1);
+                    if(crt[K].InputFileName[0]== '\'' || crt[K].InputFileName[0]== '\"' ){
+                        memmove(crt[K].InputFileName, crt[K].InputFileName + 1, strlen(crt[K].InputFileName)+1);
                     }
-                    if(crt[K].ney[strlen(crt[K].ney)-1]== '\'' || crt[K].ney[strlen(crt[K].ney)-1]== '\"' ){
-                        crt[K].ney[strlen(crt[K].ney)-1]='\0';
+                    if(crt[K].InputFileName[strlen(crt[K].InputFileName)-1]== '\'' || crt[K].InputFileName[strlen(crt[K].InputFileName)-1]== '\"' ){
+                        crt[K].InputFileName[strlen(crt[K].InputFileName)-1]='\0';
                     }
                     if(con!=0){
                         if(MODE==1){
-                            if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
+                            if((crt[K].InputFile=fopen(crt[K].InputFileName,"rb"))==NULL){
                                 if(lge==1){
                                     printf("\nOPENING ERROR\n");
                                 }
                                 else if(lge==0){
                                     printf("\nERREUR D'OUVERTURE\n");
                                 }
-                                free(crt[K].ney);
+                                free(crt[K].InputFileName);
                                 con=0;
 
                             }
                         }
                         else if(MODE==3){
-                            if(strnlen(crt[K].ney, 200) == 200 || crt[K].ney[0] == '\0' ){
+                            if(strnlen(crt[K].InputFileName, 200) == 200 || crt[K].InputFileName[0] == '\0' ){
                                 if(lge==1){
                                     printf("\nINVALID STRING\n");
                                 }
@@ -321,48 +322,48 @@ int main(){
                     }
                 }while(con!=1);
                 if(mdec==1){
-                    PasswdInp(crt[K].paswd);
-                    crt[K].v=VerInp();
+                    InputPassword(crt[K].Password);
+                    crt[K].v=InputVersion();
                     for(I=0;I<10;I++){
                         if(I==0){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswd[I+7]-crt[K].paswd[I+8]+crt[K].paswd[I+9];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Password[I+7]-crt[K].Password[I+8]+crt[K].Password[I+9];
                         }
                         else if(I==1){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswd[I+7]-crt[K].paswd[I+8]+crt[K].paswdi[I-1];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Password[I+7]-crt[K].Password[I+8]+crt[K].Key[I-1];
                         }
                         else if(I==2){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswd[I+7]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Password[I+7]-crt[K].Key[I-1]+crt[K].Key[I-2];
                         }
                         else if(I==3){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3];
                         }
                         else if(I==4){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2]-crt[K].paswdi[I-3]+crt[K].paswdi[I-4];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Key[I-1]+crt[K].Key[I-2]-crt[K].Key[I-3]+crt[K].Key[I-4];
                         }
                         else if(I==5){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3]-crt[K].paswdi[I-4]+crt[K].paswdi[I-5];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3]-crt[K].Key[I-4]+crt[K].Key[I-5];
                         }
                         else if(I==6){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2]-crt[K].paswdi[I-3]+crt[K].paswdi[I-4]-crt[K].paswdi[I-5]+crt[K].paswdi[I-6];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Key[I-1]+crt[K].Key[I-2]-crt[K].Key[I-3]+crt[K].Key[I-4]-crt[K].Key[I-5]+crt[K].Key[I-6];
                         }
                         else if(I==7){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3]-crt[K].paswdi[I-4]+crt[K].paswdi[I-5]-crt[K].paswdi[I-6]+crt[K].paswdi[I-7];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3]-crt[K].Key[I-4]+crt[K].Key[I-5]-crt[K].Key[I-6]+crt[K].Key[I-7];
                         }
                         else if(I==8){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2]-crt[K].paswdi[I-3]+crt[K].paswdi[I-4]-crt[K].paswdi[I-5]+crt[K].paswdi[I-6]-crt[K].paswdi[I-7]+crt[K].paswdi[I-8];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Key[I-1]+crt[K].Key[I-2]-crt[K].Key[I-3]+crt[K].Key[I-4]-crt[K].Key[I-5]+crt[K].Key[I-6]-crt[K].Key[I-7]+crt[K].Key[I-8];
                         }
                         else{
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3]-crt[K].paswdi[I-4]+crt[K].paswdi[I-5]-crt[K].paswdi[I-6]+crt[K].paswdi[I-7]-crt[K].paswdi[I-8]+crt[K].paswdi[I-9];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3]-crt[K].Key[I-4]+crt[K].Key[I-5]-crt[K].Key[I-6]+crt[K].Key[I-7]-crt[K].Key[I-8]+crt[K].Key[I-9];
                         }
                     }
                 }
@@ -370,7 +371,7 @@ int main(){
                     int rm, irm;
                     for(rm=0;rm<nb;rm++){
                         for(irm=0;irm<10;irm++){
-                            crt[rm].paswdi[irm]=crt[K].paswdi[irm];
+                            crt[rm].Key[irm]=crt[K].Key[irm];
                         }
                     }
                     for(rm=0;rm<nb;rm++){
@@ -379,21 +380,21 @@ int main(){
                     rmdec='N';
                     mdec=2;
                 }
-                crt[K].neyp=calloc(300,sizeof(char));
-                if(crt[K].neyp==NULL){
+                crt[K].OutputFileName=calloc(300,sizeof(char));
+                if(crt[K].OutputFileName==NULL){
                         if(lge==1){
                             printf("ALLOCATION ERROR\n");
                         }
                         else if(lge==0){
                             printf("ERREUR D'ALLOCATION\n");
                         }
-                        free(crt[K].ney);
+                        free(crt[K].InputFileName);
                         if(MODE==1){
-                            fclose(crt[K].fl);
+                            fclose(crt[K].InputFile);
                         }
                         for(me=0;me<nb;me++){
-                            memset(crt[me].paswd, 0, 11);
-                            memset(crt[me].paswdi, 0, 10*sizeof(int));
+                            memset(crt[me].Password, 0, 11);
+                            memset(crt[me].Key, 0, 10*sizeof(int));
                             crt[K].v=0;
                         }
                         free(crt);
@@ -410,10 +411,10 @@ int main(){
                 if(MODE==3){
                     printf("\n");
                     if(lge==1){
-                        type_effect("THE ENCRYPTION WILL START AT :");
+                        TypingEffect("THE ENCRYPTION WILL START AT :");
                     }
                     else if(lge==0){
-                        type_effect("LE CRYPTAGE DEMARRERA A :");
+                        TypingEffect("LE CRYPTAGE DEMARRERA A :");
                     }
                     printf("\n\t%d:%d:%d",H,M,S);
                     if(lan==1){
@@ -494,17 +495,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -513,17 +514,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -544,17 +545,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -563,17 +564,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -594,17 +595,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -613,17 +614,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -644,17 +645,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -663,17 +664,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -694,17 +695,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -713,17 +714,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -744,17 +745,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -763,17 +764,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -781,28 +782,28 @@ int main(){
                             }
                         }
                     }while(ct!=1);
-                    if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
+                    if((crt[K].InputFile=fopen(crt[K].InputFileName,"rb"))==NULL){
                         for(me=0;me<nb;me++){
-                            memset(crt[me].paswd, 0, 11);
-                            memset(crt[me].paswdi, 0, 10*sizeof(int));
+                            memset(crt[me].Password, 0, 11);
+                            memset(crt[me].Key, 0, 10*sizeof(int));
                             crt[K].v=0;
                         }
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
-                            snprintf(crt[K].neyp, 300, "%s NOT FOUND\nTHE PROCESS END WITHOUT FILE ENCRYPTING", crt[K].ney);
+                            snprintf(crt[K].OutputFileName, 300, "%s NOT FOUND\nTHE PROCESS END WITHOUT FILE ENCRYPTING", crt[K].InputFileName);
                         }
                         else if(lge==0){
-                            snprintf(crt[K].neyp, 300, "%s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", crt[K].ney);
+                            snprintf(crt[K].OutputFileName, 300, "%s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", crt[K].InputFileName);
                         }
-                        MessageBox(NULL, crt[K].neyp, "FILE_CRYPTER", MB_OK);
-                        free(crt[K].ney);
-                        free(crt[K].neyp);
+                        MessageBox(NULL, crt[K].OutputFileName, "FILE_CRYPTER", MB_OK);
+                        free(crt[K].InputFileName);
+                        free(crt[K].OutputFileName);
                         free(crt);
                         return 1;
                     }
                 }
-                sprintf(crt[K].neyp,"%sc",crt[K].ney);
-                if((prmr = FileExistanceChecking(crt[K].neyp)) == 0){
+                sprintf(crt[K].OutputFileName,"%sc",crt[K].InputFileName);
+                if((prmr = FileExistanceChecker(crt[K].OutputFileName)) == 0){
                     do{
                         con=1;
                         MessageBeep(MB_ICONHAND);
@@ -814,19 +815,19 @@ int main(){
                         }
                         if(result==IDYES){
                             if(lge==1){
-                                show_message_async("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                                IndependentMessageBox("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
                             }
                             else if(lge==0){
-                                show_message_async("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
+                                IndependentMessageBox("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
                             }
                         }
                         else if(result==IDNO){
-                            free(crt[K].ney);
-                            free(crt[K].neyp);
-                            fclose(crt[K].fl);
+                            free(crt[K].InputFileName);
+                            free(crt[K].OutputFileName);
+                            fclose(crt[K].InputFile);
                             for(me=0;me<nb;me++){
-                                memset(crt[me].paswd, 0, 11);
-                                memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                memset(crt[me].Password, 0, 11);
+                                memset(crt[me].Key, 0, 10*sizeof(int));
                                 crt[K].v=0;
                             }
                             MessageBeep(MB_ICONHAND);
@@ -844,16 +845,16 @@ int main(){
                         }
                     }while(con!=1);
                 }
-                if((crt[K].flo=fopen(crt[K].neyp,"wb+"))==NULL){
+                if((crt[K].OutputFile=fopen(crt[K].OutputFileName,"wb+"))==NULL){
                     if(lge==1){
                         printf("OPENING ERROR\n");
                     }
                     else if(lge==0){
                         printf("ERREUR D'OUVERTURE\n");
                     }
-                    free(crt[K].ney);
-                    free(crt[K].neyp);
-                    fclose(crt[K].fl);
+                    free(crt[K].InputFileName);
+                    free(crt[K].OutputFileName);
+                    fclose(crt[K].InputFile);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
                         MessageBox(NULL, "ENCRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -862,75 +863,75 @@ int main(){
                         MessageBox(NULL, "LE CRYPTAGE A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
-                        memset(crt[me].paswd, 0, 11);
-                        memset(crt[me].paswdi, 0, 10*sizeof(int));
+                        memset(crt[me].Password, 0, 11);
+                        memset(crt[me].Key, 0, 10*sizeof(int));
                         crt[K].v=0;
                     }
                     free(crt);
                     return 1;
                 }
-                pv=((crt[K].v+crt[K].paswdi[0]+crt[K].paswdi[1]+crt[K].paswdi[2]+crt[K].paswdi[3]+crt[K].paswdi[4]+crt[K].paswdi[5]+crt[K].paswdi[6]+crt[K].paswdi[7]+crt[K].paswdi[8]+crt[K].paswdi[9])/11);
+                pv=((crt[K].v+crt[K].Key[0]+crt[K].Key[1]+crt[K].Key[2]+crt[K].Key[3]+crt[K].Key[4]+crt[K].Key[5]+crt[K].Key[6]+crt[K].Key[7]+crt[K].Key[8]+crt[K].Key[9])/11);
                 i=0;
-                while((c=getc(crt[K].fl)) != EOF){
+                while((c=getc(crt[K].InputFile)) != EOF){
                     i+=1;
                     if(i%10==0){
-                        c=c-crt[K].paswdi[0];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[0]=crt[K].paswdi[0]+(crt[K].v-3);
+                        c=c-crt[K].Key[0];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[0]=crt[K].Key[0]+(crt[K].v-3);
                     }
                     else if(i%10==1){
-                        c=c-crt[K].paswdi[1];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[1]=crt[K].paswdi[1]+(crt[K].v-3);
+                        c=c-crt[K].Key[1];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[1]=crt[K].Key[1]+(crt[K].v-3);
                     }
                     else if(i%10==2){
-                        c=c-crt[K].paswdi[2];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[2]=crt[K].paswdi[2]+(crt[K].v-3);
+                        c=c-crt[K].Key[2];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[2]=crt[K].Key[2]+(crt[K].v-3);
                     }
                     else if(i%10==3){
-                        c=c-crt[K].paswdi[3];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[3]=crt[K].paswdi[3]+(crt[K].v-3);
+                        c=c-crt[K].Key[3];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[3]=crt[K].Key[3]+(crt[K].v-3);
                     }
                     else if(i%10==4){
-                        c=c-crt[K].paswdi[4];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[4]=crt[K].paswdi[4]+(crt[K].v-3);
+                        c=c-crt[K].Key[4];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[4]=crt[K].Key[4]+(crt[K].v-3);
                     }
                     else if(i%10==5){
-                        c=c-crt[K].paswdi[5];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[5]=crt[K].paswdi[5]+(crt[K].v-3);
+                        c=c-crt[K].Key[5];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[5]=crt[K].Key[5]+(crt[K].v-3);
                     }
                     else if(i%10==6){
-                        c=c-crt[K].paswdi[6];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[6]=crt[K].paswdi[6]+(crt[K].v-3);
+                        c=c-crt[K].Key[6];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[6]=crt[K].Key[6]+(crt[K].v-3);
                     }
                     else if(i%10==7){
-                        c=c-crt[K].paswdi[7];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[7]=crt[K].paswdi[7]+(crt[K].v-3);
+                        c=c-crt[K].Key[7];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[7]=crt[K].Key[7]+(crt[K].v-3);
                     }
                     else if(i%10==8){
-                        c=c-crt[K].paswdi[8];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[8]=crt[K].paswdi[8]+(crt[K].v-3);
+                        c=c-crt[K].Key[8];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[8]=crt[K].Key[8]+(crt[K].v-3);
                     }
                     else{
-                        c=c-crt[K].paswdi[9];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[9]=crt[K].paswdi[9]+(crt[K].v-3);
+                        c=c-crt[K].Key[9];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[9]=crt[K].Key[9]+(crt[K].v-3);
                     }
                 }
                 printf("\n");
-                if((prmr = PermuteDataInFile(crt[K].flo, pv, 1)) == 0){
-                    free(crt[K].ney);
-                    fclose(crt[K].fl);
-                    fclose(crt[K].flo);
-                    remove(crt[K].neyp);
-                    free(crt[K].neyp);
+                if((prmr = PermuteDataInFile(crt[K].OutputFile, pv, 1)) == 0){
+                    free(crt[K].InputFileName);
+                    fclose(crt[K].InputFile);
+                    fclose(crt[K].OutputFile);
+                    remove(crt[K].OutputFileName);
+                    free(crt[K].OutputFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
                         MessageBox(NULL, "ENCRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -939,60 +940,60 @@ int main(){
                         MessageBox(NULL, "LE CRYPTAGE A ECHOUE(LA PERMUTATION N'A PAS MARCHE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
-                        memset(crt[me].paswd, 0, 11);
-                        memset(crt[me].paswdi, 0, 10*sizeof(int));
+                        memset(crt[me].Password, 0, 11);
+                        memset(crt[me].Key, 0, 10*sizeof(int));
                         crt[K].v=0;
                     }
                     free(crt);
                     return 1;
                 }
-                free(crt[K].neyp);
-                fclose(crt[K].fl);
-                fclose(crt[K].flo);
+                free(crt[K].OutputFileName);
+                fclose(crt[K].InputFile);
+                fclose(crt[K].OutputFile);
                 if(MODE==1){
                     if(ani==1){
                         printf("\n");
                         if(lge==1){
-                            type_effect("NOW ENCRYPTING");
+                            TypingEffect("NOW ENCRYPTING");
                         }
                         else if(lge==0){
-                            type_effect("CRYPTAGE EN COURS");
+                            TypingEffect("CRYPTAGE EN COURS");
                         }
-                        loading();
+                        LoadingEffect();
                         printf("\n");
-                        AnimationCrypt();
+                        MatrixSimulation();
                     }
-                    printf("\n%s ",crt[K].ney);
+                    printf("\n%s ",crt[K].InputFileName);
                     if(lge==1){
-                        type_effect("ENCRYPTED SUCCESSFULLY");
+                        TypingEffect("ENCRYPTED SUCCESSFULLY");
                     }
                     else if(lge==0){
-                        type_effect("CRYPTE AVEC SUCCES");
+                        TypingEffect("CRYPTE AVEC SUCCES");
                     }
                     if(remo==1){
-                        remove(crt[K].ney);
+                        remove(crt[K].InputFileName);
                     }
                     printf("\n");
-                    memset(crt[K].paswd, 0, 11);
-                    memset(crt[K].paswdi, 0, 10*sizeof(int));
+                    memset(crt[K].Password, 0, 11);
+                    memset(crt[K].Key, 0, 10*sizeof(int));
                     crt[K].v=0;
                     if(nb==K+1){
                         MessageBeep(MB_ICONASTERISK);
                         if(lge==1){
-                            show_message_async("ALL DONE", "FILE_CRYPTER");
+                            IndependentMessageBox("ALL DONE", "FILE_CRYPTER");
                         }
                         else if(lge==0){
-                            show_message_async("TERMINE", "FILE_CRYPTER");
+                            IndependentMessageBox("TERMINE", "FILE_CRYPTER");
                         }
                         Sleep(2000);
                     }
                 }
                 if(MODE==3){
                     if(remo==1){
-                        remove(crt[K].ney);
+                        remove(crt[K].InputFileName);
                     }
-                    memset(crt[K].paswd, 0, 11);
-                    memset(crt[K].paswdi, 0, 10*sizeof(int));
+                    memset(crt[K].Password, 0, 11);
+                    memset(crt[K].Key, 0, 10*sizeof(int));
                     crt[K].v=0;
                     MessageBeep(MB_ICONASTERISK);
                     if(lge==1){
@@ -1002,19 +1003,19 @@ int main(){
                         MessageBox(NULL,"CRYPTAGE FAIT AVEC SUCCES", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
                     }
                 }
-                free(crt[K].ney);
+                free(crt[K].InputFileName);
             }
             free(crt);
             if(MODE==1){
                 do{
                     con=1;
                     if(lge==1){
-                        printf("\nDO YOU WANT TO PERFORM ANOTHER OPERATION (1) OR EXIT (0)");
+                        printf("\nDO YOU WANT TO PERFORM ANOTHER OPERATION?\n[1] YES\n[0] EXIT");
                     }
                     else if(lge==0){
-                        printf("\nVOULEZ-VOUS EFFECTUEZ UNE AUTRE OPERATION (1) OU QUITTER (0)");
+                        printf("\nVOULEZ-VOUS EFFECTUEZ UNE AUTRE OPERATION?\n[1] OUI\n[0] QUITTER");
                     }
-                    printf("\n> ");
+                    printf("\ncipherflow> ");
                     if(scanf("%d",&res)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -1032,32 +1033,32 @@ int main(){
         else if(MODE==2 || MODE==4){
             if(MODE==2){
                 if(lge==1){
-                    type_effect("##############################################   2-> DECRYPT FILE    ###################################################");
+                    TypingEffect("##############################################   2-> DECRYPT FILE    ###################################################");
                     printf("\n");
                 }
                 else if(lge==0){
-                    type_effect("#########################################   2-> DECRYPTER UN/DES FICHIER(S)    #########################################");
+                    TypingEffect("#########################################   2-> DECRYPTER UN/DES FICHIER(S)    #########################################");
                     printf("\n");
                 }
             }
             else{
                 if(lge==1){
-                    type_effect("###########################################   4-> DECRYPTION PLANNING    ###############################################");
+                    TypingEffect("###########################################   4-> DECRYPTION PLANNING    ###############################################");
                     printf("\n");
                 }
                 else if(lge==0){
-                    type_effect("#########################################   4-> PLANIFIER UN DECRYPTAGE    #############################################");
+                    TypingEffect("#########################################   4-> PLANIFIER UN DECRYPTAGE    #############################################");
                     printf("\n");
                 }
             }
             if(ani==1){
-                color_change1();
+                DynamicColor();
             }
             int nb, K, I, c, S, M, H, h, m, s, y, mo, d, dw, Md, Hf, i, prmr, copr, result, me;
             long pv;
-            char dwn[11], ehou[3], *neypp;
+            char dwn[11], ehou[3], *TempFileName;
             char rmdec;
-            FILE* flp;
+            FILE* TempFile;
             if(MODE==4){
                 do{
                     con=1;
@@ -1067,7 +1068,7 @@ int main(){
                     else if(lge==0){
                         printf("\nDEFINIR LE DELAI AVANT LE DECHIFFREMENT PROGRAMME(LESS THAN 49 DAYS)(TURN THE PC OFF WILL DELETE THE PROCESS)");
                     }
-                    printf("\n> H: ");
+                    printf("\ncipherflow> H: ");
                     if(scanf("%d",&H)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -1078,7 +1079,7 @@ int main(){
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
                     }
-                    printf("\n> M: ");
+                    printf("\ncipherflow> M: ");
                     if(scanf("%d",&M)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -1089,7 +1090,7 @@ int main(){
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
                     }
-                    printf("\n> S: ");
+                    printf("\ncipherflow> S: ");
                     if(scanf("%d",&S)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -1103,27 +1104,27 @@ int main(){
                     if(con!=0){
                         if(lge==1){
                             printf("\n");
-                            type_effect("DECRYPTION SCHEDULED IN");
+                            TypingEffect("DECRYPTION SCHEDULED IN");
                             printf(" %d ",H);
-                            type_effect("HOUR(S)");
+                            TypingEffect("HOUR(S)");
                             printf(" %d ",M);
-                            type_effect("MINUTE(S)");
+                            TypingEffect("MINUTE(S)");
                             printf(" %d ",S);
-                            type_effect("SECOND(S)");
+                            TypingEffect("SECOND(S)");
                             printf("\nENTER 1 TO CONFIRM");
                         }
                         else if(lge==0){
                             printf("\n");
-                            type_effect("DECHIFFREMENT PREVU DANS");
+                            TypingEffect("DECHIFFREMENT PREVU DANS");
                             printf(" %d ",H);
-                            type_effect("HEURE(S)");
+                            TypingEffect("HEURE(S)");
                             printf(" %d ",M);
-                            type_effect("MINUTE(S)");
+                            TypingEffect("MINUTE(S)");
                             printf(" %d ",S);
-                            type_effect("SECONDE(S)");
+                            TypingEffect("SECONDE(S)");
                             printf("\nENTRER 1 POUR CONFIRMER");
                         }
-                        printf("\n> ");
+                        printf("\ncipherflow> ");
                         if(scanf("%d",&con)!=1){
                             if(lge==1){
                                 printf("\nINVALID INPUT,TRY AGAIN.");
@@ -1161,8 +1162,8 @@ int main(){
                     d+=1;
                     dw+=1;
                 }
-                while(d>(Md=GetDaysInMonth(mo, y))){
-                    d-=(Md=GetDaysInMonth(mo, y));
+                while(d>(Md=NumberOfDaysInMonth(mo, y))){
+                    d-=(Md=NumberOfDaysInMonth(mo, y));
                     mo+=1;
                 }
                 while(mo>12){
@@ -1186,13 +1187,13 @@ int main(){
                 }
             }
             if(MODE==2){
-                nb=NumbOfFile();
+                nb=InputNumberOfFile();
             }
             else{
                 nb=1;
             }
             if(nb>1){
-                rmdec=SamePasswd();
+                rmdec=AskForSamePasswordUse();
             }
             else{
                 rmdec='N';
@@ -1216,8 +1217,8 @@ int main(){
             for(K=0;K<nb;K++){
                 do{
                     con=1;
-                    crt[K].ney=calloc(200,sizeof(char));
-                    if(crt[K].ney==NULL){
+                    crt[K].InputFileName=calloc(200,sizeof(char));
+                    if(crt[K].InputFileName==NULL){
                         if(lge==1){
                             printf("ALLOCATION ERROR\n");
                             free(crt);
@@ -1238,8 +1239,8 @@ int main(){
                     else if(lge==0){
                         printf("\nENTRER LE CHEMIN COMPLET DU FICHIER EN GLISSANT ET DEPOSANT LE FICHIER DANS LA CONSOLE");
                     }
-                    printf("\n> ");
-                    if(scanf(" %199[^\n]",crt[K].ney) != 1){
+                    printf("\ncipherflow> ");
+                    if(scanf(" %199[^\n]",crt[K].InputFileName) != 1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
                         }
@@ -1250,27 +1251,27 @@ int main(){
                         con=0;
                     }
                     while((clb=getchar()) != '\n' && clb != EOF);
-                    if(crt[K].ney[0]== '\'' || crt[K].ney[0]== '\"' ){
-                        memmove(crt[K].ney, crt[K].ney + 1, strlen(crt[K].ney)+1);
+                    if(crt[K].InputFileName[0]== '\'' || crt[K].InputFileName[0]== '\"' ){
+                        memmove(crt[K].InputFileName, crt[K].InputFileName + 1, strlen(crt[K].InputFileName)+1);
                     }
-                    if(crt[K].ney[strlen(crt[K].ney)-1]== '\'' || crt[K].ney[strlen(crt[K].ney)-1]== '\"' ){
-                        crt[K].ney[strlen(crt[K].ney)-1]='\0';
+                    if(crt[K].InputFileName[strlen(crt[K].InputFileName)-1]== '\'' || crt[K].InputFileName[strlen(crt[K].InputFileName)-1]== '\"' ){
+                        crt[K].InputFileName[strlen(crt[K].InputFileName)-1]='\0';
                     }
                     if(con!=0){
                         if(MODE==2){
-                            if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
+                            if((crt[K].InputFile=fopen(crt[K].InputFileName,"rb"))==NULL){
                                 if(lge==1){
                                     printf("\nOPENING ERROR\n");
                                 }
                                 else if(lge==0){
                                     printf("\nERREUR D'OUVERTURE\n");
                                 }
-                                free(crt[K].ney);
+                                free(crt[K].InputFileName);
                                 con=0;
                             }
                         }
                         else if(MODE==4){
-                            if(strnlen(crt[K].ney, 200) == 200 || crt[K].ney[0] == '\0' ){
+                            if(strnlen(crt[K].InputFileName, 200) == 200 || crt[K].InputFileName[0] == '\0' ){
                                 if(lge==1){
                                     printf("\nINVALID STRING\n");
                                 }
@@ -1283,48 +1284,48 @@ int main(){
                     }
                 }while(con!=1);
                 if(mdec==1){
-                    PasswdInp(crt[K].paswd);
-                    crt[K].v=VerInp();
+                    InputPassword(crt[K].Password);
+                    crt[K].v=InputVersion();
                     for(I=0;I<10;I++){
                         if(I==0){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswd[I+7]-crt[K].paswd[I+8]+crt[K].paswd[I+9];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Password[I+7]-crt[K].Password[I+8]+crt[K].Password[I+9];
                         }
                         else if(I==1){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswd[I+7]-crt[K].paswd[I+8]+crt[K].paswdi[I-1];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Password[I+7]-crt[K].Password[I+8]+crt[K].Key[I-1];
                         }
                         else if(I==2){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswd[I+7]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Password[I+7]-crt[K].Key[I-1]+crt[K].Key[I-2];
                         }
                         else if(I==3){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswd[I+6]+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Password[I+6]+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3];
                         }
                         else if(I==4){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswd[I+5]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2]-crt[K].paswdi[I-3]+crt[K].paswdi[I-4];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Password[I+5]-crt[K].Key[I-1]+crt[K].Key[I-2]-crt[K].Key[I-3]+crt[K].Key[I-4];
                         }
                         else if(I==5){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswd[I+4]+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3]-crt[K].paswdi[I-4]+crt[K].paswdi[I-5];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Password[I+4]+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3]-crt[K].Key[I-4]+crt[K].Key[I-5];
                         }
                         else if(I==6){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswd[I+3]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2]-crt[K].paswdi[I-3]+crt[K].paswdi[I-4]-crt[K].paswdi[I-5]+crt[K].paswdi[I-6];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Password[I+3]-crt[K].Key[I-1]+crt[K].Key[I-2]-crt[K].Key[I-3]+crt[K].Key[I-4]-crt[K].Key[I-5]+crt[K].Key[I-6];
                         }
                         else if(I==7){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswd[I+2]+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3]-crt[K].paswdi[I-4]+crt[K].paswdi[I-5]-crt[K].paswdi[I-6]+crt[K].paswdi[I-7];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Password[I+2]+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3]-crt[K].Key[I-4]+crt[K].Key[I-5]-crt[K].Key[I-6]+crt[K].Key[I-7];
                         }
                         else if(I==8){
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswd[I+1]-crt[K].paswdi[I-1]+crt[K].paswdi[I-2]-crt[K].paswdi[I-3]+crt[K].paswdi[I-4]-crt[K].paswdi[I-5]+crt[K].paswdi[I-6]-crt[K].paswdi[I-7]+crt[K].paswdi[I-8];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Password[I+1]-crt[K].Key[I-1]+crt[K].Key[I-2]-crt[K].Key[I-3]+crt[K].Key[I-4]-crt[K].Key[I-5]+crt[K].Key[I-6]-crt[K].Key[I-7]+crt[K].Key[I-8];
                         }
                         else{
-                            crt[K].paswdi[I]=crt[K].paswd[I];
-                            crt[K].paswdi[I]=crt[K].paswdi[I]-((crt[K].v+5)*10)+crt[K].paswdi[I-1]-crt[K].paswdi[I-2]+crt[K].paswdi[I-3]-crt[K].paswdi[I-4]+crt[K].paswdi[I-5]-crt[K].paswdi[I-6]+crt[K].paswdi[I-7]-crt[K].paswdi[I-8]+crt[K].paswdi[I-9];
+                            crt[K].Key[I]=crt[K].Password[I];
+                            crt[K].Key[I]=crt[K].Key[I]-((crt[K].v+5)*10)+crt[K].Key[I-1]-crt[K].Key[I-2]+crt[K].Key[I-3]-crt[K].Key[I-4]+crt[K].Key[I-5]-crt[K].Key[I-6]+crt[K].Key[I-7]-crt[K].Key[I-8]+crt[K].Key[I-9];
                         }
                     }
                 }
@@ -1333,7 +1334,7 @@ int main(){
                     int rm, irm;
                     for(rm=0;rm<nb;rm++){
                         for(irm=0;irm<10;irm++){
-                            crt[rm].paswdi[irm]=crt[K].paswdi[irm];
+                            crt[rm].Key[irm]=crt[K].Key[irm];
                         }
                     }
                     for(rm=0;rm<nb;rm++){
@@ -1342,16 +1343,16 @@ int main(){
                     rmdec='N';
                     mdec=2;
                 }
-                crt[K].neyp=calloc(300,sizeof(char));
-                if(crt[K].neyp==NULL){
+                crt[K].OutputFileName=calloc(300,sizeof(char));
+                if(crt[K].OutputFileName==NULL){
                         if(lge==1){
                             printf("\nALLOCATION ERROR\n");
                         }
                         else if(lge==0){
                             printf("\nERREUR D'ALLOCATION\n");
                         }
-                        free(crt[K].ney);
-                        fclose(crt[K].fl);
+                        free(crt[K].InputFileName);
+                        fclose(crt[K].InputFile);
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
                             MessageBox(NULL, "DECRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -1360,8 +1361,8 @@ int main(){
                             MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
                         for(me=0;me<nb;me++){
-                            memset(crt[me].paswd, 0, 11);
-                            memset(crt[me].paswdi, 0, 10*sizeof(int));
+                            memset(crt[me].Password, 0, 11);
+                            memset(crt[me].Key, 0, 10*sizeof(int));
                             crt[K].v=0;
                         }
                         free(crt);
@@ -1370,10 +1371,10 @@ int main(){
                 if(MODE==4){
                     printf("\n");
                     if(lge==1){
-                        type_effect("THE DECRYPTION WILL START AT :");
+                        TypingEffect("THE DECRYPTION WILL START AT :");
                     }
                     else if(lge==0){
-                        type_effect("LE DECRYPTAGE DEMARRERA A :");
+                        TypingEffect("LE DECRYPTAGE DEMARRERA A :");
                     }
                     printf("\n\t%d:%d:%d",H,M,S);
                     if(lan==1){
@@ -1454,17 +1455,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1473,17 +1474,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1504,17 +1505,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1523,17 +1524,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1554,17 +1555,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1573,17 +1574,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1604,17 +1605,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1623,17 +1624,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1654,17 +1655,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1673,17 +1674,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1704,17 +1705,17 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1723,17 +1724,17 @@ int main(){
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    show_message_async("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
                                 else if(lge==0){
-                                    show_message_async("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
                                 Sleep(2000);
-                                free(crt[K].ney);
-                                free(crt[K].neyp);
+                                free(crt[K].InputFileName);
+                                free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
-                                    memset(crt[me].paswd, 0, 11);
-                                    memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                    memset(crt[me].Password, 0, 11);
+                                    memset(crt[me].Key, 0, 10*sizeof(int));
                                     crt[K].v=0;
                                 }
                                 free(crt);
@@ -1741,29 +1742,29 @@ int main(){
                             }
                         }
                     }while(ct!=1);
-                    if((crt[K].fl=fopen(crt[K].ney,"rb"))==NULL){
+                    if((crt[K].InputFile=fopen(crt[K].InputFileName,"rb"))==NULL){
                         for(me=0;me<nb;me++){
-                            memset(crt[me].paswd, 0, 11);
-                            memset(crt[me].paswdi, 0, 10*sizeof(int));
+                            memset(crt[me].Password, 0, 11);
+                            memset(crt[me].Key, 0, 10*sizeof(int));
                             crt[K].v=0;
                         }
                         MessageBeep(MB_ICONASTERISK);
                         if(lge==1){
-                            snprintf(crt[K].neyp, 300, "%s NOT FOUND\nTHE PROCESS END WITHOUT FILE DECRYPTING", crt[K].ney);
+                            snprintf(crt[K].OutputFileName, 300, "%s NOT FOUND\nTHE PROCESS END WITHOUT FILE DECRYPTING", crt[K].InputFileName);
                         }
                         else if(lge==0){
-                            snprintf(crt[K].neyp, 300, "%s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", crt[K].ney);
+                            snprintf(crt[K].OutputFileName, 300, "%s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", crt[K].InputFileName);
                         }
-                        MessageBox(NULL, crt[K].neyp, "FILE_CRYPTER", MB_OK);
-                        free(crt[K].ney);
-                        free(crt[K].neyp);
+                        MessageBox(NULL, crt[K].OutputFileName, "FILE_CRYPTER", MB_OK);
+                        free(crt[K].InputFileName);
+                        free(crt[K].OutputFileName);
                         free(crt);
                         return 1;
                     }
                 }
-                strcpy(crt[K].neyp,crt[K].ney);
-                crt[K].neyp[strlen(crt[K].neyp)-1]='\0';
-                if((prmr = FileExistanceChecking(crt[K].neyp)) == 0){
+                strcpy(crt[K].OutputFileName,crt[K].InputFileName);
+                crt[K].OutputFileName[strlen(crt[K].OutputFileName)-1]='\0';
+                if((prmr = FileExistanceChecker(crt[K].OutputFileName)) == 0){
                     do{
                         con=1;
                         MessageBeep(MB_ICONHAND);
@@ -1775,20 +1776,20 @@ int main(){
                         }
                         if(result==IDYES){
                             if(lge==1){
-                                show_message_async("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                                IndependentMessageBox("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
                             }
                             else if(lge==0){
-                                show_message_async("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
+                                IndependentMessageBox("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
                             }
                             Sleep(2000);
                         }
                         else if(result==IDNO){
-                            free(crt[K].ney);
-                            free(crt[K].neyp);
-                            fclose(crt[K].fl);
+                            free(crt[K].InputFileName);
+                            free(crt[K].OutputFileName);
+                            fclose(crt[K].InputFile);
                             for(me=0;me<nb;me++){
-                                memset(crt[me].paswd, 0, 11);
-                                memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                memset(crt[me].Password, 0, 11);
+                                memset(crt[me].Key, 0, 10*sizeof(int));
                                 crt[K].v=0;
                             }
                             MessageBeep(MB_ICONHAND);
@@ -1806,16 +1807,16 @@ int main(){
                         }
                     }while(con!=1);
                 }
-                if((crt[K].flo=fopen(crt[K].neyp,"wb"))==NULL){
+                if((crt[K].OutputFile=fopen(crt[K].OutputFileName,"wb"))==NULL){
                     if(lge==1){
                         printf("\nOPENING ERROR\n");
                     }
                     else if(lge==0){
                         printf("\nERREUR D'OUVERTURE\n");
                     }
-                    free(crt[K].ney);
-                    free(crt[K].neyp);
-                    fclose(crt[K].fl);
+                    free(crt[K].InputFileName);
+                    free(crt[K].OutputFileName);
+                    fclose(crt[K].InputFile);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
                         MessageBox(NULL, "DECRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -1824,26 +1825,26 @@ int main(){
                         MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
-                        memset(crt[me].paswd, 0, 11);
-                        memset(crt[me].paswdi, 0, 10*sizeof(int));
+                        memset(crt[me].Password, 0, 11);
+                        memset(crt[me].Key, 0, 10*sizeof(int));
                         crt[K].v=0;
                     }
                     free(crt);
                     return 1;
                 }
-                neypp=calloc(200,sizeof(char));
-                if(neypp==NULL){
+                TempFileName=calloc(200,sizeof(char));
+                if(TempFileName==NULL){
                     if(lge==1){
                         printf("ALLOCATION ERROR\n");
                     }
                     else if(lge==0){
                         printf("ERREUR D'ALLOCATION\n");
                     }
-                    free(crt[K].ney);
-                    fclose(crt[K].fl);
-                    fclose(crt[K].flo);
-                    remove(crt[K].neyp);
-                    free(crt[K].neyp);
+                    free(crt[K].InputFileName);
+                    fclose(crt[K].InputFile);
+                    fclose(crt[K].OutputFile);
+                    remove(crt[K].OutputFileName);
+                    free(crt[K].OutputFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
                         MessageBox(NULL, "DECRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -1852,15 +1853,15 @@ int main(){
                         MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
-                        memset(crt[me].paswd, 0, 11);
-                        memset(crt[me].paswdi, 0, 10*sizeof(int));
+                        memset(crt[me].Password, 0, 11);
+                        memset(crt[me].Key, 0, 10*sizeof(int));
                         crt[K].v=0;
                     }
                     free(crt);
                     return 1;
                 }
-                sprintf(neypp,"%ss",crt[K].ney);
-                if((prmr = FileExistanceChecking(neypp)) == 0){
+                sprintf(TempFileName,"%ss",crt[K].InputFileName);
+                if((prmr = FileExistanceChecker(TempFileName)) == 0){
                     do{
                         con=1;
                         MessageBeep(MB_ICONHAND);
@@ -1872,20 +1873,20 @@ int main(){
                         }
                         if(result==IDYES){
                             if(lge==1){
-                                show_message_async("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                                IndependentMessageBox("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
                             }
                             else if(lge==0){
-                                show_message_async("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
+                                IndependentMessageBox("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
                             }
                             Sleep(2000);
                         }
                         else if(result==IDNO){
-                            free(crt[K].ney);
-                            free(crt[K].neyp);
-                            fclose(crt[K].fl);
+                            free(crt[K].InputFileName);
+                            free(crt[K].OutputFileName);
+                            fclose(crt[K].InputFile);
                             for(me=0;me<nb;me++){
-                                memset(crt[me].paswd, 0, 11);
-                                memset(crt[me].paswdi, 0, 10*sizeof(int));
+                                memset(crt[me].Password, 0, 11);
+                                memset(crt[me].Key, 0, 10*sizeof(int));
                                 crt[K].v=0;
                             }
                             MessageBeep(MB_ICONHAND);
@@ -1903,19 +1904,19 @@ int main(){
                         }
                     }while(con!=1);
                 }
-                if((flp=fopen(neypp,"wb+"))==NULL){
+                if((TempFile=fopen(TempFileName,"wb+"))==NULL){
                     if(lge==1){
                         printf("\nOPENING ERROR\n");
                     }
                     else if(lge==0){
                         printf("\nERREUR D'OUVERTURE\n");
                     }
-                    free(crt[K].ney);
-                    free(neypp);
-                    fclose(crt[K].fl);
-                    fclose(crt[K].flo);
-                    remove(crt[K].neyp);
-                    free(crt[K].neyp);
+                    free(crt[K].InputFileName);
+                    free(TempFileName);
+                    fclose(crt[K].InputFile);
+                    fclose(crt[K].OutputFile);
+                    remove(crt[K].OutputFileName);
+                    free(crt[K].OutputFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
                         MessageBox(NULL, "DECRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -1924,23 +1925,23 @@ int main(){
                         MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
-                        memset(crt[me].paswd, 0, 11);
-                        memset(crt[me].paswdi, 0, 10*sizeof(int));
+                        memset(crt[me].Password, 0, 11);
+                        memset(crt[me].Key, 0, 10*sizeof(int));
                         crt[K].v=0;
                     }
                     free(crt);
                     return 1;
                 }
-                SetFileAttributes(neypp, FILE_ATTRIBUTE_HIDDEN);
-                if((copr = Copy_File(crt[K].fl, flp)) == 0){
-                    free(crt[K].ney);
-                    fclose(crt[K].fl);
-                    fclose(crt[K].flo);
-                    fclose(flp);
-                    remove(crt[K].neyp);
-                    remove(neypp);
-                    free(crt[K].neyp);
-                    free(neypp);
+                SetFileAttributes(TempFileName, FILE_ATTRIBUTE_HIDDEN);
+                if((copr = FileCopyMaker(crt[K].InputFile, TempFile)) == 0){
+                    free(crt[K].InputFileName);
+                    fclose(crt[K].InputFile);
+                    fclose(crt[K].OutputFile);
+                    fclose(TempFile);
+                    remove(crt[K].OutputFileName);
+                    remove(TempFileName);
+                    free(crt[K].OutputFileName);
+                    free(TempFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
                         MessageBox(NULL, "DECRYPTION FAILED(COPYING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -1949,24 +1950,24 @@ int main(){
                         MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR LORS DE LA COPIE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
-                        memset(crt[me].paswd, 0, 11);
-                        memset(crt[me].paswdi, 0, 10*sizeof(int));
+                        memset(crt[me].Password, 0, 11);
+                        memset(crt[me].Key, 0, 10*sizeof(int));
                         crt[K].v=0;
                     }
                     free(crt);
                     return 1;
                 }
                 printf("\n");
-                pv=((crt[K].v+crt[K].paswdi[0]+crt[K].paswdi[1]+crt[K].paswdi[2]+crt[K].paswdi[3]+crt[K].paswdi[4]+crt[K].paswdi[5]+crt[K].paswdi[6]+crt[K].paswdi[7]+crt[K].paswdi[8]+crt[K].paswdi[9])/11);
-                if((prmr = PermuteDataInFile(flp, pv, 2)) == 0){
-                    free(crt[K].ney);
-                    fclose(crt[K].fl);
-                    fclose(crt[K].flo);
-                    fclose(flp);
-                    remove(crt[K].neyp);
-                    remove(neypp);
-                    free(crt[K].neyp);
-                    free(neypp);
+                pv=((crt[K].v+crt[K].Key[0]+crt[K].Key[1]+crt[K].Key[2]+crt[K].Key[3]+crt[K].Key[4]+crt[K].Key[5]+crt[K].Key[6]+crt[K].Key[7]+crt[K].Key[8]+crt[K].Key[9])/11);
+                if((prmr = PermuteDataInFile(TempFile, pv, 2)) == 0){
+                    free(crt[K].InputFileName);
+                    fclose(crt[K].InputFile);
+                    fclose(crt[K].OutputFile);
+                    fclose(TempFile);
+                    remove(crt[K].OutputFileName);
+                    remove(TempFileName);
+                    free(crt[K].OutputFileName);
+                    free(TempFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
                         MessageBox(NULL, "DECRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
@@ -1975,111 +1976,111 @@ int main(){
                         MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(LA PERMUTATION S'EST MAL PASSEE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
-                        memset(crt[me].paswd, 0, 11);
-                        memset(crt[me].paswdi, 0, 10*sizeof(int));
+                        memset(crt[me].Password, 0, 11);
+                        memset(crt[me].Key, 0, 10*sizeof(int));
                         crt[K].v=0;
                     }
                     free(crt);
                     return 1;
                 }
                 i=0;
-                while((c=getc(flp)) != EOF){
+                while((c=getc(TempFile)) != EOF){
                     i+=1;
                     if(i%10==0){
-                        c=c+crt[K].paswdi[0];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[0]=crt[K].paswdi[0]+(crt[K].v-3);
+                        c=c+crt[K].Key[0];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[0]=crt[K].Key[0]+(crt[K].v-3);
                     }
                     else if(i%10==1){
-                        c=c+crt[K].paswdi[1];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[1]=crt[K].paswdi[1]+(crt[K].v-3);
+                        c=c+crt[K].Key[1];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[1]=crt[K].Key[1]+(crt[K].v-3);
                     }
                     else if(i%10==2){
-                        c=c+crt[K].paswdi[2];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[2]=crt[K].paswdi[2]+(crt[K].v-3);
+                        c=c+crt[K].Key[2];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[2]=crt[K].Key[2]+(crt[K].v-3);
                     }
                     else if(i%10==3){
-                        c=c+crt[K].paswdi[3];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[3]=crt[K].paswdi[3]+(crt[K].v-3);
+                        c=c+crt[K].Key[3];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[3]=crt[K].Key[3]+(crt[K].v-3);
                     }
                     else if(i%10==4){
-                        c=c+crt[K].paswdi[4];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[4]=crt[K].paswdi[4]+(crt[K].v-3);
+                        c=c+crt[K].Key[4];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[4]=crt[K].Key[4]+(crt[K].v-3);
                     }
                     else if(i%10==5){
-                        c=c+crt[K].paswdi[5];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[5]=crt[K].paswdi[5]+(crt[K].v-3);
+                        c=c+crt[K].Key[5];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[5]=crt[K].Key[5]+(crt[K].v-3);
                     }
                     else if(i%10==6){
-                        c=c+crt[K].paswdi[6];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[6]=crt[K].paswdi[6]+(crt[K].v-3);
+                        c=c+crt[K].Key[6];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[6]=crt[K].Key[6]+(crt[K].v-3);
                     }
                     else if(i%10==7){
-                        c=c+crt[K].paswdi[7];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[7]=crt[K].paswdi[7]+(crt[K].v-3);
+                        c=c+crt[K].Key[7];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[7]=crt[K].Key[7]+(crt[K].v-3);
                     }
                     else if(i%10==8){
-                        c=c+crt[K].paswdi[8];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[8]=crt[K].paswdi[8]+(crt[K].v-3);
+                        c=c+crt[K].Key[8];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[8]=crt[K].Key[8]+(crt[K].v-3);
                     }
                     else{
-                        c=c+crt[K].paswdi[9];
-                        fputc(c, crt[K].flo);
-                        crt[K].paswdi[9]=crt[K].paswdi[9]+(crt[K].v-3);
+                        c=c+crt[K].Key[9];
+                        fputc(c, crt[K].OutputFile);
+                        crt[K].Key[9]=crt[K].Key[9]+(crt[K].v-3);
                     }
                 }
-                fclose(flp);
-                remove(neypp);
-                free(neypp);
-                free(crt[K].neyp);
-                fclose(crt[K].fl);
-                fclose(crt[K].flo);
+                fclose(TempFile);
+                remove(TempFileName);
+                free(TempFileName);
+                free(crt[K].OutputFileName);
+                fclose(crt[K].InputFile);
+                fclose(crt[K].OutputFile);
                 if(MODE==2){
                     if(ani==1){
                         printf("\n");
                         if(lge==1){
-                            type_effect("NOW DECRYPTING");
+                            TypingEffect("NOW DECRYPTING");
                         }
                         else if(lge==0){
-                            type_effect("DECRYPTAGE EN COURS");
+                            TypingEffect("DECRYPTAGE EN COURS");
                         }
-                        loading();
+                        LoadingEffect();
                         printf("\n");
-                        AnimationCrypt();
+                        MatrixSimulation();
                     }
-                    printf("\n%s ",crt[K].ney);
+                    printf("\n%s ",crt[K].InputFileName);
                     if(lge==1){
-                        type_effect("DECRYPTED SUCCESSFULLY");
+                        TypingEffect("DECRYPTED SUCCESSFULLY");
                     }
                     else if(lge==0){
-                        type_effect("DECRYPTE AVEC SUCCES");
+                        TypingEffect("DECRYPTE AVEC SUCCES");
                     }
                     printf("\n");
-                    memset(crt[K].paswd, 0, 11);
-                    memset(crt[K].paswdi, 0, 10*sizeof(int));
+                    memset(crt[K].Password, 0, 11);
+                    memset(crt[K].Key, 0, 10*sizeof(int));
                     crt[K].v=0;
                     if(nb==K+1){
                         MessageBeep(MB_ICONASTERISK);
                         if(lge==1){
-                            show_message_async("ALL DONE", "FILE_CRYPTER");
+                            IndependentMessageBox("ALL DONE", "FILE_CRYPTER");
                         }
                         else if(lge==0){
-                            show_message_async("TERMINE", "FILE_CRYPTER");
+                            IndependentMessageBox("TERMINE", "FILE_CRYPTER");
                         }
                         Sleep(2000);
                     }
                 }
                 if(MODE==4){
-                    memset(crt[K].paswd, 0, 11);
-                    memset(crt[K].paswdi, 0, 10*sizeof(int));
+                    memset(crt[K].Password, 0, 11);
+                    memset(crt[K].Key, 0, 10*sizeof(int));
                     crt[K].v=0;
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
@@ -2089,19 +2090,19 @@ int main(){
                         MessageBox(NULL,"DECRYPTAGE FAIT AVEC SUCCES", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
                     }
                 }
-                free(crt[K].ney);
+                free(crt[K].InputFileName);
             }
             free(crt);
             if(MODE==2){
                 do{
                     con=1;
                     if(lge==1){
-                        printf("\nDO YOU WANT TO PERFORM ANOTHER OPERATION (1) OR EXIT (0)");
+                        printf("\nDO YOU WANT TO PERFORM ANOTHER OPERATION?\n[1] YES\n[0] EXIT");
                     }
                     else if(lge==0){
-                        printf("\nVOULEZ-VOUS EFFECTUEZ UNE AUTRE OPERATION (1) OU QUITTER (0)");
+                        printf("\nVOULEZ-VOUS EFFECTUEZ UNE AUTRE OPERATION?\n[1] OUI\n[0] QUITTER");
                     }
-                    printf("\n> ");
+                    printf("\ncipherflow> ");
                     if(scanf("%d",&res)!=1){
                         if(lge==1){
                             printf("\nINVALID INPUT,TRY AGAIN.");
@@ -2116,25 +2117,64 @@ int main(){
                 system("cls");
             }
         }
-        else{
-            if(lge==1){
-                type_effect("##############################################   5-> EXIT            ###################################################");
-            }
-            else if(lge==0){
-                type_effect("###########################################     5-> QUITTER          ###################################################");
-            }
-            if(ani==1){
-                color_change1();
-                printf("\n");
+        else if(MODE==5){
+            TypingEffect("##############################################   CIPHER FLOW INFO    ###################################################");
+            printf("\n");
+            Info(lge);
+            do{
+                con=1;
                 if(lge==1){
-                    type_effect("NOW CLOSING");
+                    printf("\nWOULD YOU NOW LIKE TO ACCESS THE MAIN INTERFACE?\n[1] YES\n[0] EXIT");
                 }
                 else if(lge==0){
-                    type_effect("FERMETURE EN COURS");
+                    printf("\nSOUHAITEZ-VOUS MAINTENANT ACCEDER A L'INTERFACE PRINCIPALE?\n[1] OUI\n[0] QUITTER");
                 }
-                loading();
+                printf("\ncipherflow> ");
+                if(scanf("%d",&res)!=1){
+                    if(lge==1){
+                        printf("\nINVALID INPUT,TRY AGAIN.");
+                    }
+                    else if(lge==0){
+                        printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                    con=0;
+                }
+            }while(con!=1 || (res!=1 && res!=0));
+            system("cls");
+            if(res==1){
+                HomeOrMenu(0);
             }
         }
+        else{
+            if(lge==1){
+                TypingEffect("##############################################   6-> EXIT            ###################################################");
+            }
+            else if(lge==0){
+                TypingEffect("###########################################     6-> QUITTER          ###################################################");
+            }
+            if(ani==1){
+                DynamicColor();
+                printf("\n");
+                if(lge==1){
+                    TypingEffect("NOW CLOSING");
+                }
+                else if(lge==0){
+                    TypingEffect("FERMETURE EN COURS");
+                }
+                LoadingEffect();
+            }
+        }
+    }
+    if(MODE==1 || MODE==2 || MODE==5 || MODE==6){
+        printf("\n");
+        if(lge==1){
+            TypingEffect("SESSION TERMINATED. THANK YOU FOR USING CIPHER FLOW.");
+        }
+        else if(lge==0){
+            TypingEffect("SESSION TERMINEE. MERCI D'AVOIR UTILISE CIPHER FLOW.");
+        }
+        Sleep(1000*ani);
     }
     return 0;
 }
