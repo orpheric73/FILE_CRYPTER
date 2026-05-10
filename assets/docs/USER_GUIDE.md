@@ -9,7 +9,8 @@ Choose an option:
 [2] Decrypt a file  
 [3] Schedule encryption  
 [4] Schedule decryption  
-[5] Exit
+[5] Info
+[6] Exit
 ```
 🟢 **1. Encrypt Files**
 - Enter the number of files to encrypt
@@ -60,4 +61,8 @@ At the scheduled time:
 At the scheduled time:
 - If the file exists → decryption is performed
 - Otherwise → "File not found" message is displayed
+```
+🟢 **5. Info**
+```
+Provides general information about CipherFlow and briefly explains how it works.
 ```
