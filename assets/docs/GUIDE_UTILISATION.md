@@ -9,7 +9,8 @@ Choisissez une option :
 [2] Déchiffrer un fichier  
 [3] Planifier un chiffrement  
 [4] Planifier un déchiffrement  
-[5] Quitter
+[5] Info
+[6] Quitter
 ```
 🟢 **1. Chiffrer des fichiers**
 ```
@@ -60,4 +61,8 @@ Pour chaque fichier :
 À l’heure prévue :
 - Si le fichier existe → déchiffrement
 - Sinon → message “File not found”
+```
+🟢 **5. Info**
+```
+Cette section fournit des informations générales a propos de CipherFlow et explique brièvement son fonctionnement.
 ```
