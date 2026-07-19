@@ -1,4 +1,15 @@
+/*
+ * FILE_CRYPTER
+ * Author: Orphéric SANGNIDJO
+ *
+ * Copyright (c) 2026 Orphéric SANGNIDJO
+ *
+ * This source code is part of the FILE_CRYPTER project.
+ * See the LICENSE file for license information.
+ */
 #include"FUNCTION.h"
+#include <shellapi.h>
+#include <shlobj.h>
 #ifdef _WIN32
     #include<direct.h>
     #define MKDIR(PATH) _mkdir(PATH)
@@ -18,8 +29,22 @@ typedef struct{
     int v;
 }crypt;
 int main(){
-    int MODE, con, clb, lan, res=1;
     system("color 0A && title FILE_CRYPTER");
+    int MODE, con, clb, lan, res=1;
+    HWND hwnd = GetConsoleWindow();
+    HICON icon = LoadIcon(
+        GetModuleHandleA(NULL),
+        MAKEINTRESOURCE(1)
+    );
+    if(hwnd && icon){
+        SetClassLongPtrA(hwnd, GCLP_HICON, (LONG_PTR)icon);
+        SetClassLongPtrA(hwnd, GCLP_HICONSM, (LONG_PTR)icon);
+
+        SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)icon);
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
+
+        DrawMenuBar(hwnd);
+    }
     LANGID lang;
     lang = GetUserDefaultUILanguage();
     if(PRIMARYLANGID(lang) == LANG_FRENCH){
@@ -30,6 +55,224 @@ int main(){
     }
     LanguageChosing(lan);
     AskForAnimation();
+    HKEY hKey;
+    LONG ret;
+    DWORD disposition;
+    ret = RegCreateKeyExA(
+        HKEY_CURRENT_USER,
+        "Software\\Classes\\.cflow",
+        0,
+        NULL,
+        REG_OPTION_NON_VOLATILE,
+        KEY_WRITE,
+        NULL,
+        &hKey,
+        &disposition
+    );
+    if(ret != ERROR_SUCCESS){
+        if(lge==1){
+            TypingEffect("\n[ ERROR ] ERROR CREATING KEY .cflow");
+        }
+        else{
+            TypingEffect("\n[ ERROR ] ERREUR LORS DE LA CREATION DE LA CLE .cflow");
+        }
+        Sleep(3000);
+        return 1;
+    }
+    if(disposition == REG_CREATED_NEW_KEY){
+        const char *type = "CipherFlow.File";
+        RegSetValueExA(
+            hKey,
+            NULL,
+            0,
+            REG_SZ,
+            (const BYTE *)type,
+            (DWORD)(strlen(type) + 1)
+        );
+    }
+    RegCloseKey(hKey);
+    ret = RegCreateKeyExA(
+        HKEY_CURRENT_USER,
+        "Software\\Classes\\CipherFlow.File",
+        0,
+        NULL,
+        REG_OPTION_NON_VOLATILE,
+        KEY_WRITE,
+        NULL,
+        &hKey,
+        &disposition
+    );
+    if(ret != ERROR_SUCCESS){
+        if(lge==1){
+            TypingEffect("\n[ ERROR ] ERROR CREATING KEY CipherFlow.File");
+        }
+        else{
+            TypingEffect("\n[ ERROR ] ERREUR LORS DE LA CREATION DE LA CLE CipherFlow.File");
+        }
+        Sleep(3000);
+        return 1;
+    }
+    if(disposition == REG_CREATED_NEW_KEY){
+        const char *description = "CipherFlow Encrypted File";
+        RegSetValueExA(
+            hKey,
+            NULL,
+            0,
+            REG_SZ,
+            (const BYTE *)description,
+            (DWORD)(strlen(description) + 1)
+        );
+    }
+    RegCloseKey(hKey);
+    char exePath[MAX_PATH];
+    char iconPath[MAX_PATH + 3];
+    if(GetModuleFileNameA(NULL, exePath, MAX_PATH) == 0){
+        if(lge==1){
+            printf("\n[ ERROR ] ERROR GETTING FILENAME : %lu",GetLastError());
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR D'OBTENTION DU NOM DE L'EXE : %lu.", GetLastError());
+        }
+        Sleep(3000);
+        return 1;
+    }
+    snprintf(iconPath, sizeof(iconPath), "%s,0", exePath);
+    ret = RegCreateKeyExA(
+        HKEY_CURRENT_USER,
+        "Software\\Classes\\CipherFlow.File\\DefaultIcon",
+        0,
+        NULL,
+        REG_OPTION_NON_VOLATILE,
+        KEY_WRITE,
+        NULL,
+        &hKey,
+        &disposition
+    );
+    if(ret != ERROR_SUCCESS){
+        if(lge==1){
+            printf("\n[ ERROR ] ERROR CREATING DEFAULT ICON : %ld", ret);
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR DE CREATION DE L'ICONE PAR DEFAUT : %ld.", ret);
+        }
+        Sleep(3000);
+        return 1;
+    }
+    RegSetValueExA(
+        hKey,
+        NULL,
+        0,
+        REG_SZ,
+        (const BYTE *)iconPath,
+        (DWORD)(strlen(iconPath) + 1)
+    );
+    RegCloseKey(hKey);
+    ret = RegCreateKeyExA(
+        HKEY_CURRENT_USER,
+        "Software\\Classes\\CipherFlow.File\\shell\\open\\command",
+        0,
+        NULL,
+        0,
+        KEY_WRITE,
+        NULL,
+        &hKey,
+        &disposition
+    );
+    if(ret != ERROR_SUCCESS){
+        if(lge==1){
+            printf("\n[ ERROR ] ERROR CREATING DEFAULT APP : %ld", ret);
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR DE CREATION DE L'APP PAR DEFAUT : %ld.", ret);
+        }
+        Sleep(3000);
+        return 1;
+    }
+    RegSetValueExA(
+        hKey,
+        NULL,
+        0,
+        REG_SZ,
+        (const BYTE *)exePath,
+        (DWORD)(strlen(exePath) + 1)
+    );
+    RegCloseKey(hKey);
+    ret = RegCreateKeyExA(
+        HKEY_CURRENT_USER,
+        "Software\\Classes\\*\\shell\\Open with CipherFlow",
+        0,
+        NULL,
+        0,
+        KEY_WRITE,
+        NULL,
+        &hKey,
+        NULL
+    );
+    if(ret != ERROR_SUCCESS){
+        if(lge==1){
+            printf("\n[ ERROR ] ERROR CREATING MENU : %ld", ret);
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR DE CREATION DU MENU %ld.", ret);
+        }
+        Sleep(3000);
+        return 1;
+    }
+    RegSetValueExA(
+        hKey,
+        NULL,
+        0,
+        REG_SZ,
+        (const BYTE *)"Open with CipherFlow",
+        (DWORD)(strlen("Open with CipherFlow") + 1)
+    );
+    RegSetValueExA(
+        hKey,
+        "Icon",
+        0,
+        REG_SZ,
+        (const BYTE *)iconPath,
+        (DWORD)(strlen(iconPath) + 1)
+    );
+    RegCloseKey(hKey);
+    ret = RegCreateKeyExA(
+        HKEY_CURRENT_USER,
+        "Software\\Classes\\*\\shell\\Open with CipherFlow\\command",
+        0,
+        NULL,
+        0,
+        KEY_WRITE,
+        NULL,
+        &hKey,
+        NULL
+    );
+    if(ret != ERROR_SUCCESS){
+        if(lge==1){
+            printf("\n[ ERROR ] ERROR CREATING COMMAND : %ld", ret);
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR DE CREATION DE LA COMMANDE %ld.", ret);
+        }
+        Sleep(3000);
+        return 1;
+    }
+    char command[MAX_PATH + 10];
+    sprintf(command, "\"%s\"", exePath);
+    RegSetValueExA(
+        hKey,
+        NULL,
+        0,
+        REG_SZ,
+        (BYTE *)command,
+        (DWORD)(strlen(command) + 1)
+    );
+    RegCloseKey(hKey);
+    SHChangeNotify(
+        SHCNE_ASSOCCHANGED,
+        SHCNF_IDLIST,
+        NULL,
+        NULL
+    );
     HomeOrMenu(0);
     SetConsoleCtrlHandler(ConsoleHandler, TRUE);
     while (res==1){
@@ -39,34 +282,34 @@ int main(){
             HomeOrMenu(1);
             if(scanf("%d",&MODE) != 1){
                 if(lge==1){
-                    TypingEffect("\nINVALID INPUT,TRY AGAIN.");
+                    TypingEffect("\n[ ERROR ] ENTER A NUMBER BETWEEN 1 AND 7");
                 }
-                else if(lge==0){
-                    TypingEffect("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                else{
+                    TypingEffect("\n[ ERROR ] ENTRER UN NOMBRE ENTRE 1 ET 7");
                 }
                 while((clb=getchar()) != '\n' && clb != EOF);
                 con=0;
             }
-            printf("\n");
-        }while(con!=1 || (MODE<1 || MODE>6));
+            printf("\n\n");
+        }while(con!=1 || (MODE<1 || MODE>7));
         if(MODE==1 || MODE==3){
             if(MODE==1){
                 if(lge==1){
-                    TypingEffect("##############################################   1-> ENCRYPT FILE    ###################################################");
+                    TypingEffect("###########################################      1-> ENCRYPT FILE        ###############################################");
                     printf("\n");
                 }
-                else if(lge==0){
-                    TypingEffect("#########################################   1-> CRYPTER UN/DES FICHIER(S)    ###########################################");
+                else{
+                    TypingEffect("#########################################   1-> CHIFFRER UN/DES FICHIER(S)   ###########################################");
                     printf("\n");
                 }
             }
             else{
                 if(lge==1){
-                    TypingEffect("###########################################   3-> ENCRYPTION PLANNING    ###############################################");
+                    TypingEffect("###########################################   3-> SCHEDULE ENCRYPTION    ###############################################");
                     printf("\n");
                 }
-                else if(lge==0){
-                    TypingEffect("#########################################   3-> PLANIFIER UN CRYPTAGE    ###############################################");
+                else{
+                    TypingEffect("#########################################  3-> PLANIFIER UN CHIFFREMENT      ###########################################");
                     printf("\n");
                 }
             }
@@ -78,81 +321,92 @@ int main(){
             char dwn[11], ehou[3];
             char rmdec;
             if(MODE==3){
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("==================================================  ENCRYPTION TIMER  ==================================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("================================================= TIMER DE CHIFFREMENT =================================================");
+                    printf("\n");
+                }
+                if(lge==1){
+                    printf("\nSET DELAY BEFORE SCHEDULED ENCRYPTION(TURNING THE DEVICE OFF WILL DELETE THE PROCESS)");
+                }
+                else{
+                    printf("\nDEFINIR LE DELAI AVANT LE CHIFFREMENT PROGRAMMEE(ETEINDRE L'APPAREIL SUPPRIMERA LE PROCESSUS)");
+                }
                 do{
                     con=1;
-                    if(lge==1){
-                        printf("\nSET DELAY BEFORE SCHEDULED ENCRYPTION(TURN THE DEVICE OFF WILL DELETE THE PROCESS)");
-                    }
-                    else if(lge==0){
-                        printf("\nDEFINIR LE DELAI AVANT LE CHIFFREMENT PROGRAMME(ETEINDRE L'APPAREIL SUPPRIMERA LE PROCESSUS)");
-                    }
                     printf("\ncipherflow> H: ");
                     if(scanf("%d",&H)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID NUMBER");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
+                        H=0;
+                        M=0;
+                        S=0;
+                        continue;
                     }
                     printf("\ncipherflow> M: ");
                     if(scanf("%d",&M)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID NUMBER");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
+                        M=0;
+                        S=0;
+                        continue;
                     }
                     printf("\ncipherflow> S: ");
                     if(scanf("%d",&S)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID NUMBER");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
+                        S=0;
+                        continue;
                     }
-                    if(con!=0){
-                        if(lge==1){
-                            printf("\n");
-                            TypingEffect("ENCRYPTION SCHEDULED IN");
-                            printf(" %d ",H);
-                            TypingEffect("HOUR(S)");
-                            printf(" %d ",M);
-                            TypingEffect("MINUTE(S)");
-                            printf(" %d ",S);
-                            TypingEffect("SECOND(S)");
-                            printf("\nENTER 1 TO CONFIRM");
-                        }
-                        else if(lge==0){
-                            printf("\n");
-                            TypingEffect("CHIFFREMENT PREVU DANS");
-                            printf(" %d ",H);
-                            TypingEffect("HEURE(S)");
-                            printf(" %d ",M);
-                            TypingEffect("MINUTE(S)");
-                            printf(" %d ",S);
-                            TypingEffect("SECONDE(S)");
-                            printf("\nENTRER 1 POUR CONFIRMER");
-                        }
-                        printf("\ncipherflow> ");
-                        if(scanf("%d",&con)!=1){
-                            if(lge==1){
-                                printf("\nINVALID INPUT,TRY AGAIN.");
-                            }
-                            else if(lge==0){
-                                printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
-                            }
-                            while((clb=getchar()) != '\n' && clb != EOF);
-                            con=0;
-                        }
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("ENCRYPTION SCHEDULED IN");
+                        printf(" %d ",H);
+                        TypingEffect("HOUR(S)");
+                        printf(" %d ",M);
+                        TypingEffect("MINUTE(S)");
+                        printf(" %d ",S);
+                        TypingEffect("SECOND(S)");
+                        printf("\nENTER 1 TO CONFIRM");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("CHIFFREMENT PREVU DANS");
+                        printf(" %d ",H);
+                        TypingEffect("HEURE(S)");
+                        printf(" %d ",M);
+                        TypingEffect("MINUTE(S)");
+                        printf(" %d ",S);
+                        TypingEffect("SECONDE(S)");
+                        printf("\nENTRER 1 POUR CONFIRMER");
+                    }
+                    printf("\ncipherflow> ");
+                    if(scanf("%d",&con)!=1){
+                        while((clb=getchar()) != '\n' && clb != EOF);
+                        con=0;
                     }
                 }while(con!=1 || (H<0 || M<0 || S<0));
                 SYSTEMTIME st;
@@ -221,49 +475,59 @@ int main(){
             crt=(crypt *)calloc(nb,sizeof(crypt));
             if(crt==NULL){
                 if(lge==1){
-                    printf("ALLOCATION ERROR\n");
+                    printf("\n[ ERROR ] ALLOCATION ERROR");
                     MessageBeep(MB_ICONHAND);
-                    MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    MessageBox(NULL, "[ ERROR ] ALLOCATING MEMORY SPACE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                 }
-                else if(lge==0){
-                    printf("ERREUR D'ALLOCATION\n");
+                else{
+                    printf("\n[ ERROR ] ERREUR D'ALLOCATION");
                     MessageBeep(MB_ICONHAND);
-                    MessageBox(NULL, "ERREUR(PEUT-ETRE DUE A UNE MEMOIRE INSUFFISANTE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    MessageBox(NULL, "[ ERROR ] ALLOCATION D'ESPACE MEMOIRE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                 }
                 return 1;
             }
             for(K=0;K<nb;K++){
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("===================================================  FILE SELECTION  ===================================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("================================================= SELECTION DU FICHIER =================================================");
+                    printf("\n");
+                }
                 do{
                     con=1;
                     crt[K].InputFileName=calloc(200,sizeof(char));
                     if(crt[K].InputFileName==NULL){
                         if(lge==1){
-                            printf("ALLOCATION ERROR\n");
+                            printf("\n[ ERROR ] ALLOCATION ERROR");
                             free(crt);
                             MessageBeep(MB_ICONHAND);
-                            MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            MessageBox(NULL, "[ ERROR ] ALLOCATING MEMORY SPACE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
-                        else if(lge==0){
-                            printf("ERREUR D'ALLOCATION\n");
+                        else{
+                            printf("\n[ ERROR ] ERREUR D'ALLOCATION");
                             free(crt);
                             MessageBeep(MB_ICONHAND);
-                            MessageBox(NULL, "ERREUR(PEUT-ETRE DUE A UNE MEMOIRE INSUFFISANTE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            MessageBox(NULL, "[ ERROR ] ALLOCATION D'ESPACE MEMOIRE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
                         return 1;
                     }
                     if(lge==1){
-                        printf("\nENTER THE FULL PATH OF THE FILE BY DRAGGING AND DROPPING THE FILE INTO THE CONSOLE");
+                        printf("\nENTER THE FULL PATH OF THE FILE OR DRAG AND DROP IT HERE");
                     }
-                    else if(lge==0){
-                        printf("\nENTRER LE CHEMIN COMPLET DU FICHIER EN GLISSANT ET DEPOSANT LE FICHIER DANS LA CONSOLE");
+                    else{
+                        printf("\nENTRER LE CHEMIN COMPLET DU FICHIER OU GLISSER ET DEPOSER LE FICHIER ICI");
                     }
                     printf("\ncipherflow> ");
                     if(scanf(" %199[^\n]",crt[K].InputFileName) != 1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID PATH");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN CHEMIN VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
@@ -279,10 +543,10 @@ int main(){
                         if(MODE==1){
                             if((crt[K].InputFile=fopen(crt[K].InputFileName,"rb"))==NULL){
                                 if(lge==1){
-                                    printf("\nOPENING ERROR\n");
+                                    printf("\n[ ERROR ] FILE OPENING ERROR");
                                 }
-                                else if(lge==0){
-                                    printf("\nERREUR D'OUVERTURE\n");
+                                else{
+                                    printf("\n[ ERROR ] ERREUR D'OUVERTURE DU FICHIER");
                                 }
                                 free(crt[K].InputFileName);
                                 con=0;
@@ -292,10 +556,10 @@ int main(){
                         else if(MODE==3){
                             if(strnlen(crt[K].InputFileName, 200) == 200 || crt[K].InputFileName[0] == '\0' ){
                                 if(lge==1){
-                                    printf("\nINVALID STRING\n");
+                                    printf("\n[ ERROR ] ENTER A VALID PATH");
                                 }
-                                else if(lge==0){
-                                    printf("\nCHAINE INVALIDE\n");
+                                else{
+                                    printf("\n[ ERROR ] ENTRER UN CHEMIN VALIDE");
                                 }
                                 con=0;
                             }
@@ -306,10 +570,10 @@ int main(){
                     con=1;
                     MessageBeep(MB_ICONQUESTION);
                     if(lge==1){
-                        result = MessageBox(NULL, "DO YOU WANT TO REMOVE THE FILE AFTER ENCRYPTION ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
+                        result = MessageBox(NULL, "[ INFO ] DO YOU WANT TO REMOVE THE FILE AFTER ENCRYPTION ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
                     }
-                    else if(lge==0){
-                        result = MessageBox(NULL, "VOUDRIEZ-VOUS SUPPRIMER LE FICHIER APRES CRYPTAGE ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
+                    else{
+                        result = MessageBox(NULL, "[ INFO ] VOUDRIEZ-VOUS SUPPRIMER LE FICHIER APRES CHIFFREMENT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
                     }
                     if(result==IDYES){
                         remo=1;
@@ -383,10 +647,10 @@ int main(){
                 crt[K].OutputFileName=calloc(300,sizeof(char));
                 if(crt[K].OutputFileName==NULL){
                         if(lge==1){
-                            printf("ALLOCATION ERROR\n");
+                            printf("\n[ ERROR ] MEMORY ALLOCATION ERROR");
                         }
-                        else if(lge==0){
-                            printf("ERREUR D'ALLOCATION\n");
+                        else{
+                            printf("\n[ ERROR ] ERREUR D'ALLOCATION DE MEMOIRE");
                         }
                         free(crt[K].InputFileName);
                         if(MODE==1){
@@ -400,21 +664,20 @@ int main(){
                         free(crt);
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
-                            MessageBox(NULL, "ENCRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            MessageBox(NULL, "[ ERROR ] ENCRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
-                        else if(lge==0){
-                            MessageBox(NULL, "LE CRYPTAGE A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        else{
+                            MessageBox(NULL, "[ ERROR ] LE CHIFFREMENT A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
-
                         return 1;
                 }
                 if(MODE==3){
                     printf("\n");
                     if(lge==1){
-                        TypingEffect("THE ENCRYPTION WILL START AT :");
+                        TypingEffect("[ INFO ] THE ENCRYPTION WILL START AT :");
                     }
-                    else if(lge==0){
-                        TypingEffect("LE CRYPTAGE DEMARRERA A :");
+                    else{
+                        TypingEffect("[ INFO ] LE CHIFFREMENT DEMARRERA A :");
                     }
                     printf("\n\t%d:%d:%d",H,M,S);
                     if(lan==1){
@@ -425,10 +688,10 @@ int main(){
                     Sleep(2000);
                     MessageBeep(MB_ICONEXCLAMATION);
                     if(lge==1){
-                        MessageBox(NULL, "DON'T TURN OFF THE DEVICE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
+                        MessageBox(NULL, "[ INFO ] DON'T TURN OFF THE DEVICE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "N'ETEIGNEZ PAS L'APPAREIL", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
+                    else{
+                        MessageBox(NULL, "[ INFO ] N'ETEIGNEZ PAS L'APPAREIL", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
                     }
                     HWND hwnd = GetConsoleWindow();
                     ShowWindow(hwnd, SW_HIDE);
@@ -484,10 +747,10 @@ int main(){
                         if(yn>y){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -495,12 +758,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -509,17 +771,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -528,16 +790,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon>mo){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -545,12 +808,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -559,17 +821,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -578,16 +840,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn>d){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -595,12 +858,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -609,17 +871,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -628,16 +890,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn==d && Hn>H){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -645,12 +908,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -659,17 +921,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -678,16 +940,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn==d && Hn==H && Mn>M){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -695,12 +958,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -709,17 +971,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -728,16 +990,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn==d && Hn==H && Mn==M && Sn>S){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE ENCRYPTION WASN'T DONE\nDO YOU WANT TO ENCRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE CRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS CRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -745,12 +1008,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -759,17 +1021,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ]THE PROCESS END WITHOUT FILE ENCRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ]LE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -778,6 +1040,7 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
@@ -790,10 +1053,10 @@ int main(){
                         }
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
-                            snprintf(crt[K].OutputFileName, 300, "%s NOT FOUND\nTHE PROCESS END WITHOUT FILE ENCRYPTING", crt[K].InputFileName);
+                            snprintf(crt[K].OutputFileName, 300, "[ ERROR ]%s NOT FOUND\nTHE PROCESS END WITHOUT FILE ENCRYPTING", crt[K].InputFileName);
                         }
-                        else if(lge==0){
-                            snprintf(crt[K].OutputFileName, 300, "%s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST TERMINE SANS AVOIR CRYPTER LE FICHIER", crt[K].InputFileName);
+                        else{
+                            snprintf(crt[K].OutputFileName, 300, "[ ERROR ]%s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST INTERROMPU SANS AVOIR CRYPTER LE FICHIER", crt[K].InputFileName);
                         }
                         MessageBox(NULL, crt[K].OutputFileName, "FILE_CRYPTER", MB_OK);
                         free(crt[K].InputFileName);
@@ -802,23 +1065,23 @@ int main(){
                         return 1;
                     }
                 }
-                sprintf(crt[K].OutputFileName,"%sc",crt[K].InputFileName);
+                sprintf(crt[K].OutputFileName,"%s.cflow",crt[K].InputFileName);
                 if((prmr = FileExistanceChecker(crt[K].OutputFileName)) == 0){
                     do{
                         con=1;
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
-                            result = MessageBox(NULL, "A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                            result = MessageBox(NULL, "[ INFO ]A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
-                        else if(lge==0){
-                            result = MessageBox(NULL, "FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                        else{
+                            result = MessageBox(NULL, "[ INFO ]FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         if(result==IDYES){
                             if(lge==1){
-                                IndependentMessageBox("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                                IndependentMessageBox("[ INFO ]THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
                             }
-                            else if(lge==0){
-                                IndependentMessageBox("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
+                            else{
+                                IndependentMessageBox("[ INFO ]L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
                             }
                         }
                         else if(result==IDNO){
@@ -832,10 +1095,10 @@ int main(){
                             }
                             MessageBeep(MB_ICONHAND);
                             if(lge==1){
-                                MessageBox(NULL, "ENCRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                                MessageBox(NULL, "[ INFO ]ENCRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                             }
-                            else if(lge==0){
-                                MessageBox(NULL, "LE CRYPTAGE A ETE ARRETE\nVOUS POUVEZ FAIRE LA COPIE DU FICHIER EXISTANT POUR LE SAUVEGARDER ET RECOMMENCEZ EN SECURITE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            else{
+                                MessageBox(NULL, "[ INFO ]LE CHIFFREMENT A ETE INTERROMPU\nVOUS POUVEZ FAIRE LA COPIE DU FICHIER EXISTANT POUR LE SAUVEGARDER ET RECOMMENCEZ EN SECURITE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                             }
                             free(crt);
                             return 1;
@@ -847,20 +1110,20 @@ int main(){
                 }
                 if((crt[K].OutputFile=fopen(crt[K].OutputFileName,"wb+"))==NULL){
                     if(lge==1){
-                        printf("OPENING ERROR\n");
+                        printf("\n[ ERROR ] OPENING ERROR");
                     }
-                    else if(lge==0){
-                        printf("ERREUR D'OUVERTURE\n");
+                    else{
+                        printf("\n[ ERROR ] ERREUR D'OUVERTURE");
                     }
                     free(crt[K].InputFileName);
                     free(crt[K].OutputFileName);
                     fclose(crt[K].InputFile);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL, "ENCRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        MessageBox(NULL, "[ ERROR ]ENCRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "LE CRYPTAGE A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    else{
+                        MessageBox(NULL, "[ ERROR ]LE CHIFFREMENT A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
                         memset(crt[me].Password, 0, 11);
@@ -930,14 +1193,14 @@ int main(){
                     free(crt[K].InputFileName);
                     fclose(crt[K].InputFile);
                     fclose(crt[K].OutputFile);
-                    remove(crt[K].OutputFileName);
+                    RemoveFile(crt[K].OutputFileName);
                     free(crt[K].OutputFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL, "ENCRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        MessageBox(NULL, "[ ERROR ]ENCRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "LE CRYPTAGE A ECHOUE(LA PERMUTATION N'A PAS MARCHE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    else{
+                        MessageBox(NULL, "[ ERROR ]LE CHIFFREMENT A ECHOUE(LA PERMUTATION N'A PAS MARCHE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
                         memset(crt[me].Password, 0, 11);
@@ -954,24 +1217,24 @@ int main(){
                     if(ani==1){
                         printf("\n");
                         if(lge==1){
-                            TypingEffect("NOW ENCRYPTING");
+                            TypingEffect("[ INFO ]NOW ENCRYPTING");
                         }
-                        else if(lge==0){
-                            TypingEffect("CRYPTAGE EN COURS");
+                        else{
+                            TypingEffect("[ INFO ]CHIFFREMENT EN COURS");
                         }
                         LoadingEffect();
                         printf("\n");
                         MatrixSimulation();
                     }
-                    printf("\n%s ",crt[K].InputFileName);
+                    printf("\n[ SUCCESS ] %s ",crt[K].InputFileName);
                     if(lge==1){
                         TypingEffect("ENCRYPTED SUCCESSFULLY");
                     }
-                    else if(lge==0){
+                    else{
                         TypingEffect("CRYPTE AVEC SUCCES");
                     }
                     if(remo==1){
-                        remove(crt[K].InputFileName);
+                        RemoveFile(crt[K].InputFileName);
                     }
                     printf("\n");
                     memset(crt[K].Password, 0, 11);
@@ -980,27 +1243,27 @@ int main(){
                     if(nb==K+1){
                         MessageBeep(MB_ICONASTERISK);
                         if(lge==1){
-                            IndependentMessageBox("ALL DONE", "FILE_CRYPTER");
+                            IndependentMessageBox("[ SUCCESS ]ALL DONE", "FILE_CRYPTER");
                         }
-                        else if(lge==0){
-                            IndependentMessageBox("TERMINE", "FILE_CRYPTER");
+                        else{
+                            IndependentMessageBox("[ SUCCESS ]TERMINE", "FILE_CRYPTER");
                         }
                         Sleep(2000);
                     }
                 }
                 if(MODE==3){
                     if(remo==1){
-                        remove(crt[K].InputFileName);
+                        RemoveFile(crt[K].InputFileName);
                     }
                     memset(crt[K].Password, 0, 11);
                     memset(crt[K].Key, 0, 10*sizeof(int));
                     crt[K].v=0;
                     MessageBeep(MB_ICONASTERISK);
                     if(lge==1){
-                        MessageBox(NULL,"ENCRYPTION MADE SUCCESSFULLY", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                        MessageBox(NULL,"[ SUCCESS ]ENCRYPTION COMPLETED SUCCESSFULLY", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL,"CRYPTAGE FAIT AVEC SUCCES", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                    else{
+                        MessageBox(NULL,"[ SUCCESS ]CHIFFREMENT EFFECTUE AVEC SUCCES", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
                     }
                 }
                 free(crt[K].InputFileName);
@@ -1012,16 +1275,16 @@ int main(){
                     if(lge==1){
                         printf("\nDO YOU WANT TO PERFORM ANOTHER OPERATION?\n[1] YES\n[0] EXIT");
                     }
-                    else if(lge==0){
+                    else{
                         printf("\nVOULEZ-VOUS EFFECTUEZ UNE AUTRE OPERATION?\n[1] OUI\n[0] QUITTER");
                     }
                     printf("\ncipherflow> ");
                     if(scanf("%d",&res)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A NUMBER BETWEEN 1 AND 0");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE ENTRE 1 ET 0");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
@@ -1033,21 +1296,21 @@ int main(){
         else if(MODE==2 || MODE==4){
             if(MODE==2){
                 if(lge==1){
-                    TypingEffect("##############################################   2-> DECRYPT FILE    ###################################################");
+                    TypingEffect("###########################################       2-> DECRYPT FILE       ###############################################");
                     printf("\n");
                 }
-                else if(lge==0){
-                    TypingEffect("#########################################   2-> DECRYPTER UN/DES FICHIER(S)    #########################################");
+                else{
+                    TypingEffect("#########################################   2-> DECHIFFRER UN/DES FICHIER(S)   #########################################");
                     printf("\n");
                 }
             }
             else{
                 if(lge==1){
-                    TypingEffect("###########################################   4-> DECRYPTION PLANNING    ###############################################");
+                    TypingEffect("###########################################   4-> SCHEDULE DECRYPTION    ###############################################");
                     printf("\n");
                 }
-                else if(lge==0){
-                    TypingEffect("#########################################   4-> PLANIFIER UN DECRYPTAGE    #############################################");
+                else{
+                    TypingEffect("#########################################   4-> PLANIFIER UN DECHIFFREMENT     #########################################");
                     printf("\n");
                 }
             }
@@ -1060,81 +1323,92 @@ int main(){
             char rmdec;
             FILE* TempFile;
             if(MODE==4){
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("==================================================  DECRYPTION TIMER  ==================================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("================================================= TIMER DE DECHIFFREMENT ===============================================");
+                    printf("\n");
+                }
+                if(lge==1){
+                    printf("\nSET DELAY BEFORE SCHEDULED DECRYPTION(TURN THE PC OFF WILL DELETE THE PROCESS)");
+                }
+                else{
+                    printf("\nDEFINIR LE DELAI AVANT LE DECHIFFREMENT PROGRAMME(TURN THE PC OFF WILL DELETE THE PROCESS)");
+                }
                 do{
                     con=1;
-                    if(lge==1){
-                        printf("\nSET DELAY BEFORE SCHEDULED ENCRYPTION(LESS THAN 49 DAYS)(TURN THE PC OFF WILL DELETE THE PROCESS)");
-                    }
-                    else if(lge==0){
-                        printf("\nDEFINIR LE DELAI AVANT LE DECHIFFREMENT PROGRAMME(LESS THAN 49 DAYS)(TURN THE PC OFF WILL DELETE THE PROCESS)");
-                    }
                     printf("\ncipherflow> H: ");
                     if(scanf("%d",&H)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID NUMBER");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
+                        H=0;
+                        M=0;
+                        S=0;
+                        continue;
                     }
                     printf("\ncipherflow> M: ");
                     if(scanf("%d",&M)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID NUMBER");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
+                        M=0;
+                        S=0;
+                        continue;
                     }
                     printf("\ncipherflow> S: ");
                     if(scanf("%d",&S)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID NUMBER");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
+                        S=0;
+                        continue;
                     }
-                    if(con!=0){
-                        if(lge==1){
-                            printf("\n");
-                            TypingEffect("DECRYPTION SCHEDULED IN");
-                            printf(" %d ",H);
-                            TypingEffect("HOUR(S)");
-                            printf(" %d ",M);
-                            TypingEffect("MINUTE(S)");
-                            printf(" %d ",S);
-                            TypingEffect("SECOND(S)");
-                            printf("\nENTER 1 TO CONFIRM");
-                        }
-                        else if(lge==0){
-                            printf("\n");
-                            TypingEffect("DECHIFFREMENT PREVU DANS");
-                            printf(" %d ",H);
-                            TypingEffect("HEURE(S)");
-                            printf(" %d ",M);
-                            TypingEffect("MINUTE(S)");
-                            printf(" %d ",S);
-                            TypingEffect("SECONDE(S)");
-                            printf("\nENTRER 1 POUR CONFIRMER");
-                        }
-                        printf("\ncipherflow> ");
-                        if(scanf("%d",&con)!=1){
-                            if(lge==1){
-                                printf("\nINVALID INPUT,TRY AGAIN.");
-                            }
-                            else if(lge==0){
-                                printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
-                            }
-                            while((clb=getchar()) != '\n' && clb != EOF);
-                            con=0;
-                        }
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("DECRYPTION SCHEDULED IN");
+                        printf(" %d ",H);
+                        TypingEffect("HOUR(S)");
+                        printf(" %d ",M);
+                        TypingEffect("MINUTE(S)");
+                        printf(" %d ",S);
+                        TypingEffect("SECOND(S)");
+                        printf("\nENTER 1 TO CONFIRM");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("DECHIFFREMENT PREVU DANS");
+                        printf(" %d ",H);
+                        TypingEffect("HEURE(S)");
+                        printf(" %d ",M);
+                        TypingEffect("MINUTE(S)");
+                        printf(" %d ",S);
+                        TypingEffect("SECONDE(S)");
+                        printf("\nENTRER 1 POUR CONFIRMER");
+                    }
+                    printf("\ncipherflow> ");
+                    if(scanf("%d",&con)!=1){
+                        while((clb=getchar()) != '\n' && clb != EOF);
+                        con=0;
                     }
                 }while(con!=1 || (H<0 || M<0 || S<0));
                 SYSTEMTIME st;
@@ -1203,49 +1477,59 @@ int main(){
             crt=(crypt *)calloc(nb,sizeof(crypt));
             if(crt==NULL){
                 if(lge==1){
-                    printf("ALLOCATION ERROR\n");
+                    printf("\n[ ERROR ] ALLOCATION ERROR");
                     MessageBeep(MB_ICONHAND);
-                    MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    MessageBox(NULL, "[ ERROR ] ALLOCATING MEMORY SPACE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                 }
-                else if(lge==0){
-                    printf("ERREUR D'ALLOCATION\n");
+                else{
+                    printf("\n[ ERROR ] ERREUR D'ALLOCATION");
                     MessageBeep(MB_ICONHAND);
-                    MessageBox(NULL, "ERREUR(PEUT-ETRE DUE A UNE MEMOIRE INSUFFISANTE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    MessageBox(NULL, "[ ERROR ] ALLOCATION D'ESPACE MEMOIRE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                 }
                 return 1;
             }
             for(K=0;K<nb;K++){
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("===================================================  FILE SELECTION  ===================================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("================================================= SELECTION DU FICHIER =================================================");
+                    printf("\n");
+                }
                 do{
                     con=1;
                     crt[K].InputFileName=calloc(200,sizeof(char));
                     if(crt[K].InputFileName==NULL){
                         if(lge==1){
-                            printf("ALLOCATION ERROR\n");
+                            printf("\n[ ERROR ] ALLOCATION ERROR");
                             free(crt);
                             MessageBeep(MB_ICONHAND);
-                            MessageBox(NULL, "ERROR(MAYBE INSUFFICIENT MEMORY)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            MessageBox(NULL, "[ ERROR ] ALLOCATING MEMORY SPACE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
-                        else if(lge==0){
-                            printf("ERREUR D'ALLOCATION\n");
+                        else{
+                            printf("\n[ ERROR ] ERREUR D'ALLOCATION");
                             free(crt);
                             MessageBeep(MB_ICONHAND);
-                            MessageBox(NULL, "ERREUR(PEUT-ETRE DUE A UNE MEMOIRE INSUFFISANTE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            MessageBox(NULL, "[ ERROR ] ALLOCATION D'ESPACE MEMOIRE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
                         return 1;
                     }
                     if(lge==1){
-                        printf("\nENTER THE FULL PATH OF THE FILE BY DRAGGING AND DROPPING THE FILE INTO THE CONSOLE");
+                        printf("\nENTER THE FULL PATH OF THE FILE OR DRAG AND DROP IT HERE");
                     }
-                    else if(lge==0){
-                        printf("\nENTRER LE CHEMIN COMPLET DU FICHIER EN GLISSANT ET DEPOSANT LE FICHIER DANS LA CONSOLE");
+                    else{
+                        printf("\nENTRER LE CHEMIN COMPLET DU FICHIER OU GLISSER ET DEPOSER LE FICHIER ICI");
                     }
                     printf("\ncipherflow> ");
                     if(scanf(" %199[^\n]",crt[K].InputFileName) != 1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A VALID PATH");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN CHEMIN VALIDE");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
@@ -1261,10 +1545,10 @@ int main(){
                         if(MODE==2){
                             if((crt[K].InputFile=fopen(crt[K].InputFileName,"rb"))==NULL){
                                 if(lge==1){
-                                    printf("\nOPENING ERROR\n");
+                                    printf("\n[ ERROR ] FILE OPENING ERROR");
                                 }
-                                else if(lge==0){
-                                    printf("\nERREUR D'OUVERTURE\n");
+                                else{
+                                    printf("\n[ ERROR ] ERREUR D'OUVERTURE DU FICHIER");
                                 }
                                 free(crt[K].InputFileName);
                                 con=0;
@@ -1273,13 +1557,24 @@ int main(){
                         else if(MODE==4){
                             if(strnlen(crt[K].InputFileName, 200) == 200 || crt[K].InputFileName[0] == '\0' ){
                                 if(lge==1){
-                                    printf("\nINVALID STRING\n");
+                                    printf("\n[ ERROR ] ENTER A VALID PATH");
                                 }
-                                else if(lge==0){
-                                    printf("\nCHAINE INVALIDE\n");
+                                else{
+                                    printf("\n[ ERROR ] ENTRER UN CHEMIN VALIDE");
                                 }
                                 con=0;
                             }
+                        }
+                    }
+                    if(con!=0){
+                        if(crt[K].InputFileName[strlen(crt[K].InputFileName)-1] != 'w' || crt[K].InputFileName[strlen(crt[K].InputFileName)-2] != 'o' || crt[K].InputFileName[strlen(crt[K].InputFileName)-3] != 'l' || crt[K].InputFileName[strlen(crt[K].InputFileName)-4] != 'f' || crt[K].InputFileName[strlen(crt[K].InputFileName)-5] != 'c' || crt[K].InputFileName[strlen(crt[K].InputFileName)-6] != '.'){
+                            if(lge==1){
+                                printf("\nINVALID FILE. ENTER A CipherFlow ENCRYPTED FILE");
+                            }
+                            else{
+                                printf("\nFICHIER INVALIDE. ENTRER UN FICHIER CRYPTE CipherFlow");
+                            }
+                            con=0;
                         }
                     }
                 }while(con!=1);
@@ -1346,19 +1641,19 @@ int main(){
                 crt[K].OutputFileName=calloc(300,sizeof(char));
                 if(crt[K].OutputFileName==NULL){
                         if(lge==1){
-                            printf("\nALLOCATION ERROR\n");
+                            printf("\n[ ERROR ] MEMORY ALLOCATION ERROR");
                         }
-                        else if(lge==0){
-                            printf("\nERREUR D'ALLOCATION\n");
+                        else{
+                            printf("\n[ ERROR ] ERREUR D'ALLOCATION DE MEMOIRE");
                         }
                         free(crt[K].InputFileName);
                         fclose(crt[K].InputFile);
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
-                            MessageBox(NULL, "DECRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            MessageBox(NULL, "[ ERROR ] DECRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
-                        else if(lge==0){
-                            MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        else{
+                            MessageBox(NULL, "[ ERROR ] LE DECHIFFREMENT A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                         }
                         for(me=0;me<nb;me++){
                             memset(crt[me].Password, 0, 11);
@@ -1371,10 +1666,10 @@ int main(){
                 if(MODE==4){
                     printf("\n");
                     if(lge==1){
-                        TypingEffect("THE DECRYPTION WILL START AT :");
+                        TypingEffect("[ INFO ] THE DECRYPTION WILL START AT :");
                     }
-                    else if(lge==0){
-                        TypingEffect("LE DECRYPTAGE DEMARRERA A :");
+                    else{
+                        TypingEffect("[ INFO ] LE DECHIFFREMENT DEMARRERA A :");
                     }
                     printf("\n\t%d:%d:%d",H,M,S);
                     if(lan==1){
@@ -1385,10 +1680,10 @@ int main(){
                     Sleep(2000);
                     MessageBeep(MB_ICONEXCLAMATION);
                     if(lge==1){
-                        MessageBox(NULL, "DON'T TURN OFF THE DEVICE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
+                        MessageBox(NULL, "[ INFO ] DON'T TURN OFF THE DEVICE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "N'ETEIGNEZ PAS L'APPAREIL", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
+                    else{
+                        MessageBox(NULL, "[ INFO ] N'ETEIGNEZ PAS L'APPAREIL", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONEXCLAMATION);
                     }
                     HWND hwnd = GetConsoleWindow();
                     ShowWindow(hwnd, SW_HIDE);
@@ -1444,10 +1739,10 @@ int main(){
                         if(yn>y){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -1455,12 +1750,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1469,17 +1763,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1488,16 +1782,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon>mo){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -1505,12 +1800,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1519,17 +1813,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1538,16 +1832,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn>d){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -1555,12 +1850,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1569,17 +1863,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1588,16 +1882,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn==d && Hn>H){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -1605,12 +1900,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1619,17 +1913,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1638,16 +1932,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn==d && Hn==H && Mn>M){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -1655,12 +1950,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1669,17 +1963,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1688,16 +1982,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
                         else if(yn==y && mon==mo && dn==d && Hn==H && Mn==M && Sn>S){
                             MessageBeep(MB_ICONQUESTION);
                             if(lge==1){
-                                result=MessageBox(NULL, "\tDATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                                result=MessageBox(NULL, "[ INFO ] DATE PAST\nTHE DECRYPTION WASN'T DONE\nDO YOU WANT TO DECRYPT NOW ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
-                            else if(lge==0){
-                                result=MessageBox(NULL, "\tDATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE FAIT\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
+                            else{
+                                result=MessageBox(NULL, "[ INFO ] DATE DEPASSEE\nLE DECRYPTAGE N'A PAS ETE EFFECTUE\nVOULEZ-VOUS DECRYPTER MAINTENANT ?", "FILE_CRYPTER", MB_YESNOCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
                             }
                             if(result==IDYES){
                                 ct=1;
@@ -1705,12 +2000,11 @@ int main(){
                             else if(result==IDNO){
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1719,17 +2013,17 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                             else{
                                 MessageBeep(MB_ICONASTERISK);
                                 if(lge==1){
-                                    IndependentMessageBox("THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
+                                    IndependentMessageBox("[ INFO ] THE PROCESS END WITHOUT FILE DECRYPTING", "FILE_CRYPTER");
                                 }
-                                else if(lge==0){
-                                    IndependentMessageBox("LE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
+                                else{
+                                    IndependentMessageBox("[ INFO ] LE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", "FILE_CRYPTER");
                                 }
-                                Sleep(2000);
                                 free(crt[K].InputFileName);
                                 free(crt[K].OutputFileName);
                                 for(me=0;me<nb;me++){
@@ -1738,6 +2032,7 @@ int main(){
                                     crt[K].v=0;
                                 }
                                 free(crt);
+                                Sleep(3000);
                                 return 1;
                             }
                         }
@@ -1750,10 +2045,10 @@ int main(){
                         }
                         MessageBeep(MB_ICONASTERISK);
                         if(lge==1){
-                            snprintf(crt[K].OutputFileName, 300, "%s NOT FOUND\nTHE PROCESS END WITHOUT FILE DECRYPTING", crt[K].InputFileName);
+                            snprintf(crt[K].OutputFileName, 300, "[ ERROR ] %s NOT FOUND\nTHE PROCESS END WITHOUT FILE DECRYPTING", crt[K].InputFileName);
                         }
-                        else if(lge==0){
-                            snprintf(crt[K].OutputFileName, 300, "%s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST TERMINE SANS AVOIR DECRYPTER LE FICHIER", crt[K].InputFileName);
+                        else{
+                            snprintf(crt[K].OutputFileName, 300, "[ ERROR ] %s N'A PAS ETE TROUVE\nLE PROCESSUS S'EST INTERROMPU SANS AVOIR DECRYPTER LE FICHIER", crt[K].InputFileName);
                         }
                         MessageBox(NULL, crt[K].OutputFileName, "FILE_CRYPTER", MB_OK);
                         free(crt[K].InputFileName);
@@ -1763,23 +2058,23 @@ int main(){
                     }
                 }
                 strcpy(crt[K].OutputFileName,crt[K].InputFileName);
-                crt[K].OutputFileName[strlen(crt[K].OutputFileName)-1]='\0';
+                crt[K].OutputFileName[strlen(crt[K].OutputFileName)-6]='\0';
                 if((prmr = FileExistanceChecker(crt[K].OutputFileName)) == 0){
                     do{
                         con=1;
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
-                            result = MessageBox(NULL, "A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                            result = MessageBox(NULL, "[ INFO ] A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
-                        else if(lge==0){
-                            result = MessageBox(NULL, "FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                        else{
+                            result = MessageBox(NULL, "[ INFO ] FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CE FICHIER\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         if(result==IDYES){
                             if(lge==1){
-                                IndependentMessageBox("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                                IndependentMessageBox("[ INFO ] THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
                             }
-                            else if(lge==0){
-                                IndependentMessageBox("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
+                            else{
+                                IndependentMessageBox("[ INFO ] L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU FICHIER","FILE_CRYPTER");
                             }
                             Sleep(2000);
                         }
@@ -1794,10 +2089,10 @@ int main(){
                             }
                             MessageBeep(MB_ICONHAND);
                             if(lge==1){
-                                MessageBox(NULL, "DECRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                                MessageBox(NULL, "[ INFO ] DECRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                             }
-                            else if(lge==0){
-                                MessageBox(NULL, "LE DECRYPTAGE A ETE ARRETE\nVOUS POUVEZ FAIRE LA COPIE DU FICHIER EXISTANT POUR LE SAUVEGARDER ET RECOMMENCEZ EN SECURITE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            else{
+                                MessageBox(NULL, "[ INFO ] LE DECHIFFREMENT A ETE ARRETE\nVOUS POUVEZ FAIRE LA COPIE DU FICHIER EXISTANT POUR LE SAUVEGARDER ET RECOMMENCEZ EN SECURITE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                             }
                             free(crt);
                             return 1;
@@ -1809,20 +2104,20 @@ int main(){
                 }
                 if((crt[K].OutputFile=fopen(crt[K].OutputFileName,"wb"))==NULL){
                     if(lge==1){
-                        printf("\nOPENING ERROR\n");
+                        printf("\n[ ERROR ] FILE OPENING ERROR");
                     }
-                    else if(lge==0){
-                        printf("\nERREUR D'OUVERTURE\n");
+                    else{
+                        printf("\n[ ERROR ] ERREUR D'OUVERTURE DU FICHIER");
                     }
                     free(crt[K].InputFileName);
                     free(crt[K].OutputFileName);
                     fclose(crt[K].InputFile);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL, "DECRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        MessageBox(NULL, "[ ERROR ] DECRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    else{
+                        MessageBox(NULL, "[ ERROR ] LE DECHIFFREMENT A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
                         memset(crt[me].Password, 0, 11);
@@ -1835,22 +2130,22 @@ int main(){
                 TempFileName=calloc(200,sizeof(char));
                 if(TempFileName==NULL){
                     if(lge==1){
-                        printf("ALLOCATION ERROR\n");
+                        printf("\n[ ERROR ] MEMORY ALLOCATION ERROR");
                     }
-                    else if(lge==0){
-                        printf("ERREUR D'ALLOCATION\n");
+                    else{
+                        printf("\n[ ERROR ] ERREUR D'ALLOCATION DE MEMOIRE");
                     }
                     free(crt[K].InputFileName);
                     fclose(crt[K].InputFile);
                     fclose(crt[K].OutputFile);
-                    remove(crt[K].OutputFileName);
+                    RemoveFile(crt[K].OutputFileName);
                     free(crt[K].OutputFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL, "DECRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        MessageBox(NULL, "[ ERROR ] DECRYPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    else{
+                        MessageBox(NULL, "[ ERROR ] LE DECHIFFREMENT A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
                         memset(crt[me].Password, 0, 11);
@@ -1866,17 +2161,17 @@ int main(){
                         con=1;
                         MessageBeep(MB_ICONHAND);
                         if(lge==1){
-                            result = MessageBox(NULL, "A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                            result = MessageBox(NULL, "[ INFO ] A FILE WITH THE SAME NAME DETECTED\nCONTINUING WILL DELETE THIS ONE\nDO YOU WANT TO CONTINUE ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
-                        else if(lge==0){
-                            result = MessageBox(NULL, "FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
+                        else{
+                            result = MessageBox(NULL, "[ INFO ] FICHIER AVEC LE MEME NOM DETECTE\nCONTINUER SUPPRIMERA CELUI CI\nVOUDRIEZ-VOUS CONTINUER ?", "FILE_CRYPTER", MB_YESNO | MB_ICONWARNING);
                         }
                         if(result==IDYES){
                             if(lge==1){
-                                IndependentMessageBox("THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
+                                IndependentMessageBox("[ INFO ] THE OLD FILE WILL BE DELETED AND REPLACED BY THE NEW ONE","FILE_CRYPTER");
                             }
-                            else if(lge==0){
-                                IndependentMessageBox("L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
+                            else{
+                                IndependentMessageBox("[ INFO ] L'ANCIEN FICHIER SERA SUPPRIME ET REMPLACE PAR LE NOUVEAU","FILE_CRYPTER");
                             }
                             Sleep(2000);
                         }
@@ -1891,10 +2186,10 @@ int main(){
                             }
                             MessageBeep(MB_ICONHAND);
                             if(lge==1){
-                                MessageBox(NULL, "DECRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                                MessageBox(NULL, "[ INFO ] DECRYPTION STOPPED\nYOU CAN MAKE THIS EXISTING FILE COPY TO SAVE IT AND RESTART SAFELY", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                             }
-                            else if(lge==0){
-                                MessageBox(NULL, "LE DECRYPTAGE A ETE ARRETE\nVOUS POUVEZ FAIRE LA COPIE DU FICHIER EXISTANT POUR LE SAUVEGARDER ET RECOMMENCEZ EN SECURITE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            else{
+                                MessageBox(NULL, "[ INFO ] LE DECHIFFREMENT A ETE ARRETE\nVOUS POUVEZ FAIRE LA COPIE DU FICHIER EXISTANT POUR LE SAUVEGARDER ET RECOMMENCEZ EN SECURITE", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                             }
                             free(crt);
                             return 1;
@@ -1906,23 +2201,23 @@ int main(){
                 }
                 if((TempFile=fopen(TempFileName,"wb+"))==NULL){
                     if(lge==1){
-                        printf("\nOPENING ERROR\n");
+                        printf("\n[ ERROR ] FILE OPENING ERROR");
                     }
-                    else if(lge==0){
-                        printf("\nERREUR D'OUVERTURE\n");
+                    else{
+                        printf("\n[ ERROR ] ERREUR D'OUVERTURE DU FICHIER");
                     }
                     free(crt[K].InputFileName);
                     free(TempFileName);
                     fclose(crt[K].InputFile);
                     fclose(crt[K].OutputFile);
-                    remove(crt[K].OutputFileName);
+                    RemoveFile(crt[K].OutputFileName);
                     free(crt[K].OutputFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL, "DECRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        MessageBox(NULL, "[ ERROR ] DECRYPTION FAILED(OPENING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    else{
+                        MessageBox(NULL, "[ ERROR ] LE DECHIFFREMENT A ECHOUE(ERREUR D'OUVERTURE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
                         memset(crt[me].Password, 0, 11);
@@ -1938,16 +2233,16 @@ int main(){
                     fclose(crt[K].InputFile);
                     fclose(crt[K].OutputFile);
                     fclose(TempFile);
-                    remove(crt[K].OutputFileName);
-                    remove(TempFileName);
+                    RemoveFile(crt[K].OutputFileName);
+                    RemoveFile(TempFileName);
                     free(crt[K].OutputFileName);
                     free(TempFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL, "DECRYPTION FAILED(COPYING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        MessageBox(NULL, "[ ERROR ] DECRYPTION FAILED(COPYING ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(ERREUR LORS DE LA COPIE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    else{
+                        MessageBox(NULL, "[ ERROR ] LE DECHIFFREMENT A ECHOUE(ERREUR LORS DE LA COPIE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
                         memset(crt[me].Password, 0, 11);
@@ -1964,16 +2259,16 @@ int main(){
                     fclose(crt[K].InputFile);
                     fclose(crt[K].OutputFile);
                     fclose(TempFile);
-                    remove(crt[K].OutputFileName);
-                    remove(TempFileName);
+                    RemoveFile(crt[K].OutputFileName);
+                    RemoveFile(TempFileName);
                     free(crt[K].OutputFileName);
                     free(TempFileName);
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL, "DECRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        MessageBox(NULL, "[ ERROR ] DECRYPTION FAILED(PERMUTTING GONE WRONG)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL, "LE DECRYPTAGE A ECHOUE(LA PERMUTATION S'EST MAL PASSEE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    else{
+                        MessageBox(NULL, "[ ERROR ] LE DECHIFFREMENT A ECHOUE(LA PERMUTATION S'EST MAL DEROULEE)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
                     }
                     for(me=0;me<nb;me++){
                         memset(crt[me].Password, 0, 11);
@@ -2038,7 +2333,7 @@ int main(){
                     }
                 }
                 fclose(TempFile);
-                remove(TempFileName);
+                RemoveFile(TempFileName);
                 free(TempFileName);
                 free(crt[K].OutputFileName);
                 fclose(crt[K].InputFile);
@@ -2047,20 +2342,20 @@ int main(){
                     if(ani==1){
                         printf("\n");
                         if(lge==1){
-                            TypingEffect("NOW DECRYPTING");
+                            TypingEffect("[ INFO ] NOW DECRYPTING");
                         }
-                        else if(lge==0){
-                            TypingEffect("DECRYPTAGE EN COURS");
+                        else{
+                            TypingEffect("[ INFO ] DECHIFFREMENT EN COURS");
                         }
                         LoadingEffect();
                         printf("\n");
                         MatrixSimulation();
                     }
-                    printf("\n%s ",crt[K].InputFileName);
+                    printf("\n[ SUCCESS ] %s ",crt[K].InputFileName);
                     if(lge==1){
                         TypingEffect("DECRYPTED SUCCESSFULLY");
                     }
-                    else if(lge==0){
+                    else{
                         TypingEffect("DECRYPTE AVEC SUCCES");
                     }
                     printf("\n");
@@ -2070,10 +2365,10 @@ int main(){
                     if(nb==K+1){
                         MessageBeep(MB_ICONASTERISK);
                         if(lge==1){
-                            IndependentMessageBox("ALL DONE", "FILE_CRYPTER");
+                            IndependentMessageBox("[ INFO ] ALL DONE", "FILE_CRYPTER");
                         }
-                        else if(lge==0){
-                            IndependentMessageBox("TERMINE", "FILE_CRYPTER");
+                        else{
+                            IndependentMessageBox("[ INFO ] TERMINE", "FILE_CRYPTER");
                         }
                         Sleep(2000);
                     }
@@ -2084,10 +2379,10 @@ int main(){
                     crt[K].v=0;
                     MessageBeep(MB_ICONHAND);
                     if(lge==1){
-                        MessageBox(NULL,"DECRYPTION MADE SUCCESSFULLY", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                        MessageBox(NULL,"[ SUCCESS ] DECRYPTION COMPLETED SUCCESSFULLY", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
                     }
-                    else if(lge==0){
-                        MessageBox(NULL,"DECRYPTAGE FAIT AVEC SUCCES", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                    else{
+                        MessageBox(NULL,"[ SUCCESS ] DECHIFFREMENT EFFECTUE AVEC SUCCES", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
                     }
                 }
                 free(crt[K].InputFileName);
@@ -2099,16 +2394,16 @@ int main(){
                     if(lge==1){
                         printf("\nDO YOU WANT TO PERFORM ANOTHER OPERATION?\n[1] YES\n[0] EXIT");
                     }
-                    else if(lge==0){
+                    else{
                         printf("\nVOULEZ-VOUS EFFECTUEZ UNE AUTRE OPERATION?\n[1] OUI\n[0] QUITTER");
                     }
                     printf("\ncipherflow> ");
                     if(scanf("%d",&res)!=1){
                         if(lge==1){
-                            printf("\nINVALID INPUT,TRY AGAIN.");
+                            printf("\n[ ERROR ] ENTER A NUMBER BETWEEN 1 AND 0");
                         }
-                        else if(lge==0){
-                            printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN NOMBRE ENTRE 1 ET 0");
                         }
                         while((clb=getchar()) != '\n' && clb != EOF);
                         con=0;
@@ -2118,24 +2413,1143 @@ int main(){
             }
         }
         else if(MODE==5){
-            TypingEffect("##############################################   CIPHER FLOW INFO    ###################################################");
-            printf("\n");
+            if(lge==1){
+                TypingEffect("#############################################        5-> FILE TRANSFER         #########################################");
+            }
+            else{
+                TypingEffect("##############################################   5-> TRANSFERT DE FICHIER(S)   #########################################");
+            }
+            if(ani==1){
+                DynamicColor();
+            }
+            char TRANSFER;
+            int Port, scon;
+            FILE* File;
+            WSADATA wsa;
+            SOCKET s;
+            do{
+                con=1;
+                if(lge==1){
+                    printf("\n\n");
+                    TypingEffect("#############################################        [S]-> SEND FILE(S)        #########################################");
+                    printf("\n\n");
+                    TypingEffect("#############################################       [R]-> RECEIVE FILE(S)      #########################################");
+                    printf("\ncipherflow> ");
+                }
+                else{
+                    printf("\n\n");
+                    TypingEffect("############################################   [E]-> ENVOYER UN/DES FICHIER(S)   #######################################");
+                    printf("\n\n");
+                    TypingEffect("############################################   [R]-> RECEVOIR UN/DES FICHIER(S)  #######################################");
+                    printf("\ncipherflow> ");
+                }
+                if(scanf(" %c",&TRANSFER) != 1){
+                    if(lge==1){
+                        printf("\n[ ERROR ] ENTER A CARACTER (S, E, R)");
+                    }
+                    else{
+                        printf("\n[ ERROR ] ENTRER UN CARACTERE (S, E, R)");
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                    con=0;
+                }
+                while((clb=getchar()) != '\n' && clb != EOF);
+            }while(con!=1 || (TRANSFER!='S' && TRANSFER!='E' && TRANSFER!='R'));
+            if(TRANSFER=='S' || TRANSFER=='E'){
+                char *FileName, *FileInfo, *IP, filename[200], state[256];
+                long file_len;
+                struct in_addr addr;
+                struct sockaddr_in server;
+                int restart_sending;
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("===============================================  CONNECTION TO RECEIVER  ===============================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("===============================================  CONNEXION AU RECEPTEUR  ===============================================");
+                    printf("\n");
+                }
+                do{
+                    scon=1;
+                    do{
+                        con=1;
+                        IP=NULL;
+                        IP=calloc(16,sizeof(char));
+                        if(IP==NULL){
+                            if(lge==1){
+                                printf("\n[ ERROR ] MEMORY ALLOCATION ERROR");
+                                MessageBeep(MB_ICONHAND);
+                                MessageBox(NULL, "[ ERROR ] SENDING FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            }
+                            else{
+                                printf("\n[ ERROR ] ERREUR D'ALLOCATION DE MEMOIRE");
+                                MessageBeep(MB_ICONHAND);
+                                MessageBox(NULL, "[ ERROR ] L'ENVOI A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                            }
+                            return 1;
+                        }
+                        if(lge==1){
+                            printf("\nENTER THE RECEIVER IP(IPv4)");
+                        }
+                        else{
+                            printf("\nENTRER L'IP DU RECEVEUR(IPv4)");
+                        }
+                        printf("\ncipherflow> ");
+                        scanf(" %15s",IP);
+                        while((clb=getchar()) != '\n' && clb != EOF);
+                        if(InetPton(AF_INET, IP, &addr) != 1){
+                            if(lge==1){
+                                printf("\n[ ERROR ] INVALID IPv4 ADDRESS");
+                            }
+                            else{
+                                printf("\n[ ERROR ] ADRESSE IPv4 INVALIDE");
+                            }
+                            con=0;
+                        }
+                    }while(con!=1);
+                    do{
+                        con=1;
+                        if(lge==1){
+                            printf("\nENTER THE SENDING PORT");
+                        }
+                        else{
+                            printf("\nENTRER LE PORT D'ENVOI");
+                        }
+                        printf("\ncipherflow> ");
+                        if(scanf("%d",&Port) != 1){
+                            if(lge==1){
+                                printf("\n[ ERROR ] INVALID PORT");
+                            }
+                            else{
+                                printf("\n[ ERROR ] PORT INVALIDE");
+                            }
+                            con=0;
+                        }
+                        while((clb=getchar()) != '\n' && clb != EOF);
+                    }while(con!=1 || Port<1 || Port>65535);
+                    if(lge==1){
+                        printf("\n===========  SEND TO  ===========\n\nRECEIVER IP : %s\n\nPORT : %d\n",IP,Port);
+                        printf("\n=================================\n");
+                        printf("ENTER 1 TO CONFIRM");
+                    }
+                    else{
+                        printf("\n=========== ENVOYER A ===========\n\nIP DU RECEVEUR : %s\n\nPORT : %d\n",IP,Port);
+                        printf("\n=================================\n");
+                        printf("ENTRER 1 POUR CONFIRMER");
+                    }
+                    printf("\ncipherflow> ");
+                    if(scanf("%d",&scon)!=1){
+                        scon=0;
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                }while(scon!=1);
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("[ INFO ] INITIALIZING NETWORK");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("[ INFO ] INITIALISATION DU RESEAU");
+                }
+                if(ani==1){
+                    LoadingEffect();
+                }
+                if(WSAStartup(MAKEWORD(2,2), &wsa) == 0){
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] SUCCESSFUL INITIALIZATION");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("[ INFO ] INITIALISATION REUSSIE");
+                    }
+                }
+                else{
+                    if(lge==1){
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERROR DURING NETWORK INITIALIZATION", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    else{
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERREUR LORS DE L'INITIALISATION DU RESEAU", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    free(IP);
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("[ INFO ] CREATING SOCKET");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("[ INFO ] CREATION DU SOCKET");
+                }
+                if(ani==1){
+                    LoadingEffect();
+                }
+                s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+                if(s == INVALID_SOCKET){
+                    if(lge==1){
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERROR DURING SOCKET CREATION", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    else{
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERREUR LORS DE LA CREATION DU SOCKET", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    free(IP);
+                    WSACleanup();
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                else{
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] SOCKET SUCCESFULLY CREATED");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("[ INFO ] SOCKET CREE AVEC SUCCES");
+                    }
+                }
+                memset(&server, 0, sizeof(server));
+                server.sin_family = AF_INET;
+                server.sin_port = htons(Port);
+                InetPton(AF_INET, IP, &server.sin_addr);
+                if(lge==1){
+                    MessageBox(NULL, "[ IMPORTANT ] THE RECEIVER SHOULD BE IN RECEPTION MODE", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                }
+                else{
+                    MessageBox(NULL, "[ IMPORTANT ] LE RECEVEUR DOIT ETRE EN MODE RECEPTION", "FILE_CRYPTER", MB_OK | MB_ICONINFORMATION);
+                }
+                struct sockaddr_in addres;
+                char hostname[NI_MAXHOST];
+                memset(&addres, 0, sizeof(addres));
+                addres.sin_family = AF_INET;
+                inet_pton(AF_INET, IP, &addres.sin_addr);
+                int resulte = getnameinfo((struct sockaddr*)&addres, sizeof(addres), hostname, sizeof(hostname), NULL, 0, 0);
+                if(resulte != 0){
+                    strcpy(hostname,"Unknown");
+                }
+                if(lge==1){
+                    printf("\n\n");
+                    TypingEffect("==================  CONNECTING TO  ==================");
+                    printf("\n\nDEVICE NAME : %s\nIP : %s\nPort : %d\n\n=====================================================\n", hostname, IP, Port);
+                }
+                else{
+                    printf("\n\n");
+                    TypingEffect("===================  CONNEXION A  ===================");
+                    printf("\n\nNOM DE L'APPAREIL : %s\nIP : %s\nPort : %d\n\n=====================================================\n", hostname, IP, Port);
+                }
+                if(ani==1){
+                    LoadingEffect();
+                }
+                if(lge==1){
+                    IndependentMessageBox("[ INFO ] WAIT WHILE THE RECEIVER ACCEPTS THE CONNECTION REQUEST.", "FILE_CRYPTER");
+                }
+                else{
+                    IndependentMessageBox("[ INFO ] VEUILLEZ PATIENTER LE TEMPS QUE LE RECEVEUR ACCEPTE LA DEMANDE DE CONNEXION.", "FILE_CRYPTER");
+                }
+                if(connect(s, (struct sockaddr *)&server, sizeof(server)) == 0){
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] CONNECTION ESTABLISHED");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("[ INFO ] CONNEXION ETABLIE");
+                    }
+                }
+                else{
+                    if(lge==1){
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] CONNECTION FAILED", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                        printf("\nERROR CODE : %d",WSAGetLastError());
+                        if(WSAGetLastError()==10061){
+                            printf("(THE SERVER IS NOT RUNNING OR LISTENING ON THIS PORT)");
+                        }
+                        else if(WSAGetLastError()==10060){
+                            printf("(NETWORK OR FIREWALL PROBLEM)");
+                        }
+                        else if(WSAGetLastError()==10065){
+                            printf("(HOST UNREACHABLE(BAD IP ADRESS))");
+                        }
+                        else if(WSAGetLastError()==10051){
+                            printf("(NETWORK UNREACHABLE)");
+                        }
+                        else if(WSAGetLastError()==10049){
+                            printf("(INVALID ADRESS)");
+                        }
+                        else if(WSAGetLastError()==10047){
+                            printf("(UNSUPPORTED IP ADDRESS FAMILY)");
+                        }
+                        else if(WSAGetLastError()==10056){
+                            printf("(CONNECTION ALREADY ESTABLISHED ON THIS SOCKET(ALREADY CONNECTED))");
+                        }
+                        else if(WSAGetLastError()==10022){
+                            printf("(INVALID PARAMETER)");
+                        }
+                        else if(WSAGetLastError()==10038){
+                            printf("(THIS IS NOT A SOCKET)");
+                        }
+                    }
+                    else{
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ECHEC DE LA CONNEXION", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                        printf("\nCODE D'ERREUR: %d",WSAGetLastError());
+                        if(WSAGetLastError()==10061){
+                            printf("(LE SERVEUR N'EST PAS LANCE OU N'ECOUTE PAS SUR CE PORT(CONNEXION REFUSEE))");
+                        }
+                        else if(WSAGetLastError()==10060){
+                            printf("(PROBLEME RESEAU(DELAI DEPASSE) OU PARE-FEU)");
+                        }
+                        else if(WSAGetLastError()==10065){
+                            printf("(HOTE INACCESSIBLE(MAUVAISE ADRESSE IP))");
+                        }
+                        else if(WSAGetLastError()==10051){
+                            printf("(RESEAU INACCESSIBLE)");
+                        }
+                        else if(WSAGetLastError()==10049){
+                            printf("(ADRESSE INVALIDE)");
+                        }
+                        else if(WSAGetLastError()==10047){
+                            printf("(FAMILLE D'ADRESSES NON SUPPORTEE)");
+                        }
+                        else if(WSAGetLastError()==10056){
+                            printf("(CONNEXION DEJA ETABLIE SUR CETTE SOCKET(DEJA CONNECTE))");
+                        }
+                        else if(WSAGetLastError()==10022){
+                            printf("(PARAMETRE INVALIDE)");
+                        }
+                        else if(WSAGetLastError()==10038){
+                            printf("(CE N'EST PAS UNE SOCKET)");
+                        }
+                    }
+                    free(IP);
+                    closesocket(s);
+                    WSACleanup();
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("===================================================  FILE SELECTION  ===================================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("================================================= SELECTION DU FICHIER =================================================");
+                    printf("\n");
+                }
+                do{
+                    con=1;
+                    FileName=calloc(200,sizeof(char));
+                    if(FileName==NULL){
+                        if(lge==1){
+                            printf("\n[ ERROR ] MEMORY ALLOCATION ERROR");
+                            MessageBeep(MB_ICONHAND);
+                            MessageBox(NULL, "[ ERROR ] SENDING FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        }
+                        else{
+                            printf("\n[ ERROR ] ERREUR D'ALLOCATION DE MEMOIRE");
+                            MessageBeep(MB_ICONHAND);
+                            MessageBox(NULL, "[ ERROR ] L'ENVOI A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        }
+                        WSACleanup();
+                        closesocket(s);
+                        free(IP);
+                        return 1;
+                    }
+                    if(lge==1){
+                        printf("\nENTER THE FULL PATH OF THE FILE YOU WANT TO SEND OR DRAG AND DROP IT HERE");
+                    }
+                    else{
+                        printf("\nENTRER LE CHEMIN COMPLET DU FICHIER A ENVOYER OU GLISSER ET DEPOSER LE FICHIER ICI");
+                    }
+                    printf("\ncipherflow> ");
+                    scanf(" %199[^\n]",FileName);
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                    if(FileName[0]== '\'' || FileName[0]== '\"' ){
+                        memmove(FileName, FileName + 1, strlen(FileName)+1);
+                    }
+                    if(FileName[strlen(FileName)-1]== '\'' || FileName[strlen(FileName)-1]== '\"' ){
+                        FileName[strlen(FileName)-1]='\0';
+                    }
+                    if((File=fopen(FileName,"rb"))== NULL){
+                        if(lge==1){
+                            printf("\n[ ERROR ] FILE OPENING ERROR");
+                        }
+                        else{
+                            printf("\n[ ERROR ] ERREUR D'OUVERTURE DU FICHIER");
+                        }
+                        free(FileName);
+                        con=0;
+                    }
+                }while(con!=1);
+                if(FileName[strlen(FileName)-1] == 'c'){
+                    if(lge==1){
+                        strcpy(state,"PROBABLY ENCRYPTED BY FILE CRYPTER(CIPHER FLOW SYSTEM)");
+                    }
+                    else{
+                        strcpy(state,"PROBABLEMENT CHIFFRE PAR FILE CRYPTER(CIPHER FLOW SYSTEM)");
+                    }
+                }
+                else{
+                    strcpy(state,"NORMAL");
+                    if(lge==1){
+                        printf("\n[ IMPORTANT ] THE FILE YOU ARE ABOUT TO SEND ISN'T ENCRYPTED YET\nYOU SHOULD ENCRYPT IT FOR MORE SAFETY\nENTER 1 TO ENCRYPT THE FILE BEFORE SENDING AND ANOTHER NUMBER TO CONTINUE SENDING");
+                    }
+                    else{
+                        printf("\n[ IMPORTANT ] LE FICHIER QUE VOUS VOULEZ ENVOYER N'EST PAS ENCORE CHIFFRE\nVOUS DEVRIEZ LE CHIFFRER POUR PLUS DE SECURITE\nENTRER 1 POUR CHIFFRER LE FICHIER AVANT D'EFFECTUER L'ENVOI ET N'IMPORTE QUEL AUTRE NOMBRE POUR CONTINUER L'ENVOI");
+                    }
+                    printf("\ncipherflow> ");
+                    if(scanf("%d",&restart_sending) != 1){
+                        restart_sending = 0;
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                }
+                if (restart_sending == 1){
+                    WSACleanup();
+                    closesocket(s);
+                    free(IP);
+                    free(FileName);
+                    fclose(File);
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                if(fseek(File, 0, SEEK_END) !=0){
+                    MessageBeep(MB_ICONEXCLAMATION);
+                    if(lge==1){
+                        IndependentMessageBox("[ ERROR ] FILE SENDING PROCESS MEET ISSUES", "FILE_CRYPTER");
+                    }
+                    else{
+                        IndependentMessageBox("[ ERROR ] PROBLEME RENCONTREE LORS DE L'ENVOI DU FICHIER", "FILE_CRYPTER");
+                    }
+                    WSACleanup();
+                    closesocket(s);
+                    free(IP);
+                    free(FileName);
+                    fclose(File);
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                file_len = ftell(File);
+                rewind(File);
+                if(file_len <= 0){
+                    MessageBeep(MB_ICONEXCLAMATION);
+                    if(lge==1){
+                        IndependentMessageBox("[ ERROR ] FILE SENDING PROCESS MEET ISSUES", "FILE_CRYPTER");
+                    }
+                    else{
+                        IndependentMessageBox("[ ERROR ] PROBLEME RENCONTREE LORS DE L'ENVOI DU FICHIER", "FILE_CRYPTER");
+                    }
+                    WSACleanup();
+                    closesocket(s);
+                    free(IP);
+                    free(FileName);
+                    fclose(File);
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                FileInfo=calloc(700,sizeof(char));
+                if(FileInfo==NULL){
+                    MessageBeep(MB_ICONEXCLAMATION);
+                    if(lge==1){
+                        IndependentMessageBox("[ ERROR ] FILE SENDING PROCESS MEET ISSUES", "FILE_CRYPTER");
+                    }
+                    else{
+                        IndependentMessageBox("[ ERROR ] PROBLEME RENCONTREE LORS DE L'ENVOI DU FICHIER", "FILE_CRYPTER");
+                    }
+                    WSACleanup();
+                    closesocket(s);
+                    free(IP);
+                    free(FileName);
+                    fclose(File);
+                    Sleep(3000);
+                    return 1;
+                }
+                char *last = strrchr(FileName, '\\');
+                if(last != NULL){
+                    sprintf(filename, "%s", last+1);
+                }
+                else{
+                    last = strrchr(FileName, '/');
+                    if(last != NULL)
+                        sprintf(filename, "%s", last+1);
+                    else
+                        strcpy(filename, FileName);
+                }
+                if(lge==1){
+                    sprintf(FileInfo, "=========  RECEPTION OF   =========\nFILENAME : %s\n\nSIZE : %ld OCTETS\n\nSTATE : %s", filename, file_len, state);
+                }
+                else{
+                    sprintf(FileInfo, "=========   RECEPTION DE  =========\nNOM DU FICHIER : %s\n\nTAILLE : %ld OCTETS\n\nETAT : %s", filename, file_len, state);
+                }
+                if(lge==1){
+                    printf("\n[ INFO ] THE RECEPTION KEY IS : %zu", strlen(FileInfo));
+                }
+                else{
+                    printf("\n[ INFO ] LA CLE DE RECEPTION EST : %zu", strlen(FileInfo));
+                }
+                if(SendAll(s, FileInfo, strlen(FileInfo)) == -1){
+                    MessageBeep(MB_ICONERROR);
+                    if(lge==1){
+                        printf("\n[ ERROR ] FILE INFO SENDING PROCESS MEET ISSUES : %d",WSAGetLastError());
+                    }
+                    else{
+                        printf("\n[ ERROR ] PROBLEME RENCONTRE LORS DE L'ENVOI DES INFO DU FICHIER : %d",WSAGetLastError());
+                    }
+                    WSACleanup();
+                    closesocket(s);
+                    free(IP);
+                    free(FileName);
+                    fclose(File);
+                    free(FileInfo);
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                free(FileInfo);
+                if(SendFile(s, File, (uint64_t)file_len) == -1){
+                    MessageBeep(MB_ICONERROR);
+                    if(lge==1){
+                        printf("\n[ ERROR ] FILE SENDING PROCESS MEET ISSUES : %d",WSAGetLastError());
+                    }
+                    else{
+                        printf("\n[ ERROR ] PROBLEME RENCONTRE LORS DE L'ENVOI DU FICHIER : %d",WSAGetLastError());
+                    }
+                    WSACleanup();
+                    rewind(File);
+                    closesocket(s);
+                    free(IP);
+                    free(FileName);
+                    fclose(File);
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                else{
+                    if(lge==1){
+                        printf("\n[ SUCCESS ] %s SENT SUCCESFULLY", FileName);
+                    }
+                    else{
+                        printf("\n[ SUCCESS ] %s ENVOYE AVEC SUCCES", FileName);
+                    }
+                }
+                rewind(File);
+                closesocket(s);
+                free(IP);
+                WSACleanup();
+                fclose(File);
+                free(FileName);
+            }
+            else if(TRANSFER=='R'){
+                struct sockaddr_in server;
+                struct sockaddr_in client_addr;
+                socklen_t len = sizeof(client_addr);
+                char ip[INET_ADDRSTRLEN], *Folder, *FileInfo, Taille[100];
+                int rcon, result, acceptfile, extr, extract = 0;
+                size_t recv_code;
+                SOCKET client_socket;
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("================================================= SERVER CONFIGURATION =================================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("========================================= CONFIGURATION DU SERVEUR DE RECEPTION ========================================");
+                    printf("\n");
+                }
+                do{
+                    con=1;
+                    if(lge==1){
+                        printf("\nENTER THE LISTENING PORT\n[SUGGESTED PORT : 5000, 5001, 6000, 7000, 7777, 8000, 8080, 8081, 8888, 9000, 9090, 10000, 12000, 15000, 20000, 30000]");
+                    }
+                    else{
+                        printf("\nENTRER LE PORT D'ECOUTE\n[PORT SUGGEREES : 5000, 5001, 6000, 7000, 7777, 8000, 8080, 8081, 8888, 9000, 9090, 10000, 12000, 15000, 20000, 30000]");
+                    }
+                    printf("\ncipherflow> ");
+                    if(scanf("%d",&Port) != 1){
+                        if(lge==1){
+                            printf("\n[ ERROR ] INVALID PORT");
+                        }
+                        else{
+                            printf("\n[ ERROR ] PORT INVALIDE");
+                        }
+                        con=0;
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                }while(con!=1 || Port<1 || Port>65535);
+                if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] INITIALIZING NETWORK");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("[ INFO ] INITIALISATION DU RESEAU");
+                }
+                if(ani==1){
+                    LoadingEffect();
+                }
+                if(WSAStartup(MAKEWORD(2,2), &wsa) == 0){
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] SUCCESSFUL INITIALIZATION");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("[ INFO ] INITIALISATION REUSSIE");
+                    }
+                }
+                else{
+                    if(lge==1){
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERROR DURING NETWORK INITIALIZATION", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    else{
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERREUR LORS DE L'INITIALISATION DU RESEAU", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("[ INFO ] CREATING SOCKET");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("[ INFO ] CREATION DU SOCKET");
+                }
+                if(ani==1){
+                    LoadingEffect();
+                }
+                s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+                if(s == INVALID_SOCKET){
+                    if(lge==1){
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERROR DURING SOCKET CREATION", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    else{
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERREUR LORS DE LA CREATION DU SOCKET", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    WSACleanup();
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                else{
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] SOCKET SUCCESFULLY CREATED");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("[ INFO ] SOCKET CREE AVEC SUCCES");
+                    }
+                }
+                server.sin_family = AF_INET;
+                server.sin_port = htons(Port);
+                server.sin_addr.s_addr = htonl(INADDR_ANY);
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("[ INFO ] BINDING NOW");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("[ INFO ] LIAISON EN COURS");
+                }
+                if(ani==1){
+                    LoadingEffect();
+                }
+                if(bind(s, (struct sockaddr *)&server, sizeof(server)) == 0){
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] BINDING DONE");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("[ INFO ] LIAISON REUSSI");
+                    }
+                }
+                else{
+                    if(lge==1){
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] BINDING FAILED", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                        printf("\nERROR CODE : %d ",WSAGetLastError());
+                        if(WSAGetLastError()==10048){
+                            printf("(THE PORT IS ALREADY USED)");
+                        }
+                        else if(WSAGetLastError()==10013){
+                            printf("(ACCESS DENIED)");
+                        }
+                    }
+                    else{
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ECHEC DU BIND", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                        printf("\nCODE D'ERREUR: %d",WSAGetLastError());
+                        if(WSAGetLastError()==10048){
+                            printf("(LE PORT EST DEJA UTILISE)");
+                        }
+                        else if(WSAGetLastError()==10013){
+                            printf("(ACCES REFUSE)");
+                        }
+                    }
+                    closesocket(s);
+                    WSACleanup();
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                printf("\n========================================\n||                                    ||\n||       ");
+                if(lge == 1){
+                    TypingEffect("RECEPTION MODE");
+                }
+                else{
+                    TypingEffect("MODE RECEPTION");
+                }
+                printf("               ||\n||                                    ||\n========================================\n\n");
+                if(lge == 1){
+                    TypingEffect("DESKTOP NAME : ");
+                }
+                else{
+                    TypingEffect("NOM DE L'ORDINATEUR : ");
+                }
+                char ComputerName[MAX_COMPUTERNAME_LENGTH + 1];
+                DWORD Size = sizeof(ComputerName);
+                if(GetComputerNameA(ComputerName, &Size)){
+                    printf("%s\n\n", ComputerName);
+                }
+                else{
+                    printf("Unknown\n\n");
+                }
+                if(lge == 1){
+                    printf("IP ADDRESS :\n\n\t");
+                }
+                else{
+                    printf("IP DISPONIBLES :\n\n\t");
+                }
+                struct addrinfo hints;
+                struct addrinfo *resulte;
+                struct addrinfo *ptr;
+                ZeroMemory(&hints, sizeof(hints));
+                hints.ai_family = AF_INET;
+                hints.ai_socktype = SOCK_STREAM;
+                if(getaddrinfo(ComputerName, NULL, &hints, &resulte) != 0){
+                    if(lge == 1){
+                        printf("\n[ ERROR ] ERROR WHILE GETTING IP : %d\n\t", WSAGetLastError());
+                    }
+                    else{
+                        printf("\n[ ERROR ] ERREUR D'OBTENTION D'IP : %d\n\t", WSAGetLastError());
+                    }
+                }
+                else{
+                    for (ptr = resulte ;ptr != NULL; ptr = ptr ->ai_next){
+                        struct sockaddr_in *addre;
+                        addre = (struct sockaddr_in *)ptr ->ai_addr;
+                        printf("%s\n\t", inet_ntoa(addre->sin_addr));
+                    }
+                    freeaddrinfo(resulte);
+                }
+                printf("\nPORT : %d\n\n========================================\n",Port);
+                if(listen(s, SOMAXCONN) == 0){
+                    if(lge==1){
+                        printf("\n");
+                        TypingEffect("[ INFO ] WAITING FOR CONNECTION");
+                    }
+                    else{
+                        printf("\n");
+                        TypingEffect("[ INFO ] EN ATTENTE D'UNE CONNEXION");
+                    }
+                }
+                else{
+                    if(lge==1){
+                        printf("\n[ ERROR ] ERROR WHEN LISTENING : %d",WSAGetLastError());
+                    }
+                    else{
+                        printf("\n[ ERROR ] ERREUR LORS DE L'ECOUTE : %d",WSAGetLastError());
+                    }
+                    closesocket(s);
+                    WSACleanup();
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                if(ani==1){
+                    LoadingEffect();
+                }
+                if(lge==1){
+                    IndependentMessageBox("[ INFO ] WAIT WHILE LOOKING FOR A CONNECTION REQUEST.", "FILE_CRYPTER");
+                }
+                else{
+                    IndependentMessageBox("[ INFO ] VEUILLEZ PATIENTER LE TEMPS QU'ON RECHERCHE UNE DEMANDE DE CONNEXION.", "FILE_CRYPTER");
+                }
+                struct sockaddr_in addres;
+                char hostname[NI_MAXHOST];
+                do{
+                    rcon = 1;
+                    client_socket = accept(s, (struct sockaddr *)&client_addr, &len);
+                    if(client_socket == INVALID_SOCKET){
+                        if(lge==1){
+                            printf("\n[ ERROR ] ERROR WHILE ACCEPTING : %d",WSAGetLastError());
+                        }
+                        else{
+                            printf("\n[ ERROR ] PROBLEME RENCONTRE LORS DE LA CONNECTION : %d",WSAGetLastError());
+                        }
+                        rcon=0;
+                    }
+                    if(rcon!=0){
+                        inet_ntop(AF_INET, &client_addr.sin_addr, ip, sizeof(ip));
+                        memset(&addres, 0, sizeof(addres));
+                        addres.sin_family = AF_INET;
+                        inet_pton(AF_INET, ip, &addres.sin_addr);
+                        int resulte = getnameinfo((struct sockaddr*)&addres, sizeof(addres), hostname, sizeof(hostname), NULL, 0, 0);
+                        if(resulte != 0){
+                            strcpy(hostname,"Unknown");
+                        }
+                        if(lge==1){
+                            printf("\n[ INFO ] INCOMING CONNECTION DETECTED\n\n==================  CONNECTION INFO  ==================\n\nDEVICE NAME : %s\n\nIP : %s \n\n=======================================================\nENTER 1 TO ACCEPT THE CONNECTION",hostname, ip);
+                        }
+                        else{
+                            printf("\n[ INFO ] CONNECTION ENTRANTE DETECTE\n\n============== INFORMATIONS DE CONNECTION ==============\n\nNOM DE L'APPAREIL : %s\n\nIP : %s \n\n=======================================================\nENTRER 1 POUR ACCEPTER LA CONNEXION",hostname, ip);
+                        }
+                        printf("\ncipherflow> ");
+                        if(scanf("%d",&rcon)!=1){
+                            rcon=0;
+                            closesocket(client_socket);
+                        }
+                        else{
+                            if(rcon!=1){
+                                closesocket(client_socket);
+                            }
+                        }
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                }while(rcon!=1);
+                if(lge==1){
+                    printf("\n[ INFO ] CLIENT CONNECTED SUCCESSFULLY");
+                }
+                else{
+                    printf("\n[ INFO ] CLIENT CONNECTE AVEC SUCCES");
+                }
+                if(lge==1){
+                    printf("\n");
+                    TypingEffect("=============================================  RECEPTION FOLDER SELECTION  =============================================");
+                    printf("\n");
+                }
+                else{
+                    printf("\n");
+                    TypingEffect("=========================================== SELECTION DU DOSSIER DE RECEPTION ==========================================");
+                    printf("\n");
+                }
+                do{
+                    con=1;
+                    Folder=calloc(400,sizeof(char));
+                    if(Folder==NULL){
+                        if(lge==1){
+                            printf("\n[ ERROR ] MEMORY ALLOCATION ERROR");
+                            MessageBeep(MB_ICONHAND);
+                            MessageBox(NULL, "[ ERROR ] RECEPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        }
+                        else{
+                            printf("\n[ ERROR ] ERREUR D'ALLOCATION DE MEMOIRE");
+                            MessageBeep(MB_ICONHAND);
+                            MessageBox(NULL, "[ ERROR ] LA RECEPTION A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                        }
+                        closesocket(client_socket);
+                        closesocket(s);
+                        WSACleanup();
+                        return 1;
+                    }
+                    if(lge==1){
+                        printf("\nENTER THE FULL PATH OF AN RANDOM FILE FROM FOLDER IN WHICH YOU WOULD LIKE TO RECEIVE FILE (YOU CAN DRAG AND DROP THE FILE INTO THE CONSOLE)(THIS RANDOM FILE WILL NOT BE MODIFIED)");
+                    }
+                    else{
+                        printf("\nENTRER LE CHEMIN COMPLET D'UN FICHIER ALEATOIRE DU DOSSIER DANS LEQUEL VOUS SOUHAITEZ RECEVOIR LE FICHIER(VOUS POUVEZ GLISSER ET DEPOSER LE FICHIER DANS LA CONSOLE)(CE FICHIER ALEATOIRE NE SERA PAS MODIFIER)");
+                    }
+                    printf("\ncipherflow> ");
+                    scanf(" %199[^\n]",Folder);
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                    if(Folder[0] == '\'' || Folder[0] == '\"' ){
+                        memmove(Folder, Folder + 1, strlen(Folder)+1);
+                    }
+                    if(Folder[strlen(Folder)-1]== '\'' || Folder[strlen(Folder)-1]== '\"' ){
+                        Folder[strlen(Folder)-1]='\0';
+                    }
+                    if(FileExistanceChecker(Folder)==1){
+                        if(lge==1){
+                            printf("\n[ ERROR ] ENTER A VALID PATH");
+                        }
+                        else{
+                            printf("\n[ ERROR ] ENTRER UN CHEMIN VALIDE");
+                        }
+                        free(Folder);
+                        con=0;
+                    }
+                    else{
+                        char *last = strrchr(Folder, '\\');
+                        if(last != NULL){
+                            *(last+1) = '\0';
+                        }
+                        else{
+                            last = strrchr(Folder, '/');
+                            if(last != NULL){
+                                *(last+1) = '\0';
+                            }
+                            else{
+                                if(lge==1){
+                                    printf("\n[ ERROR ] ENTER A ABSOLUTE PATH");
+                                }
+                                else{
+                                    printf("\n[ ERROR ] ENTRER UN CHEMIN ABSOLUE");
+                                }
+                                free(Folder);
+                                con=0;
+                            }
+                        }
+                    }
+                }while(con!=1);
+                do{
+                    con=1;
+                    if(lge==1){
+                        printf("\nENTER THE RECEPTION KEY");
+                    }
+                    else{
+                        printf("\nENTRER LA CLE DE RECEPTION");
+                    }
+                    printf("\ncipherflow> ");
+                    if(scanf("%zu",&recv_code) != 1){
+                        if(lge==1){
+                            printf("\n[ ERROR ] INVALID RECEPTION CODE");
+                        }
+                        else{
+                            printf("\n[ ERROR ] CODE DE RECEPTION INVALIDE");
+                        }
+                        con=0;
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                    if(con!=0){
+                        if(lge==1){
+                            printf("\n[ WARNING ] A FAKE RECEPTION KEY CAN CAUSE DATA CORUPTION WHILE RECEIVING\nENTER 1 TO CONFIRM THE KEY");
+                        }
+                        else{
+                            printf("\n[ WARNING ] UNE FAUSSE CLE DE RECEPTION PEUT ENTRAINER UNE CORRUPTION DES DONNEES LORS DE LA RECEPTION\nENTRER 1 POUR CONFIRMER LA CLE");
+                        }
+                        printf("\ncipherflow> ");
+                        if(scanf("%d",&con)!=1){
+                            con=0;
+                        }
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                }while(con!=1);
+                FileInfo = calloc(700, sizeof(char));
+                if(FileInfo==NULL){
+                    if(lge==1){
+                        printf("\n[ ERROR ] MEMORY ALLOCATION ERROR");
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] RECEPTION FAILED(ALLOCATION ERROR)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    }
+                    else{
+                        printf("\n[ ERROR ] ERREUR D'ALLOCATION DE MEMOIRE");
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] LA RECEPTION A ECHOUE(ERREUR D'ALLOCATION)", "FILE_CRYPTER", MB_OKCANCEL | MB_ICONERROR);
+                    }
+                    free(Folder);
+                    closesocket(client_socket);
+                    closesocket(s);
+                    WSACleanup();
+                    return 1;
+                }
+                if(RecvAll(client_socket, FileInfo, recv_code) == -1){
+                    if(lge==1){
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERROR DURING FILE INFO RECEPTION ", "FILE_CRYPTER", MB_OK | MB_ICONERROR);                    }
+                    else{
+                        MessageBeep(MB_ICONHAND);
+                        MessageBox(NULL, "[ ERROR ] ERREUR LORS DE LA RECEPTION DES INFO DU FICHIER", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    free(Folder);
+                    free(FileInfo);
+                    closesocket(client_socket);
+                    closesocket(s);
+                    WSACleanup();
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                do{
+                    con=1;
+                    MessageBeep(MB_ICONQUESTION);
+                    if(lge==1){
+                        result = MessageBox(NULL, FileInfo, "FILE_CRYPTER", MB_YESNO | MB_ICONQUESTION | MB_TOPMOST);
+                    }
+                    else{
+                        result = MessageBox(NULL, FileInfo, "FILE_CRYPTER", MB_YESNO | MB_ICONQUESTION | MB_TOPMOST);
+                    }
+                    if(result==IDYES){
+                        acceptfile = 1;
+                    }
+                    else if(result==IDNO){
+                        acceptfile = 0;
+                    }
+                    else{
+                        con=0;
+                    }
+                }while(con!=1);
+                if (acceptfile == 0){
+                    free(Folder);
+                    free(FileInfo);
+                    closesocket(client_socket);
+                    closesocket(s);
+                    WSACleanup();
+                    res = 1;
+                    printf("\n\n");
+                    continue;
+                }
+                for(extr = 0; extr < (int)strlen(FileInfo); extr++){
+                    if(FileInfo[extr] == ':'){
+                        extract += 1;
+                    }
+                    if(FileInfo[extr] == ':' && extract == 1){
+                        extr += 2;
+                        while(FileInfo[extr] != '\n'){
+                            int leng = strlen(Folder);
+                            Folder[leng] = FileInfo[extr];
+                            Folder[leng + 1] = '\0';
+                            extr += 1;
+                        }
+                    }
+                    if(FileInfo[extr] == ':' && extract == 2){
+                        extr += 2;
+                        Taille[0] = '\0';
+                        while(FileInfo[extr] != ' '){
+                            Taille[strlen(Taille)] = FileInfo[extr];
+                            Taille[strlen(Taille) + 1] = '\0';
+                            extr += 1;
+                        }
+                        break;
+                    }
+                }
+                if(FileExistanceChecker(Folder) == 0){
+                    if(lge==1){
+                        printf("\n[ INFO ] A FILE ALREADY EXISTS WITH THE SAME NAME AS THE ONE TO BE RECEIVED\nTHE RECEPTION WILL BE INTERRUPTED TO AVOID REMOVING OF EXISTING DATA");
+                    }
+                    else{
+                        printf("\n[ INFO ] UN FICHIER EXISTE DEJA AVEC LE MEME NOM QUE CELUI A RECEVOIR\nLA RECEPTION SERA INTERROMPU POUR EVITER LA SUPPRESSION DE DONNEES EXISTANTES");
+                    }
+                    free(Folder);
+                    free(FileInfo);
+                    closesocket(client_socket);
+                    closesocket(s);
+                    WSACleanup();
+                    res = 1;
+                    printf("\n\n");
+                    continue;
+                }
+                if((File=fopen(Folder,"wb"))== NULL){
+                    if(lge==1){
+                        printf("\n[ ERROR ] RECEPTION FILE OPENING ERROR");
+                    }
+                    else{
+                        printf("\n[ ERROR ] ERREUR D'OUVERTURE DU FICHIER DE RECEPTION");
+                    }
+                    free(Folder);
+                    free(FileInfo);
+                    closesocket(client_socket);
+                    closesocket(s);
+                    WSACleanup();
+                    res = 1;
+                    printf("\n\n");
+                    continue;
+                }
+                uint64_t taille = strtoull(Taille, NULL, 10);
+                if(RecvFile(client_socket, File, taille) == -1){
+                    MessageBeep(MB_ICONHAND);
+                    if(lge==1){
+                        MessageBox(NULL, "[ ERROR ] ERROR DURING FILE RECEPTION ", "FILE_CRYPTER", MB_OK | MB_ICONERROR);                    }
+                    else{
+                        MessageBox(NULL, "[ ERROR ] ERREUR LORS DE LA RECEPTION DU FICHIER", "FILE_CRYPTER", MB_OK | MB_ICONERROR);
+                    }
+                    free(FileInfo);
+                    fclose(File);
+                    closesocket(client_socket);
+                    remove(Folder);
+                    free(Folder);
+                    closesocket(s);
+                    WSACleanup();
+                    res=1;
+                    printf("\n");
+                    continue;
+                }
+                else{
+                    if(lge == 1){
+                        printf("\n[ SUCCESS ] %s RECEIVED SUCCESFULLY", Folder);
+                    }
+                    else{
+                        printf("\n[ SUCCESS ] %s RECU AVEC SUCCES", Folder);
+                    }
+                }
+                free(Folder);
+                free(FileInfo);
+                fclose(File);
+                closesocket(client_socket);
+                closesocket(s);
+                WSACleanup();
+            }
+            do{
+                con=1;
+                if(lge==1){
+                    printf("\nDO YOU WANT TO PERFORM ANOTHER OPERATION?\n[1] YES\n[0] EXIT");
+                }
+                else{
+                    printf("\nVOULEZ-VOUS EFFECTUEZ UNE AUTRE OPERATION?\n[1] OUI\n[0] QUITTER");
+                }
+                printf("\ncipherflow> ");
+                if(scanf("%d",&res)!=1){
+                    if(lge==1){
+                        printf("\n[ ERROR ] ENTER A NUMBER BETWEEN 1 AND 0");
+                    }
+                    else{
+                        printf("\n[ ERROR ] ENTRER UN NOMBRE ENTRE 1 ET 0");
+                    }
+                    while((clb=getchar()) != '\n' && clb != EOF);
+                    con=0;
+                }
+            }while(con!=1 || (res!=1 && res!=0));
+            system("cls");
+        }
+        else if(MODE==6){
+            printf("########################################################################################################################\n");
+            TypingEffect("                                                 ABOUT CIPHERFLOW                                                       ");
+            printf("\n########################################################################################################################\n\n");
             Info(lge);
             do{
                 con=1;
                 if(lge==1){
                     printf("\nWOULD YOU NOW LIKE TO ACCESS THE MAIN INTERFACE?\n[1] YES\n[0] EXIT");
                 }
-                else if(lge==0){
-                    printf("\nSOUHAITEZ-VOUS MAINTENANT ACCEDER A L'INTERFACE PRINCIPALE?\n[1] OUI\n[0] QUITTER");
+                else{
+                    printf("\nVOUDRIEZ-VOUS MAINTENANT ACCEDER A L'INTERFACE PRINCIPALE?\n[1] OUI\n[0] QUITTER");
                 }
                 printf("\ncipherflow> ");
                 if(scanf("%d",&res)!=1){
                     if(lge==1){
-                        printf("\nINVALID INPUT,TRY AGAIN.");
+                        printf("\n[ ERROR ] ENTER A NUMBER BETWEEN 1 AND 0");
                     }
-                    else if(lge==0){
-                        printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+                    else{
+                        printf("\n[ ERROR ] ENTRER UN NOMBRE ENTRE 1 ET 0");
                     }
                     while((clb=getchar()) != '\n' && clb != EOF);
                     con=0;
@@ -2148,33 +3562,33 @@ int main(){
         }
         else{
             if(lge==1){
-                TypingEffect("##############################################   6-> EXIT            ###################################################");
+                TypingEffect("###########################################      7-> EXIT            ###################################################");
             }
-            else if(lge==0){
-                TypingEffect("###########################################     6-> QUITTER          ###################################################");
+            else{
+                TypingEffect("###########################################     7-> QUITTER          ###################################################");
             }
             if(ani==1){
                 DynamicColor();
                 printf("\n");
                 if(lge==1){
-                    TypingEffect("NOW CLOSING");
+                    TypingEffect("[ INFO ] NOW CLOSING");
                 }
-                else if(lge==0){
-                    TypingEffect("FERMETURE EN COURS");
+                else{
+                    TypingEffect("[ INFO ] FERMETURE EN COURS");
                 }
                 LoadingEffect();
             }
         }
     }
-    if(MODE==1 || MODE==2 || MODE==5 || MODE==6){
+    if(MODE==1 || MODE==2 || MODE==5 || MODE==6 || MODE==7){
         printf("\n");
         if(lge==1){
-            TypingEffect("SESSION TERMINATED. THANK YOU FOR USING CIPHER FLOW.");
+            TypingEffect("[ END ] SESSION ENDED. THANK YOU FOR USING CIPHER FLOW.");
         }
-        else if(lge==0){
-            TypingEffect("SESSION TERMINEE. MERCI D'AVOIR UTILISE CIPHER FLOW.");
+        else{
+            TypingEffect("[ END ] SESSION TERMINEE. MERCI D'AVOIR UTILISE CIPHER FLOW.");
         }
-        Sleep(1000*ani);
+        Sleep(2000*ani+1000);
     }
     return 0;
 }

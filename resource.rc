@@ -1,0 +1,39 @@
+#include "windows.h"
+
+1 ICON "CipherFlow.ico"
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     1,3,0,0
+PRODUCTVERSION  1,3,0,0
+FILEFLAGSMASK   0x3fL
+#ifdef _DEBUG
+FILEFLAGS       VS_FF_DEBUG
+#else
+FILEFLAGS       0x0L
+#endif
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "Orphéric Sangnidjo"
+            VALUE "FileDescription",  "CipherFlow - File Encryption and Secure Transfer"
+            VALUE "FileVersion",      "1.3.0.0"
+            VALUE "InternalName",     "FILE_CRYPTER.exe"
+            VALUE "LegalCopyright",   "Copyright © 2026 Orphéric Sangnidjo. Released as open-source software under the MIT License."
+            VALUE "LegalTrademarks",  ""
+            VALUE "OriginalFilename", "FILE_CRYPTER.exe"
+            VALUE "ProductName",      "CipherFlow System"
+            VALUE "ProductVersion",   "1.3.0.0"
+            VALUE "Comments",         "Open-source software for file encryption, decryption and secure TCP file transfer."
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END

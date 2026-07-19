@@ -1,3 +1,12 @@
+/*
+ * FILE_CRYPTER
+ * Author: Orphéric SANGNIDJO
+ *
+ * Copyright (c) 2026 Orphéric SANGNIDJO
+ *
+ * This source code is part of the FILE_CRYPTER project.
+ * See the LICENSE file for license information.
+ */
 #include"FUNCTION.h"
 #include <time.h>
 int ani=0;
@@ -78,11 +87,11 @@ void HomeOrMenu(int set){
         printf("====================\n======================");
         TypingEffect("╚══════╝╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝ ");
         SetConsoleOutputCP(originalCP);
-        printf("====================\n================================================       ");
-        TypingEffect("CIPHERFLOW SYSTEM");
-        printf("       =========================================\n==========================================       ");
+        printf("====================\n================================================     ");
+        TypingEffect("CIPHERFLOW SYSTEM v1.3");
+        printf("    =========================================\n=============================================     ");
         TypingEffect("SECURE - DYNAMIC - SCHEDULED");
-        printf("     ======================================\n");
+        printf("    ======================================\n");
     }
     if(set==1){
         if(lge==1){
@@ -95,27 +104,31 @@ void HomeOrMenu(int set){
             printf("      =======================================\n===============================================     ");
             TypingEffect("[4] SCHEDULE DECRYPTION");
             printf("      =======================================\n===============================================     ");
-            TypingEffect("[5] INFO                     ");
+            TypingEffect("[5] FILE TRANSFER      ");
+            printf("      =======================================\n===============================================     ");
+            TypingEffect("[6] INFO                     ");
             printf("=======================================\n===============================================     ");
-            TypingEffect("[6] EXIT");
+            TypingEffect("[7] EXIT");
             printf("                     =======================================\n");
-            TypingEffect("cipherflow> ");
+            TypingEffect("SELECT OPTION> ");
         }
-        else if(lge==0){
+        else{
             printf("========================================================================================================================\n==========================================     ");
-            TypingEffect("[1] CRYPTER UN/DES FICHIER(S)");
-            printf("     =======================================\n==========================================     ");
-            TypingEffect("[2] DECRYPTER UN/DES FICHIER(S)");
-            printf("   =======================================\n==========================================     ");
-            TypingEffect("[3] PLANIFIER UN CRYPTAGE");
-            printf("         =======================================\n==========================================     ");
-            TypingEffect("[4] PLANIFIER UN DECRYPTAGE");
+            TypingEffect("[1] CHIFFRER UN/DES FICHIER(S)");
+            printf("    =======================================\n==========================================     ");
+            TypingEffect("[2] DECHIFFRER UN/DES FICHIER(S)");
+            printf("  =======================================\n==========================================     ");
+            TypingEffect("[3] PLANIFIER UN CHIFFREMENT");
+            printf("      =======================================\n==========================================     ");
+            TypingEffect("[4] PLANIFIER UN DECHIFFREMENT");
+            printf("    =======================================\n==========================================     ");
+            TypingEffect("[5] TRANSFERT DE FICHIER(S)");
             printf("       =======================================\n==========================================     ");
-            TypingEffect("[5] INFO                          ");
+            TypingEffect("[6] INFO                          ");
             printf("=======================================\n==========================================     ");
-            TypingEffect("[6] QUITTER");
+            TypingEffect("[7] QUITTER");
             printf("                       =======================================\n");
-            TypingEffect("cipherflow> ");
+            TypingEffect("SELECTIONNER UNE OPTION> ");
         }
     }
 }
@@ -179,16 +192,16 @@ int InputNumberOfFile(){
         if(lge==1){
             printf("\nENTER THE NUMBER OF FILE(S)");
         }
-        else if(lge==0){
+        else{
             printf("\nENTRER LE NOMBRE DE FICHIER(S)");
         }
         printf("\ncipherflow> ");
         if(scanf("%d",&nbr)!=1){
             if(lge==1){
-                printf("\nINVALID INPUT,TRY AGAIN.");
+                printf("\n[ ERROR ] ENTER A VALID NUMBER");
             }
-            else if(lge==0){
-                printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+            else{
+                printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
             }
             while((clb=getchar()) != '\n' && clb != EOF);
             fcon=0;
@@ -202,12 +215,6 @@ int InputNumberOfFile(){
             }
             printf("\ncipherflow> ");
             if(scanf("%d",&fcon)!=1){
-                if(lge==1){
-                    printf("\nINVALID INPUT,TRY AGAIN.");
-                }
-                else if(lge==0){
-                    printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
-                }
                 while((clb=getchar()) != '\n' && clb != EOF);
                 fcon=0;
             }
@@ -255,7 +262,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" ULTRA-SECURE");
         }
-        else if(lge==0){
+        else{
             printf(" ULTRA-SECURISE");
         }
     }
@@ -264,7 +271,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" VERY-SECURE");
         }
-        else if(lge==0){
+        else{
             printf(" TRéS-SECURISE");
         }
     }
@@ -273,7 +280,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" SECURE");
         }
-        else if(lge==0){
+        else{
             printf(" SECURISE");
         }
     }
@@ -282,7 +289,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" RELIABLE");
         }
-        else if(lge==0){
+        else{
             printf(" FIABLE");
         }
     }
@@ -291,7 +298,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" ADEQUATE");
         }
-        else if(lge==0){
+        else{
             printf(" ADEQUAT");
         }
     }
@@ -300,7 +307,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" MEDIUM");
         }
-        else if(lge==0){
+        else{
             printf(" MOYEN");
         }
     }
@@ -309,7 +316,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" WEAK");
         }
-        else if(lge==0){
+        else{
             printf(" FAIBLE");
         }
     }
@@ -318,7 +325,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" VERY-WEAK");
         }
-        else if(lge==0){
+        else{
             printf(" TRES-FAIBLE");
         }
     }
@@ -327,7 +334,7 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" FRAGILE");
         }
-        else if(lge==0){
+        else{
             printf(" FRAGILE");
         }
     }
@@ -336,15 +343,15 @@ void SecurityLevel(char *pasw){
         if(lge==1){
             printf(" RISKY");
         }
-        else if(lge==0){
+        else{
             printf(" RISQUE");
         }
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            MessageBox(NULL,"THE PASSWORD ISN'T SECURED","FILE_CRYPTER",MB_OK | MB_ICONWARNING);
+            MessageBox(NULL,"[ WARNING ] THE PASSWORD ISN'T SECURED","FILE_CRYPTER",MB_OK | MB_ICONWARNING);
         }
-        else if(lge==0){
-            MessageBox(NULL,"LE MOT DE PASSE N'EST PAS SECURISE","FILE_CRYPTER",MB_OK | MB_ICONWARNING);
+        else{
+            MessageBox(NULL,"[ WARNING ] LE MOT DE PASSE N'EST PAS SECURISE","FILE_CRYPTER",MB_OK | MB_ICONWARNING);
         }
     }
     return;
@@ -360,7 +367,7 @@ void InputPassword(char *pass){
                 printf("\ncipherflow(HIDE)> ");
             }
         }
-        else if(lge==0){
+        else{
             printf("\nENTRER LE MOT DE PASSE(10 CARACTERES), SI PLUS DE 10 SEUL LES 10 PREMIERS SERONT CONSIDERES)");
             if(ani==1){
                 printf("\ncipherflow(MASQUEE)> ");
@@ -387,19 +394,13 @@ void InputPassword(char *pass){
         }
         if(fcon!=0){
             if(lge==1){
-                printf("\nYOU ENTERED :**********\nENTER 1 TO CONFIRM");
+                printf("\n[ INFO ] YOU ENTERED :**********\nENTER 1 TO CONFIRM");
             }
-            else if(lge==0){
-                printf("\nVOUS AVEZ ENTRE :**********\nENTRER 1 POUR CONFIRMER");
+            else{
+                printf("\n[ INFO ] VOUS AVEZ ENTRE :**********\nENTRER 1 POUR CONFIRMER");
             }
             printf("\ncipherflow> ");
             if(scanf("%d",&fcon)!=1){
-                if(lge==1){
-                    printf("\nINVALID INPUT,TRY AGAIN.");
-                }
-                else if(lge==0){
-                    printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
-                }
                 while((clb=getchar()) != '\n' && clb != EOF);
                 fcon=0;
             }
@@ -414,19 +415,20 @@ int InputVersion(){
         if(lge==1){
             printf("\nENTER THE CIPHER FLOW VERSION ASSOCIATED WITH THIS OPERATION\nAVAILABLE VERSIONS:\n- 1\n- ... \n- 15");
         }
-        else if(lge==0){
+        else{
             printf("\nENTRER LA VERSION DE CIPHER FLOW ASSOCIE A CETTE OPERATION\nVERSION DISPONIBLES:\n- 1\n- ... \n- 15");
         }
         printf("\ncipherflow> ");
         if(scanf("%d",&fv)!=1){
             if(lge==1){
-                printf("\nINVALID INPUT,TRY AGAIN.");
+                printf("\n[ ERROR ] ENTER A VALID NUMBER");
             }
-            else if(lge==0){
-                printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
+            else{
+                printf("\n[ ERROR ] ENTRER UN NOMBRE VALIDE");
             }
             while((clb=getchar()) != '\n' && clb != EOF);
             fcon=0;
+            fv = 0;
         }
         if(fv<1 || fv>15){
             if(lge==1){
@@ -446,12 +448,6 @@ int InputVersion(){
             }
             printf("\ncipherflow> ");
             if(scanf("%d",&fcon)!=1){
-                if(lge==1){
-                    printf("\nINVALID INPUT,TRY AGAIN.");
-                }
-                else if(lge==0){
-                    printf("\nENTREE INVALIDE, VEUILLEZ REESSAYEZ.");
-                }
                 while((clb=getchar()) != '\n' && clb != EOF);
                 fcon=0;
             }
@@ -505,7 +501,7 @@ void LanguageChosing(int language){
         do{
             fcona=1;
             MessageBeep(MB_ICONQUESTION);
-            resul = MessageBox(NULL, "FR/EN\nFRANCAIS DETECTE\nUTILISER COMME LANGUE D'AFFICHAGE?", "FILE_CRYPTER", MB_YESNO | MB_ICONQUESTION);
+            resul = MessageBox(NULL, "FR/EN\nLANGUE PAR DEFAUT : FRANCAIS\nUTILISER COMME LANGUE D'AFFICHAGE?", "FILE_CRYPTER", MB_YESNO | MB_ICONQUESTION);
             if(resul==IDYES){
                 lge=0;
             }
@@ -528,10 +524,10 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
     if(fseek(file, 0, SEEK_END) !=0){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
         }
         return 0;
     }
@@ -540,10 +536,10 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
     if(file_len <= 0){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
         }
         return 0;
     }
@@ -551,10 +547,10 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
     if(!temp_string){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
         }
         return 0;
     }
@@ -563,10 +559,10 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
     if(nl != (size_t)file_len){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
         }
         memset(temp_string, 0, file_len);
         free(temp_string);
@@ -577,19 +573,19 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
         long jp=0, ip, step;
         if (file_len > 500000000){
             if(lge==1){
-                IndependentMessageBox("WARNING : BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+                IndependentMessageBox("[ INFO ] WARNING : BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
             }
-            else if(lge==0){
-                IndependentMessageBox("ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            else{
+                IndependentMessageBox("[ INFO ] ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
             step = 50000;
         }
         else if (file_len > 100000000){
             if(lge==1){
-                IndependentMessageBox("LONG FILE DETECTED\nTHE PROCESSING WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
+                IndependentMessageBox("[ INFO ] LONG FILE DETECTED\nTHE PROCESSING WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
             }
-            else if(lge==0){
-                IndependentMessageBox("LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            else{
+                IndependentMessageBox("[ INFO ] LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
             step = 10000;
         }
@@ -611,37 +607,37 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
         long jp, ip, kp, step, cnt;
         if (file_len > 500000){
             if(lge==1){
-                IndependentMessageBox("WARNING : VERY BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+                IndependentMessageBox("[ INFO ] WARNING : VERY BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
             }
-            else if(lge==0){
-                IndependentMessageBox("ATTENTION : TRES GROS FICHIER DETECTE\nTRAITEMENT TRES TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            else{
+                IndependentMessageBox("[ INFO ] ATTENTION : TRES GROS FICHIER DETECTE\nTRAITEMENT TRES TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
             step = 5000;
         }
         else if (file_len > 50000){
             if(lge==1){
-                IndependentMessageBox("WARNING : BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
+                IndependentMessageBox("[ INFO ] WARNING : BIG FILE DETECTED\nTHE PROCESSING WILL BE VERY LONG(DEPEND OF THE FILE SIZE),PLEASE WAIT", "FILE_CRYPTER");
             }
-            else if(lge==0){
-                IndependentMessageBox("ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            else{
+                IndependentMessageBox("[ INFO ] ATTENTION : GROS FICHIER DETECTE\nTRAITEMENT TRES LONG POSSIBLE(DEPEND DE LA TAILLE DU FICHIER),VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
             step = 2000;
         }
         else if (file_len > 20000){
             if(lge==1){
-                IndependentMessageBox("LONG FILE DETECTED\nTHE PROCESSING WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
+                IndependentMessageBox("[ INFO ] LONG FILE DETECTED\nTHE PROCESSING WILL BE LONG,PLEASE WAIT", "FILE_CRYPTER");
             }
-            else if(lge==0){
-                IndependentMessageBox("LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
+            else{
+                IndependentMessageBox("[ INFO ] LONG FICHIER DETECTE\nTRAITEMENT LONG POSSIBLE,VEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
             step = 1200;
         }
         else if (file_len > 5000){
             if(lge==1){
-                IndependentMessageBox("FILE PROCESSING\nPLEASE WAIT", "FILE_CRYPTER");
+                IndependentMessageBox("[ INFO ] FILE PROCESSING\nPLEASE WAIT", "FILE_CRYPTER");
             }
-            else if(lge==0){
-                IndependentMessageBox("TRAITEMENT DU FICHIER\nVEUILLEZ PATIENTER", "FILE_CRYPTER");
+            else{
+                IndependentMessageBox("[ INFO ] TRAITEMENT DU FICHIER\nVEUILLEZ PATIENTER", "FILE_CRYPTER");
             }
             step = 500;
         }
@@ -667,10 +663,10 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
     else{
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA PERMUTATION DU FICHIER S'EST MAL DEROULEE", "FILE_CRYPTER");
         }
         memset(temp_string, 0, file_len);
         free(temp_string);
@@ -680,10 +676,10 @@ int PermuteDataInFile(FILE* file, long prmcst, int act){
     if(nlw != (size_t)file_len){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] FILE DATA PERMUTTING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA PERMUTATION DU FICHIER S'EST MAL PASSEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA PERMUTATION DU FICHIER S'EST MAL DEROULEE", "FILE_CRYPTER");
         }
         memset(temp_string, 0, file_len);
         free(temp_string);
@@ -700,10 +696,10 @@ int FileCopyMaker(FILE *src, FILE *dst){
     if(!src){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("COPYING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] COPYING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA COPIE S'EST MAL DEROULEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA COPIE S'EST MAL DEROULEE", "FILE_CRYPTER");
         }
         return 0;
     }
@@ -715,10 +711,10 @@ int FileCopyMaker(FILE *src, FILE *dst){
         if(fwrite(buf, 1, n, dst) != n){
             MessageBeep(MB_ICONEXCLAMATION);
             if(lge==1){
-                IndependentMessageBox("COPYING GONE WRONG", "FILE_CRYPTER");
+                IndependentMessageBox("[ ERROR ] COPYING GONE WRONG", "FILE_CRYPTER");
             }
-            else if(lge==0){
-                IndependentMessageBox("LA COPIE S'EST MAL DEROULEE", "FILE_CRYPTER");
+            else{
+                IndependentMessageBox("[ ERROR ] LA COPIE S'EST MAL DEROULEE", "FILE_CRYPTER");
             }
             return 0;
         }
@@ -726,10 +722,10 @@ int FileCopyMaker(FILE *src, FILE *dst){
     if(ferror(src)){
         MessageBeep(MB_ICONEXCLAMATION);
         if(lge==1){
-            IndependentMessageBox("COPYING GONE WRONG", "FILE_CRYPTER");
+            IndependentMessageBox("[ ERROR ] COPYING GONE WRONG", "FILE_CRYPTER");
         }
-        else if(lge==0){
-            IndependentMessageBox("LA COPIE S'EST MAL DEROULEE", "FILE_CRYPTER");
+        else{
+            IndependentMessageBox("[ ERROR ] LA COPIE S'EST MAL DEROULEE", "FILE_CRYPTER");
         }
         return 0;
     }
@@ -745,6 +741,38 @@ int FileExistanceChecker(char *path){
     }
     fclose(f);
     return 0;
+}
+
+void RemoveFile(char *path){
+    FILE *f;
+    if((f=fopen(path,"wb"))==NULL){
+        char *epath;
+        epath = calloc(230, sizeof(char));
+        if(epath==NULL){
+            if(lge==1){
+                IndependentMessageBox("[ ERROR ] MEMORY ALLOCATION", "FILE_CRYPTER");
+                MessageBeep(MB_ICONHAND);
+            }
+            else{
+                IndependentMessageBox("[ ERROR ] (ALLOCATION MEMOIRE) ERREUR LORS DE LA SUPPRESION DU FICHIER", "FILE_CRYPTER");
+                MessageBeep(MB_ICONHAND);
+            }
+            return;
+        }
+        if(lge==1){
+            sprintf(epath, "[ ERROR ] %s REMOVING FAILED", path);
+            MessageBeep(MB_ICONHAND);
+        }
+        else{
+            sprintf(epath, "[ ERROR ] LA SUPPRESSION DE %s A ECHOUE", path);
+            MessageBeep(MB_ICONHAND);
+        }
+        IndependentMessageBox(epath, "FILE_CRYPTER");
+        free(epath);
+        return;
+    }
+    fclose(f);
+    remove(path);
 }
 
 DWORD WINAPI msg_thread(LPVOID param){
@@ -831,34 +859,49 @@ void MatrixSimulation(){
 
 void Info(int infolanguage){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, 2);
+    UINT originalCP = GetConsoleOutputCP();
+    SetConsoleOutputCP(CP_UTF8);
     if(infolanguage==1){
-        printf("CIPHER FLOW IS A PASSWORD-BASED ENCRYPTION SYSTEM DESIGNED TO PROTECT YOUR FILES BY TRANSFORMING THEIR CONTENTS INTO\nUNREADABLE DATA.\n");
-        printf("WHEN A FILE IS ENCRYPTED, THE ORIGINAL INFORMATION IS REORGANIZED AND MODIFIED THROUGH MULTIPLE INTERNAL TRANSFORMATIONS\nDRIVEN BY THE PASSWORD CHOSEN BY THE USER. WITHOUT THE CORRECT PASSWORD, THE PROTECTED DATA CANNOT BE RESTORED TO ITS\nORIGINAL FORM.\n");
-        printf("THE APPLICATION WAS DESIGNED TO PROVIDE A SIMPLE AND INTUITIVE EXPERIENCE, EVEN FOR USERS WHO ARE NOT FAMILIAR WITH\nCOMMAND-LINE TOOLS OR ENCRYPTION SOFTWARE. ALL OPERATIONS ARE GUIDED DIRECTLY THROUGH THE CONSOLE INTERFACE WITH\nCLEAR INSTRUCTIONS AND INTERACTIVE PROMPTS.\n");
-        printf("CIPHER FLOW SUPPORTS BOTH ENCRYPTION AND DECRYPTION OPERATIONS:\n- ENCRYPTION CONVERTS READABLE DATA INTO PROTECTED DATA.\n- DECRYPTION RESTORES THE ORIGINAL CONTENT USING THE CORRECT PASSWORD.\n");
-        printf("THE SYSTEM ALSO INCLUDES ADDITIONAL TRANSFORMATION LAYERS INTENDED TO REDUCE DIRECT RELATIONSHIPS BETWEEN INPUT AND\nOUTPUT DATA POSITIONS, HELPING PRODUCE MORE COMPLEX ENCRYPTED RESULTS.\n");
-        printf("CIPHER FLOW ALSO SUPPORTS OPERATION SCHEDULING, ALLOWING CERTAIN ENCRYPTION OR DECRYPTION TASKS TO BE EXECUTED AT A\nSPECIFIED TIME.\n");
-        SetConsoleTextAttribute(hConsole, 14);
-        printf("IMPORTANT: MESSAGE BOXES AND WARNINGS DISPLAYED BY THE APPLICATION SHOULD ALWAYS BE TAKEN SERIOUSLY, AS THEY MAY\nCONTAIN CRITICAL INFORMATION REGARDING FILE REPLACEMENT, OPERATION CONFIRMATION, SCHEDULING, OR SECURITY-RELATED\nACTIONS.\n");
-        SetConsoleTextAttribute(hConsole, 2);
-        printf("CIPHER FLOW RUNS ENTIRELY OFFLINE AND PERFORMS ALL OPERATIONS LOCALLY ON YOUR MACHINE.\n");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+        printf("CipherFlow System ");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        printf("is a Windows-based file security application designed to provide reliable file encryption, decryption,\nscheduling, and secure file transfer through a simple and intuitive console interface.\n");
+        printf("The system transforms file contents using a password-driven encryption process and supports secure data exchange over\nTCP through its built-in transfer protocol. CipherFlow runs entirely in local except when using the file transfer\nfeature(offline proccess).\n\n");
+        printf("Main Features\n• File encryption\n• File decryption\n• Scheduled operations\n• Secure file transfer\n• Progress monitoring\n• Native Windows integration\n\nCurrent Version\n");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        printf("Version : 1.3");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        printf("\nWhat's New in v1.3\n• Added TCP file transfer.\n• Added Send and Receive File mode.\n• Implemented a reliable transfer protocol.\n• Added transfer progress display.\n• Improved network error handling.\n");
+        printf("• Introduced the « .cflow » encrypted file extension.\n• Improved the console interface and user experience.\n\n");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+        printf("Message boxes and warnings displayed by the application should always be taken seriously, as they may contain critical\ninformation regarding file replacement, operation confirmation, scheduling, or security-related actions.\n");
+        printf("Every time this app location is changed, it should be launched to reset the internal configuration used for elements\nsuch as CipherFlow file icon, default opening app for CipherFlow file, ...\n\n");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY);
+        printf("Copyright © 2026 CipherFlow System");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        printf("\nOpen Source Project\nGitHub Repository : https://github.com/orpheric73/FILE_CRYPTER\nCreated and maintened by ORPHÉRIC Sangnidjo.\n");
     }
-    else if(infolanguage==0){
-        UINT originalCP = GetConsoleOutputCP();
-        SetConsoleOutputCP(CP_UTF8);
-        printf("CIPHER FLOW EST UN SYSTEME DE CHIFFREMENT BASE SUR MOT DE PASSE, CONCU POUR PROTEGER VOS FICHIERS EN TRANSFORMANT LEUR\nCONTENU EN DONNEES ILLISIBLES.\n");
-        printf("LORSQU’UN FICHIER EST CHIFFRE, LES INFORMATIONS D’ORIGINE SONT REORGANISEES ET MODIFIEES A TRAVERS PLUSIEURS\nTRANSFORMATIONS INTERNES, TOUTES PILOTEES PAR LE MOT DE PASSE CHOISI PAR L’UTILISATEUR. SANS LE MOT DE PASSE CORRECT,\nLESDONNEES PROTEGEES NE PEUVENT PAS ETRE RESTAUREES DANS LEUR FORME ORIGINALE.\n");
-        printf("L’APPLICATION A ETE CONCUE POUR OFFRIR UNE EXPERIENCE SIMPLE ET INTUITIVE, MEME POUR LES UTILISATEURS QUI NE SONT PAS\nFAMILIERS AVEC LES OUTILS EN LIGNE DE COMMANDE OU LES LOGICIELS DE CHIFFREMENT. TOUTES LES OPERATIONS SONT\nGUIDEES DIRECTEMENT VIA UNE INTERFACE CONSOLE, AVEC DES INSTRUCTIONS CLAIRES ET DES INVITES INTERACTIVES.\n");
-        printf("CIPHER FLOW PREND EN CHARGE DEUX OPERATIONS PRINCIPALES :\n- CHIFFREMENT : TRANSFORME DES DONNEES LISIBLES EN DONNEES PROTEGEES.\n- DECHIFFREMENT : RESTAURE LE CONTENU ORIGINAL A L’AIDE DU MOT DE PASSE CORRECT.\n");
-        printf("LE SYSTEME INTEGRE EGALEMENT DES COUCHES DE TRANSFORMATION SUPPLEMENTAIRES DESTINEES A REDUIRE LES RELATIONS DIRECTES\nENTRE LES POSITIONS DES DONNEES EN ENTREE ET EN SORTIE, AFIN DE PRODUIRE DES RESULTATS CHIFFRES PLUS COMPLEXES.\n");
-        printf("CIPHER FLOW PREND AUSSI EN CHARGE LA PLANIFICATION DES OPERATIONS, PERMETTANT D’EXECUTER CERTAINS CHIFFREMENTS OU\nDECHIFFREMENTS A UN MOMENT PRECIS.\n");
-        SetConsoleTextAttribute(hConsole, 14);
-        printf("IMPORTANT: LES BOîTES DE MESSAGE ET AVERTISSEMENTS AFFICHES PAR L’APPLICATION DOIVENT TOUJOURS ETRE PRIS AU SERIEUX\n, CAR ILS PEUVENT CONTENIR DES INFORMATIONS CRITIQUES CONCERNANT LE REMPLACEMENT DE FICHIERS, LA CONFIRMATION \nD’OPERATIONS, LA PLANIFICATION OU DES ACTIONS LIEES A LA SECURITE.\n");
-        SetConsoleTextAttribute(hConsole, 2);
-        printf("ENFIN, CIPHER FLOW FONCTIONNE ENTIEREMENT HORS LIGNE ET EFFECTUE TOUTES LES OPERATIONS LOCALEMENT SUR VOTRE MACHINE.\n");
-        SetConsoleOutputCP(originalCP);
+    else{
+        SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+        printf("CipherFlow System ");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        printf("est une application Windows de sécurité des fichiers conçue pour offrir un chiffrement, un\ndéchiffrement, une planification des opérations et un transfert sécurisé de fichiers au sein d'une interface console\nsimple, intuitive et professionnelle.\n");
+        printf("Le système transforme le contenu des fichiers à l'aide d'un mot de passe afin de les rendre illisibles pour toute\npersonne ne disposant pas de la clé appropriée. Toutes les opérations sont réalisées localement sur votre ordinateur,\nà l'exception du mode de transfert de fichiers qui utilise une connexion TCP(hors-ligne).\n\n");
+        printf("Fonctionnalités principales\n• Chiffrement de fichiers\n• Déchiffrement de fichiers\n• Planification des opérations\n• Transfert sécurisé de fichiers\n• Suivi de la progression des opérations\n• Intégration native à Windows\n\nVersion actuelle\n");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        printf("Version : 1.3");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        printf("\nNouveautés de la version 1.3\n• Ajout du mode de transfert de fichiers TCP.\n• Ajout des fonctionnalités d'envoi et de réception de fichiers.\n• Mise en place d'un protocole de transfert fiable.\n• Ajout d'une barre de progression lors des transferts.\n• Amélioration de la gestion des erreurs réseau.\n");
+        printf("• Adoption de la nouvelle extension de fichier chiffré « .cflow ».\n• Amélioration de l'interface console et de l'expérience utilisateur.\n\n");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+        printf("Les boîtes de dialogue et les messages d'avertissement affichés par l'application doivent toujours être pris au sérieux,\ncar ils peuvent contenir des informations importantes concernant la sécurité des données ou le déroulement des\nopérations.\n");
+        printf("Chaque fois que l'emplacement de l'application est modifié, il convient de le lancer pour réinitialiser la\nconfiguration interne utilisée pour les élements tels que l'icone des fichiers CipherFlow, l'application d'ouverture par\ndefaut de ces fichiers, ...\n\n");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY);
+        printf("Copyright © 2026 CipherFlow System");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        printf("\nProjet Open Source\nDépot GitHub : https://github.com/orpheric73/FILE_CRYPTER\nCrée et maintenu par ORPHÉRIC Sangnidjo.\n");
     }
+    SetConsoleOutputCP(originalCP);
     SetConsoleTextAttribute(hConsole, 10);
 }
 
@@ -867,9 +910,170 @@ BOOL WINAPI ConsoleHandler(DWORD signal){
         if(lge==1){
             MessageBox(NULL, "CLOSING CIPHER FLOW MAY INTERRUPT ONGOING OPERATIONS AND MAY CAUSE DATA LOSS OR CORRUPT OPERATIONS.", "FILE_CRYPTER WARNING", MB_OK | MB_ICONWARNING);
         }
-        else if(lge==0){
+        else{
             MessageBox(NULL, "FERMER CIPHER FLOW PEUT INTERROMPRE LES OPERATIONS EN COURS ET PEUT ENTRAINER DES PERTES OU CORRUPTION DE DONNEES.", "FILE_CRYPTER AVERTISSEMENT", MB_OK | MB_ICONWARNING);
         }
     }
     return FALSE;
+}
+
+int SendAll(SOCKET sock, const void *buffer, size_t size){
+    size_t total = 0;
+    const char *ptr = (const char *)buffer;
+    while (total < size){
+        int sent = send(sock, ptr + total, (int)(size - total), 0);
+        if(sent == SOCKET_ERROR){
+           int err = WSAGetLastError();
+           switch(err){
+            case WSAEINTR:
+                Sleep(1000);
+                continue;
+            case WSAEWOULDBLOCK:
+                Sleep(1000);
+                continue;
+            default:
+                printf("\n[ ERROR ] SEND() : %d\n", err);
+                return -1;
+           }
+        }
+        if (sent == 0){
+            if(lge == 1){
+                printf("\nCONNECTION CLOSED");
+            }
+            else{
+                printf("\nCONNEXION FERMEE");
+            }
+            return -1;
+        }
+        total += sent;
+    }
+    return 0;
+}
+
+int RecvAll(SOCKET sock, void *buffer, size_t size){
+    size_t total = 0;
+    char *ptr = (char *)buffer;
+    while (total < size){
+        int received = recv(sock, ptr + total, (int)size - total, 0);
+        if(received == SOCKET_ERROR){
+           int err = WSAGetLastError();
+           switch(err){
+            case WSAEINTR:
+                Sleep(1000);
+                continue;
+            case WSAEWOULDBLOCK:
+                Sleep(1000);
+                continue;
+            default:
+                printf("\n[ ERROR ] RECV() : %d\n", err);
+                return -1;
+           }
+        }
+        if (received == 0){
+            if(lge == 1){
+                printf("\nCONNECTION CLOSED");
+            }
+            else{
+                printf("\nCONNEXION FERMEE");
+            }
+            return -1;
+        }
+        total += received;
+    }
+    return 0;
+}
+
+int SendFile(SOCKET sock, FILE *file, uint64_t file_size){
+    char buffer[BUFFER_SIZE];
+    size_t bytes_read;
+    uint64_t total_sent = 0;
+    int percent = -1;
+    printf("\n");
+    while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, file)) > 0){
+        if (SendAll(sock, buffer, bytes_read) != 0){
+            return -1;
+        }
+        total_sent += bytes_read;
+        int current = (int)((total_sent * 100ULL) / file_size);
+        if (current != percent){
+            percent = current;
+            printf("\r[");
+            int bars = percent / 2;
+            for (int i = 0; i < 50; i++){
+                if (i < bars)
+                    printf("=");
+                else
+                    printf(" ");
+            }
+            printf("] %3d%% (%llu / %llu octets)", percent, (unsigned long long)total_sent, (unsigned long long)file_size);
+            fflush(stdout);
+        }
+    }
+    if (ferror(file)){
+        if(lge == 1){
+            printf("\n[ ERROR ] ERROR DURING FILE READING");
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR DE LECTURE DU FICHIER");
+        }
+        return -1;
+    }
+    return 0;
+}
+
+int RecvFile(SOCKET sock, FILE *file, uint64_t file_size){
+    char buffer[BUFFER_SIZE];
+    uint64_t total_received = 0;
+    size_t chunk;
+    int percent = -1;
+    printf("\n");
+    while (total_received < file_size){
+        chunk = (file_size - total_received > BUFFER_SIZE) ? BUFFER_SIZE : (size_t)(file_size - total_received);
+        if (RecvAll(sock, buffer, chunk) != 0){
+            return -1;
+        }
+        if (fwrite(buffer, 1, chunk, file) != chunk){
+            if(lge == 1){
+                printf("\n[ ERROR ] ERROR DURING WRITING IN FILE");
+            }
+            else{
+                printf("\n[ ERROR ] ERREUR LORS DE L'ECRITURE DANS LE FICHIER");
+            }
+            return -1;
+        }
+        total_received += chunk;
+        int current = (int)((total_received * 100ULL) / file_size);
+        if (current != percent){
+            percent = current;
+            printf("\r[");
+            int bars = percent / 2;
+            for (int i = 0; i < 50; i++){
+                if (i < bars)
+                    printf("=");
+                else
+                    printf(" ");
+            }
+            printf("] %3d%% (%llu / %llu octets)", percent, (unsigned long long)total_received, (unsigned long long)file_size);
+            fflush(stdout);
+        }
+    }
+    if (ferror(file)){
+        if(lge == 1){
+            printf("\n[ ERROR ] ERROR DURING WRITING IN FILE");
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR D\'ECRITURE DU FICHIER");
+        }
+        return -1;
+    }
+    if (fflush(file) != 0){
+        if(lge == 1){
+            printf("\n[ ERROR ] ERROR WHILE EMPTYING FILE TAMPON");
+        }
+        else{
+            printf("\n[ ERROR ] ERREUR LORS DU VIDAGE DU TAMPON DU FICHIER");
+        }
+        return -1;
+    }
+    return 0;
 }
